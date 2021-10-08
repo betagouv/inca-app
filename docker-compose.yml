@@ -5,21 +5,14 @@ services:
     container_name: app
     build:
       context: .
-      args:
-        NEXT_PUBLIC_RSA_PUBLIC_KEY: ${NEXT_PUBLIC_RSA_PUBLIC_KEY}
     restart: always
-    environment:
-        RSA_PRIVATE_KEY: ${RSA_PRIVATE_KEY}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.survey.entrypoints=websecure"
-      - "traefik.http.routers.survey.rule=Host(`lab-agora.fr`)"
-      - "traefik.http.routers.survey.tls.certResolver=lets-encrypt"
+      - "traefik.http.routers.app.entrypoints=websecure"
+      - "traefik.http.routers.app.rule=Host(`lab-agora.fr`)"
+      - "traefik.http.routers.app.tls.certResolver=lets-encrypt"
     networks:
       - proxy
-
-volumes:
-  mongodb-data:
 
 networks:
   proxy:
