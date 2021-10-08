@@ -1,0 +1,88 @@
+{
+  "extends": "@ivangabriele/eslint-config-react",
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "rules": {
+    "no-shadow": "off",
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+
+    "react/prop-types": [
+      "error",
+      {
+        "ignore": [
+          "children",
+          "className",
+          "Component",
+          "contentEditable",
+          "dangerouslySetInnerHTML",
+          "pageProps",
+          "ref"
+        ]
+      }
+    ],
+    "react/react-in-jsx-scope": "off"
+  },
+  "overrides": [
+    {
+      "files": ["./api/**/*.js", "./pages/api/**/*.js"],
+      "env": {
+        "browser": false,
+        "node": true
+      }
+    },
+    {
+      "files": ["./app/*.js"],
+      "env": {
+        "browser": true,
+        "node": false
+      }
+    },
+    {
+      "files": ["./pages/**/*.jsx"],
+      "env": {
+        "browser": true,
+        "node": true
+      },
+      "rules": {
+        "react/prop-types": "off"
+      }
+    },
+    {
+      "files": ["./pages/**/*.js"],
+      "env": {
+        "browser": false,
+        "node": true
+      }
+    },
+    {
+      "files": ["**/*.test.js", "./e2e/**/*.js"],
+      "plugins": ["jest"],
+      "env": {
+        "browser": false,
+        "jest/globals": true,
+        "node": true
+      },
+      "rules": {
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+
+        "jest/no-disabled-tests": "error",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
+        "jest/prefer-to-have-length": "error",
+        "jest/valid-expect": "error"
+      }
+    },
+    {
+      "files": ["./scripts/**/*.js"],
+      "plugins": ["jest"],
+      "env": {
+        "browser": false,
+        "node": true
+      },
+      "rules": {
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+      }
+    }
+  ]
+}

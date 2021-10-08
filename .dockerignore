@@ -1,0 +1,17 @@
+/.git
+/.github
+/.husky
+/.next
+/.vscode
+/coverage
+/node_modules
+/scripts
+
+/.dockerignore
+/.env
+/.env.example
+/.eslintrc
+/.gitignore
+/docker-compose.dev.yml
+/docker-compose.yml
+/Dockerfile
