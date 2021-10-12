@@ -8,7 +8,7 @@ import handleError from './handleError'
 
 /**
  * @typedef {Object} JwtPayload
- * @prop {string} _id     User id
+ * @prop {string} id     User id
  * @prop {string} email   User email
  * @prop {string} role    User role
  * @prop {number} iat     Created at Unix timestamp (in seconds)

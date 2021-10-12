@@ -36,7 +36,7 @@ export default function withAuth(Component) {
     const logIn = async (sessionToken, refreshToken = null) => {
       const sessionTokenPayload = await getJwtPayload(sessionToken)
 
-      const user = R.pick(['_id', 'email', 'role'])(sessionTokenPayload)
+      const user = R.pick(['id', 'email', 'role'])(sessionTokenPayload)
       const userJson = JSON.stringify(user)
 
       if (refreshToken !== null) {

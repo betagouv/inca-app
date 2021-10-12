@@ -41,7 +41,7 @@ async function AuthLoginController(req, res) {
     }
 
     const maybeIp = req.headers['x-real-ip']
-    const tokenPayload = R.pick(['_id', 'email', 'role'], maybeUser)
+    const tokenPayload = R.pick(['id', 'email', 'role'], maybeUser)
     const sessionToken = await getJwt(tokenPayload)
 
     // If we can't resolve the client IP for the authenticated user,

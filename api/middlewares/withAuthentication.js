@@ -24,7 +24,7 @@ export default function withAuthentication(handler, allowedRoles = [ROLE.ADMINIS
 
       const user = await req.db.user.findUnique({
         where: {
-          id: maybeTokenPayload._id,
+          id: maybeTokenPayload.id,
         },
       })
       if (user === null || !user.isActive) {
