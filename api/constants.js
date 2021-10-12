@@ -1,0 +1,17 @@
+export const PIPEDRIVE_CATEGORY_KEY = 'f3bc541fab4f2a8ac321cff5a751c05f744a5b4a'
+
+export const PIPEDRIVE_LABEL = {
+  MEMBER: 13,
+  PROSPECT: 12,
+}
+
+export const PIPEDRIVE_LABEL_KEY = 'label'
+
+export const PIPEDRIVE_POSITION_KEY = '60d6a8000eafba77a6ca7099fca540d61fdb2569'
+
+export const PIPEDRIVE_TYPE = {
+  CONTRIBUTOR: '18',
+  LEAD: '19',
+}
+
+export const PIPEDRIVE_TYPE_KEY = '8785347ad42a8322083ad74b544120fb47fd5061'

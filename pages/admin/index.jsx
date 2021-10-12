@@ -3,7 +3,8 @@ import styled from 'styled-components'
 
 import useAuth from '../../app/hooks/useAuth'
 import LoginModal from '../../app/organisms/LoginModal'
-// import Dashboard from '../../app/templates/Dashboard'
+import Board from '../../app/templates/Board'
+import UserList from '../../app/templates/UserList'
 
 const Page = styled.div`
   display: flex;
@@ -43,13 +44,16 @@ export default function AdminSpaPage() {
 
   return (
     <>
-      <BrowserRouter>
+      <BrowserRouter basename="/admin">
         <Page>
           <Body>
             <Main>
               <Switch>
+                <Route path="/users">
+                  <UserList />
+                </Route>
                 <Route path="/">
-                  <h2>Board</h2>
+                  <Board />
                 </Route>
               </Switch>
             </Main>

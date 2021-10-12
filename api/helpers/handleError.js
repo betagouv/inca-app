@@ -1,3 +1,4 @@
+import axios from 'axios'
 import ß from 'bhala'
 
 import ApiError from '../libs/ApiError'
@@ -16,16 +17,16 @@ const getErrorConstructorName = error => {
 /**
  * Handle all kinds of errors. Any error should be caught and handled by this function.
  *
- * @param {*}                               error   Raw error.
- * @param {string}                          path    Exact scope path where this handler was called.
- * @param {import("next").NextApiResponse}  res     Koa context.
+ * @param {*}                               error Raw error.
+ * @param {string}                          path  Exact scope path where this handler was called.
+ * @param {import("next").NextApiResponse=} res   Koa context.
  *
  * @example
  * handleError(err, "controllers/MyClass.myMethod()");
  * handleError(err, "helpers/myFunction()");
  * handleError(err, "scripts/myFileName#oneOfTheScriptFunctions()");
  */
-export default function handleError(error, path, res) {
+export default function handleError(error, path, res = null) {
   const errorPath = path || 'Unknown Path'
 
   let errorString
@@ -39,6 +40,18 @@ export default function handleError(error, path, res) {
       errorString = error.message
       break
 
+    case axios.isAxiosError(error) && error.response:
+      ß.error(`[${errorPath}] An Axios request was made and the server responded with ${error.response.status}.`, '❌')
+      ß.error(`[${errorPath}] Url: ${error.config.url}.`, '❌')
+      errorString = error.message
+      break
+
+    case axios.isAxiosError(error) && error.request:
+      ß.error(`[${errorPath}] An Axios request was made and the server didn't respond`, '❌')
+      ß.error(`[${errorPath}] Url: ${error.config.url}.`, '❌')
+      errorString = error.message
+      break
+
     default:
       // eslint-disable-next-line no-case-declarations
       ß.error(`[api/helpers/handleError()] This type of error can't be processed. This should never happen.`, '❌')
@@ -49,7 +62,7 @@ export default function handleError(error, path, res) {
 
   ß.error(`[${errorPath}] ${errorString}`, '❌')
 
-  if (res === undefined) {
+  if (res === null) {
     return
   }
 
