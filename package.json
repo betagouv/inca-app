@@ -7,16 +7,19 @@
   "scripts": {
     "build": "next build",
     "db:migrate": "prisma migrate dev --name init",
+    "db:seed": "node -r dotenv/config ./prisma/seed.js",
     "dev": "next dev",
     "dev:docker": "docker-compose down && docker-compose -f ./docker-compose.dev.yml up -d db",
-    "prepare": "husky install",
-    "start": "next start",
+    "prepare": "husky install && node -r dotenv/config ./scripts/dev/setup.js",
+    "start": "prisma migrate deploy && next start",
     "test": "yarn test:lint && yarn test:unit",
     "test:lint": "eslint .",
     "test:unit": "jest",
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@fontsource/poppins": "4.5.0",
+    "@ivangabriele/singularity": "0.3.2",
     "@prisma/client": "3.2.1",
     "bcryptjs": "2.4.3",
     "bhala": "1.0.0-alpha.1",

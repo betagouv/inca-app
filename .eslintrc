@@ -32,10 +32,13 @@
       }
     },
     {
-      "files": ["./app/*.js"],
+      "files": ["./app/**/*.js", "./app/**/*.jsx"],
       "env": {
         "browser": true,
         "node": false
+      },
+      "globals": {
+        "process": true
       }
     },
     {

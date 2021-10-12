@@ -5,7 +5,14 @@ services:
     container_name: app
     build:
       context: .
+      args:
+        NEXT_PUBLIC_RSA_PUBLIC_KEY: ${NEXT_PUBLIC_RSA_PUBLIC_KEY}
     restart: always
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      FIRST_ADMIN_EMAIL: ${FIRST_ADMIN_EMAIL}
+      FIRST_ADMIN_PASSWORD: ${FIRST_ADMIN_PASSWORD}
+      RSA_PRIVATE_KEY: ${RSA_PRIVATE_KEY}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.entrypoints=websecure"

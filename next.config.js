@@ -15,5 +15,10 @@ module.exports = {
     },
   ],
   reactStrictMode: true,
-  rewrites: async () => [],
+  rewrites: async () => [
+    {
+      destination: '/admin',
+      source: '/admin/:any*',
+    },
+  ],
 }
