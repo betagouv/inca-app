@@ -1,11 +1,11 @@
 # Lab Agora - Web Application
 
-Main [Lab Agora][lnk-lab-agora] Web Application, an [Institut National Du Cancer][lnk-inca] public startup helping
-French actors in the fight against cancer to establish beneficial relationships between patients and other actors.
-
 [![License][img-license]][lnk-license]
 [![Build Status][img-github]][lnk-github]
 [![Code Coverage][img-codecov]][lnk-codecov]
+
+Main [Lab Agora][lnk-lab-agora] Web Application, an [Institut National Du Cancer][lnk-inca] public startup helping
+French actors in the fight against cancer to establish beneficial relationships between patients and other actors.
 
 ---
 
