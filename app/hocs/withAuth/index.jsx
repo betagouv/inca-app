@@ -6,8 +6,8 @@ import isJwtExpired from '../../helpers/isJwtExpired'
 import Context from './Context'
 
 const getInitialState = () => {
-  const maybeRefreshToken = window.localStorage.getItem('refreshToken')
-  const maybeSessionToken = window.localStorage.getItem('sessionToken')
+  const maybeRefreshToken = process.browser ? window.localStorage.getItem('refreshToken') : null
+  const maybeSessionToken = process.browser ? window.localStorage.getItem('sessionToken') : null
 
   return {
     isAuthenticated: null,
@@ -18,6 +18,10 @@ const getInitialState = () => {
 }
 
 const getInitialUser = () => {
+  if (!process.browser) {
+    return null
+  }
+
   const maybeUserJson = window.localStorage.getItem('user')
   const maybeUser = maybeUserJson !== null ? JSON.parse(maybeUserJson) : null
 
