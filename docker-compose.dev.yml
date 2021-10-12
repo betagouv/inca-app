@@ -2,18 +2,14 @@ version: "3.9"
 
 services:
   db:
-    container_name: db
+    container_name: app_db
     image: postgres:14
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - 5432:5432
     volumes:
       - postgre-data:/var/lib/postgresql/data
-      - ./backups:/backups
-
-volumes:
-  postgre-data:
+    ports:
+      - 5432:5432
