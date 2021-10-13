@@ -72,6 +72,17 @@ const convertToNormalizedContributorsWithCategories = categories =>
 const convertToNormalizedLeadsWithCategories = categories =>
   R.pipe(areMembers, areLeads, haveOrganization, normalizeLeadsWithCategories(categories))
 
+const loadPersons = async (previousPersons = [], start = 0) => {
+  const newPersons = await pipedrive.get('/persons', { start })
+
+  const persons = [...previousPersons, ...newPersons]
+  if (newPersons.length < 100) {
+    return persons
+  }
+
+  return loadPersons(persons, start + 100)
+}
+
 async function PipedriveSynchronizeController(req, res) {
   if (req.method !== 'GET') {
     handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
@@ -86,7 +97,7 @@ async function PipedriveSynchronizeController(req, res) {
         const personFields = await pipedrive.get('/personFields')
         const categories = getCategories(personFields)
 
-        const persons = await pipedrive.get('/persons')
+        const persons = await loadPersons()
         const contributors = convertToNormalizedContributorsWithCategories(categories)(persons)
         const leads = convertToNormalizedLeadsWithCategories(categories)(persons)
 
