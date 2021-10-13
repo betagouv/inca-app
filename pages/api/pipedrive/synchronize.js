@@ -80,54 +80,58 @@ async function PipedriveSynchronizeController(req, res) {
   }
 
   try {
-    await cache.cache('PIPEDRIVE_IS_SYNCHRONIZED', async () => {
-      const personFields = await pipedrive.get('/personFields')
-      const categories = getCategories(personFields)
+    await cache.cache(
+      'PIPEDRIVE_IS_SYNCHRONIZED',
+      async () => {
+        const personFields = await pipedrive.get('/personFields')
+        const categories = getCategories(personFields)
 
-      const persons = await pipedrive.get('/persons')
-      const contributors = convertToNormalizedContributorsWithCategories(categories)(persons)
-      const leads = convertToNormalizedLeadsWithCategories(categories)(persons)
+        const persons = await pipedrive.get('/persons')
+        const contributors = convertToNormalizedContributorsWithCategories(categories)(persons)
+        const leads = convertToNormalizedLeadsWithCategories(categories)(persons)
 
-      await req.db.contributor.createMany({
-        data: contributors,
-        skipDuplicates: true,
-      })
+        await req.db.contributor.createMany({
+          data: contributors,
+          skipDuplicates: true,
+        })
 
-      await Promise.all(
-        leads.map(async leadWithOrganization => {
-          const organization = R.prop('organization')(leadWithOrganization)
-          const lead = R.omit(['organization'])(leadWithOrganization)
+        await Promise.all(
+          leads.map(async leadWithOrganization => {
+            const organization = R.prop('organization')(leadWithOrganization)
+            const lead = R.omit(['organization'])(leadWithOrganization)
 
-          const leadCount = await req.db.lead.count({
-            where: {
-              pipedriveId: lead.pipedriveId,
-            },
-          })
-          if (leadCount === 1) {
-            return
-          }
-
-          const leadData = lead
-
-          const organizationCount = await req.db.organization.count({
-            where: {
-              pipedriveId: organization.pipedriveId,
-            },
-          })
-          if (organizationCount === 0) {
-            leadData.organization = {
-              create: organization,
+            const leadCount = await req.db.lead.count({
+              where: {
+                pipedriveId: lead.pipedriveId,
+              },
+            })
+            if (leadCount === 1) {
+              return
             }
-          }
 
-          await req.db.lead.create({
-            data: leadData,
-          })
-        }),
-      )
+            const leadData = lead
 
-      return true
-    })
+            const organizationCount = await req.db.organization.count({
+              where: {
+                pipedriveId: organization.pipedriveId,
+              },
+            })
+            if (organizationCount === 0) {
+              leadData.organization = {
+                create: organization,
+              }
+            }
+
+            await req.db.lead.create({
+              data: leadData,
+            })
+          }),
+        )
+
+        return true
+      },
+      15,
+    )
 
     res.status(204).end()
   } catch (err) {
