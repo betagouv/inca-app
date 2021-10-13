@@ -3,7 +3,12 @@ import styled from 'styled-components'
 
 import useAuth from '../../app/hooks/useAuth'
 import LoginModal from '../../app/organisms/LoginModal'
+import Menu from '../../app/organisms/Menu'
 import Board from '../../app/templates/Board'
+import ContributorList from '../../app/templates/ContributorList'
+import LeadList from '../../app/templates/LeadList'
+import OrganizationList from '../../app/templates/OrganizationList'
+import ProjectList from '../../app/templates/ProjectList'
 import UserList from '../../app/templates/UserList'
 
 const Page = styled.div`
@@ -46,9 +51,23 @@ export default function AdminSpaPage() {
     <>
       <BrowserRouter basename="/admin">
         <Page>
+          <Menu />
+
           <Body>
             <Main>
               <Switch>
+                <Route path="/contributors">
+                  <ContributorList />
+                </Route>
+                <Route path="/leads">
+                  <LeadList />
+                </Route>
+                <Route path="/organizations">
+                  <OrganizationList />
+                </Route>
+                <Route path="/projects">
+                  <ProjectList />
+                </Route>
                 <Route path="/users">
                   <UserList />
                 </Route>
