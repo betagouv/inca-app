@@ -2,6 +2,7 @@ import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 import withAuthentication from '../../api/middlewares/withAuthentication'
 import withPrisma from '../../api/middlewares/withPrisma'
+import { ROLE } from '../../common/constants'
 
 const ERROR_PATH = 'pages/api/OrganizationsController()'
 
@@ -23,4 +24,4 @@ async function OrganizationsController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(OrganizationsController))
+export default withPrisma(withAuthentication(OrganizationsController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))

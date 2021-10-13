@@ -2,6 +2,7 @@ import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 import withAuthentication from '../../api/middlewares/withAuthentication'
 import withPrisma from '../../api/middlewares/withPrisma'
+import { ROLE } from '../../common/constants'
 
 const ERROR_PATH = 'pages/api/LeadsController()'
 
@@ -23,4 +24,4 @@ async function LeadsController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(LeadsController))
+export default withPrisma(withAuthentication(LeadsController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))
