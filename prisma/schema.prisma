@@ -15,6 +15,66 @@ enum Role {
   USER
 }
 
+// =========================================================
+// Models
+
+model Contributor {
+  id          String    @id @default(cuid())
+  pipedriveId Int       @unique
+  firstName   String
+  lastName    String
+  category    String?
+  position    String?
+  email       String
+  phone       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  // Relations
+  projects    Project[]
+}
+
+model Lead {
+  id             String       @id @default(cuid())
+  pipedriveId    Int          @unique
+  firstName      String
+  lastName       String
+  category       String?
+  position       String?
+  email          String
+  phone          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  // Relations
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  projects       Project[]
+}
+
+model Organization {
+  id          String    @id @default(cuid())
+  pipedriveId Int       @unique
+  name        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  // Relations
+  leads       Lead[]
+  projects    Project[]
+}
+
+model Project {
+  id             String        @id @default(cuid())
+  name           String
+  seats          Int
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  // Relations
+  contributors   Contributor[]
+  lead           Lead?         @relation(fields: [leadId], references: [id])
+  leadId         String?
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
 model Token {
   id        String   @id @default(cuid())
   email     String
