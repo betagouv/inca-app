@@ -1,3 +1,4 @@
+import { Checkbox as SingularityCheckbox } from '@ivangabriele/singularity'
 import { useFormikContext } from 'formik'
 import PropTypes from 'prop-types'
 
@@ -7,10 +8,13 @@ export default function Checkbox({ isDisabled, label, name }) {
   const isChecked = Boolean(values[name])
 
   return (
-    // eslint-disable-next-line jsx-a11y/label-has-associated-control
-    <label>
-      <input checked={isChecked} disabled={isDisabled} name={name} onChange={handleChange} type="checkbox" /> {label}
-    </label>
+    <SingularityCheckbox
+      defaultChecked={isChecked}
+      disabled={isDisabled}
+      label={label}
+      name={name}
+      onChange={handleChange}
+    />
   )
 }
 

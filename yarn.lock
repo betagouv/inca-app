@@ -527,16 +527,17 @@
   resolved "https://registry.yarnpkg.com/@ivangabriele/prettier-config/-/prettier-config-1.1.0.tgz#0b669220b64ebcb7eb0909d967084f864d30cc9b"
   integrity sha512-cPazyD5+Yw3+n5W8BJK0gIIR+DZkJZvcXwyhCN3zvk61tllj4sqNyQzQptZylJYss6U1PIJPmg+xCZEus77xMQ==
 
-"@ivangabriele/singularity@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@ivangabriele/singularity/-/singularity-0.5.1.tgz#d4e62781691c49cd9ccab271e7068259265a4642"
-  integrity sha512-ZC+tfDt3Csg9czzUzuPtJauOAVCWDS23vPnKr7IHCLqTpppuZed0zeSbz4THfOOsPQWUWqzeJHAicAFF8G1pIw==
+"@ivangabriele/singularity@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@ivangabriele/singularity/-/singularity-0.6.0.tgz#02219b2668076099e2ac1d239686cf2d59befd8f"
+  integrity sha512-kp5I/WuKTj/MOPTMETQPDQ7FAZhmdAMXEz4Q4DRdJdZk+icRmLNGDgMGt8kOvoGrVdg4hIj5KoRDD4bSe1v0TQ==
   dependencies:
     "@babel/runtime" "^7.15.4"
     "@fontsource/poppins" "^4.5.0"
     classnames "^2.3.1"
     lodash.merge "^4.6.2"
     prop-types "^15.7.2"
+    react-feather "^2.0.9"
     react-paginate "^7.1.3"
     react-select "^5.1.0"
     react-table "^7.7.0"
@@ -4831,7 +4832,7 @@ react-fast-compare@^2.0.1:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
 
-react-feather@2.0.9:
+react-feather@2.0.9, react-feather@^2.0.9:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/react-feather/-/react-feather-2.0.9.tgz#6e42072130d2fa9a09d4476b0e61b0ed17814480"
   integrity sha512-yMfCGRkZdXwIs23Zw/zIWCJO3m3tlaUvtHiXlW+3FH7cIT6fiK1iJ7RJWugXq7Fso8ZaQyUm92/GOOHXvkiVUw==

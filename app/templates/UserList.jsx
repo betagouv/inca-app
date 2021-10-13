@@ -26,6 +26,11 @@ const BASE_COLUMNS = [
     key: 'role',
     label: 'Rôle',
   },
+  {
+    key: 'isActive',
+    label: '',
+    type: 'boolean',
+  },
 ]
 
 export default function UserList() {
