@@ -1,13 +1,18 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { BeatLoader } from 'react-spinners'
 import styled from 'styled-components'
 
 import { ROLE } from '../../common/constants'
+import SyncButton from '../atoms/SyncButton'
+import useApi from '../hooks/useApi'
 import useAuth from '../hooks/useAuth'
 
 const Container = styled.div`
   background-color: #293042;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   min-width: 16rem;
 `
 
@@ -51,22 +56,39 @@ const List = styled.div`
 `
 
 export default function Menu() {
+  const [isSynchronizing, setIsSynchronizing] = useState(false)
   const { user } = useAuth()
+
+  const api = useApi()
+
+  const synchronizePipedrive = async () => {
+    setIsSynchronizing(true)
+
+    await api.get('pipedrive/synchronize')
+
+    setIsSynchronizing(false)
+  }
 
   return (
     <Container>
-      <Brand>Lab Agora</Brand>
+      <div>
+        <Brand>Lab Agora</Brand>
 
-      <List>
-        <Link to="/">Mise en relation</Link>
+        <List>
+          <Link to="/">Mise en relation</Link>
 
-        <Link to="/projects">Projets</Link>
-        <Link to="/organizations">Organisations</Link>
-        <Link to="/leads">Porteurs</Link>
-        <Link to="/contributors">Contributeurs</Link>
+          <Link to="/projects">Projets</Link>
+          <Link to="/organizations">Organisations</Link>
+          <Link to="/leads">Porteurs</Link>
+          <Link to="/contributors">Contributeurs</Link>
 
-        {user.role === ROLE.ADMINISTRATOR && <Link to="/users">Utilisateurs</Link>}
-      </List>
+          {user.role === ROLE.ADMINISTRATOR && <Link to="/users">Utilisateurs</Link>}
+        </List>
+      </div>
+
+      <SyncButton onClick={synchronizePipedrive}>
+        {isSynchronizing ? <BeatLoader size={12} /> : 'Synchroniser'}
+      </SyncButton>
     </Container>
   )
 }
