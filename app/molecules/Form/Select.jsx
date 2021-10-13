@@ -16,7 +16,6 @@ export default function Select({ helper, isDisabled, label, name, options }) {
 
   return (
     <SingularitySelect
-      autoComplete="false"
       defaultValue={defaultValue}
       disabled={isDisabled}
       error={maybeError}

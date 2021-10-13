@@ -25,6 +25,8 @@ export default function UserEditor() {
   const history = useHistory()
   const isMounted = useIsMounted()
 
+  const isNew = id === 'new'
+
   const loadUser = async () => {
     const maybeBody = await api.get(`user/${id}`)
     if (maybeBody === null) {
@@ -35,19 +37,25 @@ export default function UserEditor() {
 
     if (isMounted()) {
       setInitialValues(userEditableData)
-
       setIsLoading(false)
     }
   }
 
   useEffect(() => {
+    if (isNew) {
+      setInitialValues({})
+      setIsLoading(false)
+
+      return
+    }
+
     loadUser()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updateUserAndGoToUserList = async (values, { setErrors, setSubmitting }) => {
-    const maybeBody = await api.patch(`user/${id}`, values)
+    const maybeBody = isNew ? await api.post(`user/${id}`, values) : await api.patch(`user/${id}`, values)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
         email: 'Sorry, but something went wrong.',
@@ -67,19 +75,25 @@ export default function UserEditor() {
   return (
     <AdminBox>
       <AdminHeader>
-        <Title>Modifier l’utilisateur</Title>
+        <Title>{isNew ? 'Ajout' : 'Modification'} d’utilisateur</Title>
       </AdminHeader>
 
       <Card>
         <Form initialValues={initialValues} onSubmit={updateUserAndGoToUserList} validationSchema={FormSchema}>
-          <Form.Input label="Prénom" name="firstName" />
+          <Form.Input label="Email" name="email" type="email" />
+
+          {isNew && (
+            <Field>
+              <Form.Input label="Mot de passe" name="password" type="password" />
+            </Field>
+          )}
 
           <Field>
-            <Form.Input label="Nom" name="lastName" />
+            <Form.Input label="Prénom" name="firstName" />
           </Field>
 
           <Field>
-            <Form.Input label="Email" name="email" type="email" />
+            <Form.Input label="Nom" name="lastName" />
           </Field>
 
           <Field>
@@ -103,10 +117,12 @@ export default function UserEditor() {
             />
           </Field>
 
-          {/* <Form.Checkbox label="Active" name="isActive" /> */}
+          <Field>
+            <Form.Checkbox label="Compte actif" name="isActive" />
+          </Field>
 
           <Field>
-            <Form.Submit>Enregistrer</Form.Submit>
+            <Form.Submit>{isNew ? 'Créer' : 'Enregistrer'}</Form.Submit>
           </Field>
         </Form>
       </Card>

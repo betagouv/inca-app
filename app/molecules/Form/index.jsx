@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as Yup from 'yup'
 
+import Checkbox from './Checkbox'
 import Input from './Input'
 import Select from './Select'
 import Submit from './Submit'
@@ -45,6 +46,7 @@ Form.propTypes = {
 }
 
 export default Object.assign(Form, {
+  Checkbox,
   Input,
   Select,
   Submit,

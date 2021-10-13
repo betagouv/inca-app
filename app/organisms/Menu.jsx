@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { ROLE } from '../../common/constants'
+import useAuth from '../hooks/useAuth'
+
 const Container = styled.div`
   background-color: #293042;
   display: flex;
@@ -48,6 +51,8 @@ const List = styled.div`
 `
 
 export default function Menu() {
+  const { user } = useAuth()
+
   return (
     <Container>
       <Brand>Lab Agora</Brand>
@@ -60,7 +65,7 @@ export default function Menu() {
         <Link to="/leads">Porteurs</Link>
         <Link to="/contributors">Contributeurs</Link>
 
-        <Link to="/users">Utilisateurs</Link>
+        {user.role === ROLE.ADMINISTRATOR && <Link to="/users">Utilisateurs</Link>}
       </List>
     </Container>
   )

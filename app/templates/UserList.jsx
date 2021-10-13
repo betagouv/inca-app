@@ -84,7 +84,9 @@ export default function UserList() {
       <AdminHeader>
         <Title>Utilisateurs</Title>
 
-        <Button size="small">Ajouter un utilisateur</Button>
+        <Button onClick={() => goToUser('new')} size="small">
+          Ajouter un utilisateur
+        </Button>
       </AdminHeader>
 
       <Card>

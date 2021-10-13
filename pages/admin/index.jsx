@@ -11,6 +11,7 @@ import OrganizationList from '../../app/templates/OrganizationList'
 import ProjectList from '../../app/templates/ProjectList'
 import UserEditor from '../../app/templates/UserEditor'
 import UserList from '../../app/templates/UserList'
+import { ROLE } from '../../common/constants'
 
 const Page = styled.div`
   display: flex;
@@ -38,13 +39,13 @@ const Main = styled.main`
  * @see https://colinhacks.com/essays/building-a-spa-with-nextjs
  */
 export default function AdminSpaPage() {
-  const { state: authState } = useAuth()
+  const { state: authState, user } = useAuth()
 
   if (authState.isLoading) {
     return <h2>Loading...</h2>
   }
 
-  if (!authState.isAuthenticated) {
+  if (!authState.isAuthenticated || user === null) {
     return <LoginModal />
   }
 
@@ -57,6 +58,9 @@ export default function AdminSpaPage() {
           <Body>
             <Main>
               <Switch>
+                <Route exact path="/">
+                  <Board />
+                </Route>
                 <Route path="/contributors">
                   <ContributorList />
                 </Route>
@@ -69,14 +73,21 @@ export default function AdminSpaPage() {
                 <Route path="/projects">
                   <ProjectList />
                 </Route>
-                <Route path="/user/:id">
-                  <UserEditor />
-                </Route>
-                <Route path="/users">
-                  <UserList />
-                </Route>
-                <Route path="/">
-                  <Board />
+
+                {user.role === ROLE.ADMINISTRATOR && (
+                  <>
+                    <Route path="/user/:id">
+                      <UserEditor />
+                    </Route>
+
+                    <Route path="/users">
+                      <UserList />
+                    </Route>
+                  </>
+                )}
+
+                <Route path="*">
+                  <div>404</div>
                 </Route>
               </Switch>
             </Main>

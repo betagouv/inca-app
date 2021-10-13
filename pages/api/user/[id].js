@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs'
 import * as R from 'ramda'
 
 import handleError from '../../../api/helpers/handleError'
@@ -5,12 +6,13 @@ import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
 
+const BCRYPT_SALT_WORK_FACTOR = 10
 const ERROR_PATH = 'pages/api/UserController()'
 
 const excludePassword = R.omit(['password'])
 
 async function UserController(req, res) {
-  if (!['GET', 'PATCH'].includes(req.method)) {
+  if (!['GET', 'PATCH', 'POST'].includes(req.method)) {
     handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
 
     return
@@ -54,8 +56,12 @@ async function UserController(req, res) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
+        const updatedUserData = R.pick(['email', 'firstName', 'isActive', 'lastName', 'role'], req.body)
+        if (req.body.password !== undefined) {
+          updatedUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
+        }
         const updatedUser = await req.db.user.update({
-          data: req.body,
+          data: updatedUserData,
           where: {
             id: req.query.id,
           },
@@ -64,6 +70,22 @@ async function UserController(req, res) {
         res.status(200).json({
           data: updatedUser,
         })
+      } catch (err) {
+        handleError(err, ERROR_PATH, res)
+      }
+
+      return
+
+    case 'POST':
+      try {
+        const newUserData = R.pick(['email', 'firstName', 'lastName', 'role'], req.body)
+        newUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
+
+        await req.db.user.create({
+          data: newUserData,
+        })
+
+        res.status(201).json({})
       } catch (err) {
         handleError(err, ERROR_PATH, res)
       }
