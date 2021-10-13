@@ -20,13 +20,13 @@ export default function OrganizationList() {
   const isMounted = useIsMounted()
 
   const loadOrganizations = async () => {
-    const res = await api.get('organizations')
-    if (res === null) {
+    const maybeBody = await api.get('organizations')
+    if (maybeBody === null) {
       return
     }
 
     if (isMounted()) {
-      setOrganizations(res.data)
+      setOrganizations(maybeBody.data)
     }
   }
 

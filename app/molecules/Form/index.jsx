@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import * as Yup from 'yup'
 
 import Input from './Input'
+import Select from './Select'
 import Submit from './Submit'
 
 const StyledForm = styled(FormikForm)`
@@ -45,5 +46,6 @@ Form.propTypes = {
 
 export default Object.assign(Form, {
   Input,
+  Select,
   Submit,
 })

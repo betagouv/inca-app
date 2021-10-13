@@ -1,6 +1,7 @@
 import { Button, Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
+import { useHistory } from 'react-router-dom'
 
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
@@ -8,7 +9,7 @@ import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
 
-const COLUMNS = [
+const BASE_COLUMNS = [
   {
     key: 'firstName',
     label: 'Prénom',
@@ -25,41 +26,22 @@ const COLUMNS = [
     key: 'role',
     label: 'Rôle',
   },
-  {
-    accent: 'secondary',
-
-    // eslint-disable-next-line no-alert
-    action: id => window.alert(`Edit ${id}`),
-
-    Icon: () => <Edit />,
-    label: 'Edit user',
-    type: 'action',
-  },
-  {
-    accent: 'danger',
-
-    // eslint-disable-next-line no-alert
-    action: id => window.alert(`Delete ${id}`),
-
-    Icon: Trash,
-    label: 'Delete user',
-    type: 'action',
-  },
 ]
 
 export default function UserList() {
   const api = useApi()
   const [users, setUsers] = useState([])
   const isMounted = useIsMounted()
+  const history = useHistory()
 
   const loadUsers = async () => {
-    const res = await api.get('users')
-    if (res === null) {
+    const maybeBody = await api.get('users')
+    if (maybeBody === null) {
       return
     }
 
     if (isMounted()) {
-      setUsers(res.data)
+      setUsers(maybeBody.data)
     }
   }
 
@@ -68,6 +50,34 @@ export default function UserList() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const goToUser = id => {
+    history.push(`/user/${id}`)
+  }
+
+  const columns = [
+    ...BASE_COLUMNS,
+    {
+      accent: 'secondary',
+
+      // eslint-disable-next-line no-alert
+      action: goToUser,
+
+      Icon: () => <Edit />,
+      label: 'Edit user',
+      type: 'action',
+    },
+    {
+      accent: 'danger',
+
+      // eslint-disable-next-line no-alert
+      action: id => window.alert(`Delete ${id}`),
+
+      Icon: Trash,
+      label: 'Delete user',
+      type: 'action',
+    },
+  ]
 
   return (
     <AdminBox>
@@ -78,7 +88,7 @@ export default function UserList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={COLUMNS} data={users} />
+        <Table columns={columns} data={users} />
       </Card>
     </AdminBox>
   )

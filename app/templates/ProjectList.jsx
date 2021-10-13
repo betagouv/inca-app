@@ -45,13 +45,13 @@ export default function ProjectList() {
   const isMounted = useIsMounted()
 
   const loadProjects = async () => {
-    const res = await api.get('projects')
-    if (res === null) {
+    const maybeBody = await api.get('projects')
+    if (maybeBody === null) {
       return
     }
 
     if (isMounted()) {
-      setProjects(res.data)
+      setProjects(maybeBody.data)
     }
   }
 

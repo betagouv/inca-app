@@ -32,13 +32,13 @@ export default function ContributorList() {
   const isMounted = useIsMounted()
 
   const loadContributors = async () => {
-    const res = await api.get('contributors')
-    if (res === null) {
+    const maybeBody = await api.get('contributors')
+    if (maybeBody === null) {
       return
     }
 
     if (isMounted()) {
-      setContributors(res.data)
+      setContributors(maybeBody.data)
     }
   }
 

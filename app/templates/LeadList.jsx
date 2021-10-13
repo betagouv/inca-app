@@ -32,13 +32,13 @@ export default function LeadList() {
   const isMounted = useIsMounted()
 
   const loadLeads = async () => {
-    const res = await api.get('leads')
-    if (res === null) {
+    const maybeBody = await api.get('leads')
+    if (maybeBody === null) {
       return
     }
 
     if (isMounted()) {
-      setLeads(res.data)
+      setLeads(maybeBody.data)
     }
   }
 

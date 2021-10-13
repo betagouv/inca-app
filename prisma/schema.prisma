@@ -12,7 +12,7 @@ generator client {
 enum Role {
   ADMINISTRATOR
   MANAGER
-  USER
+  MEMBER
 }
 
 // =========================================================
@@ -86,7 +86,7 @@ model Token {
 
 model User {
   id        String   @id @default(cuid())
-  role      Role     @default(USER)
+  role      Role     @default(MEMBER)
   email     String   @unique
   password  String
   firstName String

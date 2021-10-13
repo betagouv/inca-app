@@ -9,6 +9,7 @@ import ContributorList from '../../app/templates/ContributorList'
 import LeadList from '../../app/templates/LeadList'
 import OrganizationList from '../../app/templates/OrganizationList'
 import ProjectList from '../../app/templates/ProjectList'
+import UserEditor from '../../app/templates/UserEditor'
 import UserList from '../../app/templates/UserList'
 
 const Page = styled.div`
@@ -67,6 +68,9 @@ export default function AdminSpaPage() {
                 </Route>
                 <Route path="/projects">
                   <ProjectList />
+                </Route>
+                <Route path="/user/:id">
+                  <UserEditor />
                 </Route>
                 <Route path="/users">
                   <UserList />
