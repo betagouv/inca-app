@@ -1,8 +1,9 @@
-import { Tasker } from '@ivangabriele/singularity'
+import { Button, Tasker } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import AtomTitle from '../atoms/Title'
+import AdminHeader from '../atoms/AdminHeader'
+import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
 
@@ -12,8 +13,8 @@ const Box = styled.div`
   padding: 1rem 0;
 `
 
-const Title = styled(AtomTitle)`
-  padding-left: 1rem;
+const StyledAdminHeader = styled(AdminHeader)`
+  padding: 0 1rem;
 `
 
 const Project = () => <Tasker.Task>123</Tasker.Task>
@@ -41,13 +42,18 @@ export default function Board() {
 
   return (
     <Box>
-      <Title>Mise en relation {isSynchronizing ? `(Synchronizing...)` : null}</Title>
+      <StyledAdminHeader>
+        <Title>Mise en relation {isSynchronizing ? `(Synchronizing...)` : null}</Title>
+
+        <Button size="small">Ajouter un projet</Button>
+      </StyledAdminHeader>
 
       <Tasker
         data={[
-          { label: 'Upcoming', tasks: [Project, Project] },
-          { label: 'In Progress', tasks: [Project] },
-          { label: 'Completed', tasks: [Project] },
+          { label: 'Nouveaux', tasks: [Project, Project] },
+          { label: 'Proposés', tasks: [Project] },
+          { label: 'Remplis', tasks: [Project] },
+          { label: 'Complétés', tasks: [Project] },
         ]}
       />
     </Box>

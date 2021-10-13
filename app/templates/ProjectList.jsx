@@ -1,17 +1,12 @@
-import { Table } from '@ivangabriele/singularity'
+import { Button, Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
-import styled from 'styled-components'
 
+import AdminBox from '../atoms/AdminBox'
+import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
-
-const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-`
 
 const COLUMNS = [
   {
@@ -51,7 +46,7 @@ export default function ProjectList() {
 
   const loadProjects = async () => {
     const res = await api.get('projects')
-    if (res.data === null) {
+    if (res === null) {
       return
     }
 
@@ -67,10 +62,16 @@ export default function ProjectList() {
   }, [])
 
   return (
-    <Box>
-      <Title>Projets</Title>
+    <AdminBox>
+      <AdminHeader>
+        <Title>Projets</Title>
 
-      <Table columns={COLUMNS} data={projects} />
-    </Box>
+        <Button size="small">Ajouter un projet</Button>
+      </AdminHeader>
+
+      <Card>
+        <Table columns={COLUMNS} data={projects} />
+      </Card>
+    </AdminBox>
   )
 }

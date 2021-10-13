@@ -527,10 +527,10 @@
   resolved "https://registry.yarnpkg.com/@ivangabriele/prettier-config/-/prettier-config-1.1.0.tgz#0b669220b64ebcb7eb0909d967084f864d30cc9b"
   integrity sha512-cPazyD5+Yw3+n5W8BJK0gIIR+DZkJZvcXwyhCN3zvk61tllj4sqNyQzQptZylJYss6U1PIJPmg+xCZEus77xMQ==
 
-"@ivangabriele/singularity@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@ivangabriele/singularity/-/singularity-0.4.1.tgz#527b3243fea6b857f0fffcd1671021cd6a142679"
-  integrity sha512-UbsQ45tbybLr+Xchnb9LR+/CzeiMISqS0KhEWdR5R0mpBrBzJ0Bar1kNHvScWZHcGjUvptvA7b3e607yk0B/2Q==
+"@ivangabriele/singularity@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@ivangabriele/singularity/-/singularity-0.5.1.tgz#d4e62781691c49cd9ccab271e7068259265a4642"
+  integrity sha512-ZC+tfDt3Csg9czzUzuPtJauOAVCWDS23vPnKr7IHCLqTpppuZed0zeSbz4THfOOsPQWUWqzeJHAicAFF8G1pIw==
   dependencies:
     "@babel/runtime" "^7.15.4"
     "@fontsource/poppins" "^4.5.0"

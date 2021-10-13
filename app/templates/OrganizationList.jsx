@@ -1,16 +1,11 @@
-import { Table } from '@ivangabriele/singularity'
+import { Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 
+import AdminBox from '../atoms/AdminBox'
+import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
-
-const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-`
 
 const COLUMNS = [
   {
@@ -26,7 +21,7 @@ export default function OrganizationList() {
 
   const loadOrganizations = async () => {
     const res = await api.get('organizations')
-    if (res.data === null) {
+    if (res === null) {
       return
     }
 
@@ -42,10 +37,14 @@ export default function OrganizationList() {
   }, [])
 
   return (
-    <Box>
-      <Title>Organizations</Title>
+    <AdminBox>
+      <AdminHeader>
+        <Title>Organizations</Title>
+      </AdminHeader>
 
-      <Table columns={COLUMNS} data={organizations} />
-    </Box>
+      <Card>
+        <Table columns={COLUMNS} data={organizations} />
+      </Card>
+    </AdminBox>
   )
 }

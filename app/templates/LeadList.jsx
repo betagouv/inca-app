@@ -1,16 +1,11 @@
-import { Table } from '@ivangabriele/singularity'
+import { Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 
+import AdminBox from '../atoms/AdminBox'
+import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
-
-const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-`
 
 const COLUMNS = [
   {
@@ -38,7 +33,7 @@ export default function LeadList() {
 
   const loadLeads = async () => {
     const res = await api.get('leads')
-    if (res.data === null) {
+    if (res === null) {
       return
     }
 
@@ -54,10 +49,14 @@ export default function LeadList() {
   }, [])
 
   return (
-    <Box>
-      <Title>Porteurs</Title>
+    <AdminBox>
+      <AdminHeader>
+        <Title>Porteurs</Title>
+      </AdminHeader>
 
-      <Table columns={COLUMNS} data={leads} />
-    </Box>
+      <Card>
+        <Table columns={COLUMNS} data={leads} />
+      </Card>
+    </AdminBox>
   )
 }

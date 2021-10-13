@@ -1,16 +1,11 @@
-import { Table } from '@ivangabriele/singularity'
+import { Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 
+import AdminBox from '../atoms/AdminBox'
+import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
-
-const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-`
 
 const COLUMNS = [
   {
@@ -38,7 +33,7 @@ export default function ContributorList() {
 
   const loadContributors = async () => {
     const res = await api.get('contributors')
-    if (res.data === null) {
+    if (res === null) {
       return
     }
 
@@ -54,10 +49,14 @@ export default function ContributorList() {
   }, [])
 
   return (
-    <Box>
-      <Title>Contributeurs</Title>
+    <AdminBox>
+      <AdminHeader>
+        <Title>Contributeurs</Title>
+      </AdminHeader>
 
-      <Table columns={COLUMNS} data={contributors} />
-    </Box>
+      <Card>
+        <Table columns={COLUMNS} data={contributors} />
+      </Card>
+    </AdminBox>
   )
 }
