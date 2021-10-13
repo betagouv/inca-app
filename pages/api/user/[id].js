@@ -78,7 +78,7 @@ async function UserController(req, res) {
 
     case 'POST':
       try {
-        const newUserData = R.pick(['email', 'firstName', 'lastName', 'role'], req.body)
+        const newUserData = R.pick(['email', 'firstName', 'isActive', 'lastName', 'role'], req.body)
         newUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
 
         await req.db.user.create({
