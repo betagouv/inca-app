@@ -51,7 +51,7 @@ export default function ContributorList() {
   return (
     <AdminBox>
       <AdminHeader>
-        <Title>Contributeurs</Title>
+        <Title>Contributeur·rices</Title>
       </AdminHeader>
 
       <Card>

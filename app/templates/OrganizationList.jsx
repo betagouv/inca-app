@@ -39,7 +39,7 @@ export default function OrganizationList() {
   return (
     <AdminBox>
       <AdminHeader>
-        <Title>Organizations</Title>
+        <Title>Organisations</Title>
       </AdminHeader>
 
       <Card>

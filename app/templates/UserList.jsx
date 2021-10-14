@@ -87,7 +87,7 @@ export default function UserList() {
   return (
     <AdminBox>
       <AdminHeader>
-        <Title>Utilisateurs</Title>
+        <Title>Utilisateur·rices</Title>
 
         <Button onClick={() => goToUser('new')} size="small">
           Ajouter un utilisateur

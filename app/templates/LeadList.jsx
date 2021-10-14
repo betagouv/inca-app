@@ -51,7 +51,7 @@ export default function LeadList() {
   return (
     <AdminBox>
       <AdminHeader>
-        <Title>Porteurs</Title>
+        <Title>Porteur·ses</Title>
       </AdminHeader>
 
       <Card>

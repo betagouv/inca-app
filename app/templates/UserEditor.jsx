@@ -75,7 +75,7 @@ export default function UserEditor() {
   return (
     <AdminBox>
       <AdminHeader>
-        <Title>{isNew ? 'Ajout' : 'Modification'} d’utilisateur</Title>
+        <Title>{isNew ? 'Nouvel·le utilisateur·rice' : 'Édition d’utilisateur·rice'}</Title>
       </AdminHeader>
 
       <Card>
