@@ -3,9 +3,13 @@ import { useFormikContext } from 'formik'
 import PropTypes from 'prop-types'
 
 export default function Checkbox({ isDisabled, label, name }) {
-  const { handleChange, values } = useFormikContext()
+  const { setFieldValue, values } = useFormikContext()
 
   const isChecked = Boolean(values[name])
+
+  const updateFormikValues = event => {
+    setFieldValue(name, event.target.checked)
+  }
 
   return (
     <SingularityCheckbox
@@ -13,7 +17,7 @@ export default function Checkbox({ isDisabled, label, name }) {
       disabled={isDisabled}
       label={label}
       name={name}
-      onChange={handleChange}
+      onChange={updateFormikValues}
     />
   )
 }

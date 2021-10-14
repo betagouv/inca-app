@@ -79,10 +79,10 @@ export default function Menu() {
 
           <Link to="/projects">Projets</Link>
           <Link to="/organizations">Organisations</Link>
-          <Link to="/leads">Porteurs</Link>
-          <Link to="/contributors">Contributeurs</Link>
+          <Link to="/leads">Porteur·ses</Link>
+          <Link to="/contributors">Contributeur·rices</Link>
 
-          {user.role === ROLE.ADMINISTRATOR && <Link to="/users">Utilisateurs</Link>}
+          {user.role === ROLE.ADMINISTRATOR && <Link to="/users">Utilisateur·rices</Link>}
         </List>
       </div>
 

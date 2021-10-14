@@ -34,10 +34,10 @@ const BASE_COLUMNS = [
 ]
 
 export default function UserList() {
-  const api = useApi()
   const [users, setUsers] = useState([])
-  const isMounted = useIsMounted()
   const history = useHistory()
+  const api = useApi()
+  const isMounted = useIsMounted()
 
   const loadUsers = async () => {
     const maybeBody = await api.get('users')

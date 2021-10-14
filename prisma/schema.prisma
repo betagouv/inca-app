@@ -6,7 +6,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 enum Role {
@@ -19,60 +20,79 @@ enum Role {
 // Models
 
 model Contributor {
-  id          String    @id @default(cuid())
-  pipedriveId Int       @unique
+  id          String   @id @default(cuid())
+  pipedriveId Int      @unique
   firstName   String
   lastName    String
   category    String?
   position    String?
   email       String
   phone       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  // Relations
-  projects    Project[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  projects ProjectsContributors[]
 }
 
 model Lead {
-  id             String       @id @default(cuid())
-  pipedriveId    Int          @unique
-  firstName      String
-  lastName       String
-  category       String?
-  position       String?
-  email          String
-  phone          String?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  // Relations
+  id          String   @id @default(cuid())
+  pipedriveId Int      @unique
+  firstName   String
+  lastName    String
+  category    String?
+  position    String?
+  email       String
+  phone       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
   projects       Project[]
 }
 
 model Organization {
-  id          String    @id @default(cuid())
-  pipedriveId Int       @unique
+  id          String   @id @default(cuid())
+  pipedriveId Int      @unique
   name        String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  // Relations
-  leads       Lead[]
-  projects    Project[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leads    Lead[]
+  projects Project[]
 }
 
 model Project {
-  id             String        @id @default(cuid())
-  name           String
-  seats          Int
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  // Relations
-  contributors   Contributor[]
-  lead           Lead?         @relation(fields: [leadId], references: [id])
-  leadId         String?
-  organization   Organization  @relation(fields: [organizationId], references: [id])
+  id          String   @id @default(cuid())
+  name        String
+  need        String?
+  description String?
+  note        String?
+  hasStarted  Boolean  @default(false)
+  hasEnded    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contributors   ProjectsContributors[]
+  lead           Lead                   @relation(fields: [leadId], references: [id])
+  leadId         String
+  organization   Organization           @relation(fields: [organizationId], references: [id])
   organizationId String
+  user           User                   @relation(fields: [userId], references: [id])
+  userId         String
+}
+
+model ProjectsContributors {
+  isConfirmed Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contributor   Contributor @relation(fields: [contributorId], references: [id])
+  contributorId String
+  project       Project     @relation(fields: [projectId], references: [id])
+  projectId     String
+
+  @@id([contributorId, projectId])
 }
 
 model Token {
@@ -94,4 +114,6 @@ model User {
   isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Project Project[]
 }

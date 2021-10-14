@@ -55,8 +55,10 @@ const Field = styled.div`
 `
 
 const FormSchema = Yup.object().shape({
-  email: Yup.string().required(`Please enter your email address.`).email(`This email doesn't look well formatted.`),
-  password: Yup.string().required(`Please enter your password.`),
+  email: Yup.string()
+    .required(`Veuillez indiquer votre email.`)
+    .email(`Cet email ne semble pas correctement formatté.`),
+  password: Yup.string().required(`Veuillez indiquer votre mot de passe.`),
 })
 
 export default function LoginModal() {
@@ -73,7 +75,7 @@ export default function LoginModal() {
     const body = await api.post('auth/login', values)
     if (body === null) {
       setErrors({
-        email: 'Sorry, but something went wrong.',
+        email: 'Il semble que le serveur ait mal répondu.',
       })
       setSubmitting(false)
 
@@ -83,8 +85,8 @@ export default function LoginModal() {
     if (body.hasError) {
       if (body.code === 401) {
         setErrors({
-          email: 'Wrong email and/or password.',
-          password: 'Wrong email and/or password.',
+          email: 'Email et/ou mot de passe erronés.',
+          password: 'Email et/ou mot de passe erronés.',
         })
         setSubmitting(false)
 
@@ -93,7 +95,7 @@ export default function LoginModal() {
 
       if (body.code === 403) {
         setErrors({
-          email: 'Your account is not active.',
+          email: 'Votre compte n’est pas (encore) activé.',
         })
         setSubmitting(false)
 
@@ -125,10 +127,16 @@ export default function LoginModal() {
             validationSchema={FormSchema}
           >
             <Field>
-              <Form.Input autoComplete="email" label="Email" name="email" type="email" />
+              <Form.Input autoComplete="email" label="Email" name="email" noLabel type="email" />
             </Field>
             <Field>
-              <Form.Input autoComplete="current-password" label="Mot de passe" name="password" type="password" />
+              <Form.Input
+                autoComplete="current-password"
+                label="Mot de passe"
+                name="password"
+                noLabel
+                type="password"
+              />
             </Field>
 
             <Field>

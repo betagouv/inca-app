@@ -8,10 +8,10 @@ import Board from '../../app/templates/Board'
 import ContributorList from '../../app/templates/ContributorList'
 import LeadList from '../../app/templates/LeadList'
 import OrganizationList from '../../app/templates/OrganizationList'
+import ProjectEditor from '../../app/templates/ProjectEditor'
 import ProjectList from '../../app/templates/ProjectList'
 import UserEditor from '../../app/templates/UserEditor'
 import UserList from '../../app/templates/UserList'
-import { ROLE } from '../../common/constants'
 
 const Page = styled.div`
   display: flex;
@@ -61,30 +61,32 @@ export default function AdminSpaPage() {
                 <Route exact path="/">
                   <Board />
                 </Route>
+
                 <Route path="/contributors">
                   <ContributorList />
                 </Route>
+
                 <Route path="/leads">
                   <LeadList />
                 </Route>
+
                 <Route path="/organizations">
                   <OrganizationList />
                 </Route>
+
                 <Route path="/projects">
                   <ProjectList />
                 </Route>
+                <Route path="/project/:id">
+                  <ProjectEditor />
+                </Route>
 
-                {user.role === ROLE.ADMINISTRATOR && (
-                  <>
-                    <Route path="/user/:id">
-                      <UserEditor />
-                    </Route>
-
-                    <Route path="/users">
-                      <UserList />
-                    </Route>
-                  </>
-                )}
+                <Route path="/users">
+                  <UserList />
+                </Route>
+                <Route path="/user/:id">
+                  <UserEditor />
+                </Route>
 
                 <Route path="*">
                   <div>404</div>

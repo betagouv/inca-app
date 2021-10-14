@@ -1,6 +1,7 @@
 import { Button, Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
+import { useHistory } from 'react-router-dom'
 
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
@@ -14,8 +15,14 @@ const COLUMNS = [
     label: 'Nom',
   },
   {
-    key: 'seats',
-    label: 'Besoin',
+    key: 'hasStarted',
+    label: 'D',
+    type: 'boolean',
+  },
+  {
+    key: 'hasEnded',
+    label: 'T',
+    type: 'boolean',
   },
   {
     accent: 'secondary',
@@ -40,9 +47,10 @@ const COLUMNS = [
 ]
 
 export default function ProjectList() {
-  const api = useApi()
   const [projects, setProjects] = useState([])
+  const history = useHistory()
   const isMounted = useIsMounted()
+  const api = useApi()
 
   const loadProjects = async () => {
     const maybeBody = await api.get('projects')
@@ -61,12 +69,18 @@ export default function ProjectList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const goToProject = id => {
+    history.push(`/project/${id}`)
+  }
+
   return (
     <AdminBox>
       <AdminHeader>
         <Title>Projets</Title>
 
-        <Button size="small">Ajouter un projet</Button>
+        <Button onClick={() => goToProject('new')} size="small">
+          Ajouter un projet
+        </Button>
       </AdminHeader>
 
       <Card>

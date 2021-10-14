@@ -14,10 +14,44 @@ async function LeadsController(req, res) {
   }
 
   try {
-    const leads = await req.db.lead.findMany()
+    const { query: maybeQuery } = req.query
+
+    if (maybeQuery === undefined) {
+      const leads = await req.db.lead.findMany({
+        include: {
+          organization: true,
+        },
+      })
+
+      res.status(200).json({
+        data: leads,
+      })
+
+      return
+    }
+
+    const queryTerms = maybeQuery.split(/\s+/)
+    const orStatements = ['firstName', 'lastName']
+      .map(field =>
+        queryTerms.map(queryTerm => ({
+          [field]: {
+            contains: queryTerm,
+            mode: 'insensitive',
+          },
+        })),
+      )
+      .flat()
+    const filteredLeads = await req.db.lead.findMany({
+      include: {
+        organization: true,
+      },
+      where: {
+        OR: orStatements,
+      },
+    })
 
     res.status(200).json({
-      data: leads,
+      data: filteredLeads,
     })
   } catch (err) {
     handleError(err, ERROR_PATH, res)

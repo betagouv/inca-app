@@ -29,7 +29,7 @@ export default function UserEditor() {
 
   const loadUser = async () => {
     const maybeBody = await api.get(`user/${id}`)
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 

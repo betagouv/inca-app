@@ -1,4 +1,5 @@
 import { Button, Tasker } from '@ivangabriele/singularity'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 import AdminHeader from '../atoms/AdminHeader'
@@ -17,20 +18,28 @@ const StyledAdminHeader = styled(AdminHeader)`
 const Project = () => <Tasker.Task>123</Tasker.Task>
 
 export default function Board() {
+  const history = useHistory()
+
+  const goToProject = id => {
+    history.push(`/project/${id}`)
+  }
+
   return (
     <Box>
       <StyledAdminHeader>
         <Title>Mise en relation</Title>
 
-        <Button size="small">Ajouter un projet</Button>
+        <Button onClick={() => goToProject('new')} size="small">
+          Ajouter un projet
+        </Button>
       </StyledAdminHeader>
 
       <Tasker
         data={[
           { label: 'Nouveaux', tasks: [Project, Project] },
-          { label: 'Proposés', tasks: [Project] },
-          { label: 'Remplis', tasks: [Project] },
-          { label: 'Complétés', tasks: [Project] },
+          { label: 'Pris en charge', tasks: [Project] },
+          { label: 'Débloqués', tasks: [Project] },
+          { label: 'Terminés', tasks: [Project] },
         ]}
       />
     </Box>
