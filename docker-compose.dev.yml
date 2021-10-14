@@ -13,3 +13,6 @@ services:
       - postgre-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+
+volumes:
+  postgre-data:
