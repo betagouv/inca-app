@@ -37,10 +37,22 @@ export default function ProjectEditor() {
       return
     }
 
-    const userEditableData = R.pick(['name'])(maybeBody.data)
+    const projectData = maybeBody.data
+
+    const projectEditableData = R.pick(['description', 'hasEnded', 'hasStarted', 'name', 'need', 'note'])(projectData)
+
+    projectEditableData.leadAsOption = {
+      label: `${projectData.lead.firstName} ${projectData.lead.lastName} [${projectData.organization.name}]`,
+      value: projectData.leadId,
+    }
+
+    projectEditableData.userAsOption = {
+      label: `${projectData.user.firstName} ${projectData.user.lastName}`,
+      value: projectData.userId,
+    }
 
     if (isMounted()) {
-      setInitialValues(userEditableData)
+      setInitialValues(projectEditableData)
     }
   }
 
@@ -110,7 +122,7 @@ export default function ProjectEditor() {
   }, [])
 
   const updateProjectAndGoBackToProjectList = async (values, { setErrors, setSubmitting }) => {
-    const projectData = R.pick(['hasEnded', 'hasStarted', 'name'])(values)
+    const projectData = R.pick(['description', 'hasEnded', 'hasStarted', 'name', 'need', 'note'])(values)
     projectData.leadId = values.leadAsOption.value
     projectData.organizationId = values.leadAsOption.organizationId
     projectData.userId = values.userAsOption.value
@@ -175,6 +187,18 @@ export default function ProjectEditor() {
 
           <Field>
             <Form.Select label="Chargé·e de projet" name="userAsOption" options={usersAsOptions} />
+          </Field>
+
+          <Field>
+            <Form.Textarea label="Description" name="description" />
+          </Field>
+
+          <Field>
+            <Form.Textarea label="Besoin" name="need" />
+          </Field>
+
+          <Field>
+            <Form.Textarea label="Notes" name="note" />
           </Field>
 
           <Field>

@@ -7,6 +7,7 @@ import Checkbox from './Checkbox'
 import Input from './Input'
 import Select from './Select'
 import Submit from './Submit'
+import Textarea from './Textarea'
 
 const StyledForm = styled(FormikForm)`
   display: flex;
@@ -50,4 +51,5 @@ export default Object.assign(Form, {
   Input,
   Select,
   Submit,
+  Textarea,
 })

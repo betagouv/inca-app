@@ -10,6 +10,13 @@ generator client {
   previewFeatures = ["fullTextSearch"]
 }
 
+enum ProjectContributorState {
+  ASSIGNED
+  CONTACTED
+  REFUSED
+  VALIDATED
+}
+
 enum Role {
   ADMINISTRATOR
   MANAGER
@@ -83,9 +90,9 @@ model Project {
 }
 
 model ProjectsContributors {
-  isConfirmed Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  state     ProjectContributorState
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
 
   contributor   Contributor @relation(fields: [contributorId], references: [id])
   contributorId String

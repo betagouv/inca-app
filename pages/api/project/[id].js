@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs'
 import * as R from 'ramda'
 
 import handleError from '../../../api/helpers/handleError'
@@ -7,10 +6,7 @@ import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
 import { ROLE } from '../../../common/constants'
 
-const BCRYPT_SALT_WORK_FACTOR = 10
 const ERROR_PATH = 'pages/api/ProjectController()'
-
-const excludePassword = R.omit(['password'])
 
 async function ProjectController(req, res) {
   if (!['GET', 'PATCH', 'POST'].includes(req.method)) {
@@ -23,22 +19,22 @@ async function ProjectController(req, res) {
   switch (req.method) {
     case 'GET':
       try {
-        const maybeUser = await req.db.user.findUnique({
+        const maybeProject = await req.db.project.findUnique({
+          include: {
+            lead: true,
+            organization: true,
+            user: true,
+          },
           where: {
             id: req.query.id,
           },
         })
-        if (maybeUser === null) {
+        if (maybeProject === null) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
-        // TODO Replace programatically user password exclusion in API by a Prisma mechanism as soon as available.
-        // Prisma field exclusion is still a feature request in progress:
-        // https://github.com/prisma/prisma/issues/7380
-        const userWithoutPassword = excludePassword(maybeUser)
-
         res.status(200).json({
-          data: userWithoutPassword,
+          data: maybeProject,
         })
       } catch (err) {
         handleError(err, ERROR_PATH, res)
@@ -48,29 +44,27 @@ async function ProjectController(req, res) {
 
     case 'PATCH':
       try {
-        const maybeUser = await req.db.user.findUnique({
+        const maybeProject = await req.db.project.findUnique({
           where: {
             id: req.query.id,
           },
         })
-        if (maybeUser === null) {
+        if (maybeProject === null) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
-        const updatedUserData = R.pick(['email', 'firstName', 'isActive', 'lastName', 'role'], req.body)
-        if (req.body.password !== undefined) {
-          updatedUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
-        }
-        const updatedUser = await req.db.user.update({
-          data: updatedUserData,
+        const updatedProjectData = R.pick(
+          ['description', 'hasEnded', 'hasStarted', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
+          req.body,
+        )
+        await req.db.project.update({
+          data: updatedProjectData,
           where: {
             id: req.query.id,
           },
         })
 
-        res.status(200).json({
-          data: updatedUser,
-        })
+        res.status(200).json({})
       } catch (err) {
         handleError(err, ERROR_PATH, res)
       }
@@ -80,7 +74,7 @@ async function ProjectController(req, res) {
     case 'POST':
       try {
         const newProjectData = R.pick(
-          ['hasEnded', 'hasStarted', 'leadId', 'name', 'organizationId', 'userId'],
+          ['description', 'hasEnded', 'hasStarted', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
           req.body,
         )
 

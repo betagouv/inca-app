@@ -9,7 +9,7 @@ import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
 
-const COLUMNS = [
+const BASE_COLUMNS = [
   {
     key: 'name',
     label: 'Nom',
@@ -23,26 +23,6 @@ const COLUMNS = [
     key: 'hasEnded',
     label: 'T',
     type: 'boolean',
-  },
-  {
-    accent: 'secondary',
-
-    // eslint-disable-next-line no-alert
-    action: id => window.alert(`Edit ${id}`),
-
-    Icon: Edit,
-    label: 'Edit user',
-    type: 'action',
-  },
-  {
-    accent: 'danger',
-
-    // eslint-disable-next-line no-alert
-    action: id => window.alert(`Delete ${id}`),
-
-    Icon: Trash,
-    label: 'Delete user',
-    type: 'action',
   },
 ]
 
@@ -73,6 +53,30 @@ export default function ProjectList() {
     history.push(`/project/${id}`)
   }
 
+  const columns = [
+    ...BASE_COLUMNS,
+    {
+      accent: 'secondary',
+
+      // eslint-disable-next-line no-alert
+      action: goToProject,
+
+      Icon: () => <Edit />,
+      label: 'Edit project',
+      type: 'action',
+    },
+    {
+      accent: 'danger',
+
+      // eslint-disable-next-line no-alert
+      action: id => window.alert(`Delete ${id}`),
+
+      Icon: Trash,
+      label: 'Delete project',
+      type: 'action',
+    },
+  ]
+
   return (
     <AdminBox>
       <AdminHeader>
@@ -84,7 +88,7 @@ export default function ProjectList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={COLUMNS} data={projects} />
+        <Table columns={columns} data={projects} />
       </Card>
     </AdminBox>
   )

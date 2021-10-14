@@ -8,8 +8,6 @@ export default function Select({ helper, isAsync, isDisabled, isMulti, label, na
 
   const hasError = (touched[name] !== undefined || submitCount > 0) && Boolean(errors[name])
   const maybeError = hasError ? errors[name] : null
-  const value = values[name]
-  const valueOption = !isAsync && value !== undefined ? R.find(R.propEq('value', value))(options) : null
 
   const updateFormikValues = option => {
     setFieldValue(name, option)
@@ -18,7 +16,7 @@ export default function Select({ helper, isAsync, isDisabled, isMulti, label, na
   return (
     <SingularitySelect
       cacheOptions={isAsync}
-      defaultValue={valueOption}
+      defaultValue={values[name]}
       disabled={isDisabled}
       error={maybeError}
       helper={helper}
