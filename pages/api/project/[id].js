@@ -5,6 +5,7 @@ import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
+import { ROLE } from '../../../common/constants'
 
 const BCRYPT_SALT_WORK_FACTOR = 10
 const ERROR_PATH = 'pages/api/ProjectController()'
@@ -94,4 +95,4 @@ async function ProjectController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(ProjectController))
+export default withPrisma(withAuthentication(ProjectController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))
