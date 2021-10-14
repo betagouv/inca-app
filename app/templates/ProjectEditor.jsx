@@ -130,7 +130,7 @@ export default function ProjectEditor() {
       return
     }
 
-    history.push('/users')
+    history.push('/projects')
   }
 
   if (isLoading || usersAsOptions === null) {
