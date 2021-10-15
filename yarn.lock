@@ -527,10 +527,10 @@
   resolved "https://registry.yarnpkg.com/@ivangabriele/prettier-config/-/prettier-config-1.1.0.tgz#0b669220b64ebcb7eb0909d967084f864d30cc9b"
   integrity sha512-cPazyD5+Yw3+n5W8BJK0gIIR+DZkJZvcXwyhCN3zvk61tllj4sqNyQzQptZylJYss6U1PIJPmg+xCZEus77xMQ==
 
-"@ivangabriele/singularity@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@ivangabriele/singularity/-/singularity-0.9.0.tgz#d664a69da3c48d3894d6188e0872b2142137dba0"
-  integrity sha512-nXnE7Co9QMHuMwwvYJ10Ff1WxpA0XB7qDtt2wLSMAMcUcBpZmv+JsAaLmHG9qjkIaRA73ahHfsmXQskekHwUIQ==
+"@ivangabriele/singularity@0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@ivangabriele/singularity/-/singularity-0.11.0.tgz#782b92814639278be7952ebf955f8565cf764718"
+  integrity sha512-qmqlPED0eFTpXG3JSUBWX3xF499ukWPnD7cJRjI2ctIWnRTNJMaOybShVAKaOuFwrZomsZRtQvjBkYtppBWb7w==
   dependencies:
     "@babel/runtime" "^7.15.4"
     "@fontsource/poppins" "^4.5.0"
@@ -541,6 +541,7 @@
     react-paginate "^7.1.3"
     react-select "^5.1.0"
     react-table "^7.7.0"
+    react-tooltip "^4.2.21"
     styled-components "^5.3.1"
 
 "@jest/console@^27.2.5":
@@ -4920,6 +4921,14 @@ react-table@^7.7.0:
   resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
   integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==
 
+react-tooltip@^4.2.21:
+  version "4.2.21"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-4.2.21.tgz#840123ed86cf33d50ddde8ec8813b2960bfded7f"
+  integrity sha512-zSLprMymBDowknr0KVDiJ05IjZn9mQhhg4PRsqln0OZtURAJ1snt1xi5daZfagsh6vfsziZrc9pErPTDY1ACig==
+  dependencies:
+    prop-types "^15.7.2"
+    uuid "^7.0.3"
+
 react-transition-group@^4.3.0:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
@@ -5829,6 +5838,11 @@ util@^0.11.0:
   integrity sha512-HShAsny+zS2TZfaXxD9tYj4HQGlBezXZMZuM/S5PKLLoZkShZiGk9o5CzukI1LVHZvjdvZ2Sj1aW/Ndn2NB/HQ==
   dependencies:
     inherits "2.0.3"
+
+uuid@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
+  integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"

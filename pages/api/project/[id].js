@@ -36,6 +36,8 @@ async function ProjectController(req, res) {
         })
         if (maybeProject === null) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
+
+          return
         }
 
         res.status(200).json({
@@ -93,6 +95,8 @@ async function ProjectController(req, res) {
         })
         if (maybeProject === null) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
+
+          return
         }
 
         if (req.body.contributorIds !== undefined && maybeProject.contributors.length > 0) {
@@ -136,7 +140,7 @@ async function ProjectController(req, res) {
           },
         })
 
-        res.status(200).json({})
+        res.status(202).json({})
       } catch (err) {
         handleError(err, ERROR_PATH, res)
       }
@@ -152,6 +156,8 @@ async function ProjectController(req, res) {
         })
         if (maybeProject === null) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
+
+          return
         }
 
         await req.db.project.delete({

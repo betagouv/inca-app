@@ -1,10 +1,12 @@
 import { Button, Table, Textarea } from '@ivangabriele/singularity'
 import debounce from 'lodash.debounce'
+import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { Square } from 'react-feather'
+import { Send, UserCheck, UserX } from 'react-feather'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { PROJECT_CONTRIBUTOR_STATE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
 import Card from '../atoms/Card'
@@ -24,6 +26,14 @@ const BASE_COLUMNS = [
   },
 ]
 
+const ToggleIconOff = styled.div`
+  color: ${p => p.theme.color.secondary.default};
+  opacity: 0.65;
+`
+const ToggleIconOn = styled.div`
+  color: ${p => p.theme.color.primary.default};
+`
+
 const NoteTextarea = styled(Textarea)`
   .Textarea {
     min-height: 20rem;
@@ -33,12 +43,12 @@ const NoteTextarea = styled(Textarea)`
 export default function ProjectLinker() {
   const { id } = useParams()
   const [project, setProject] = useState(null)
-  const [contributors, setContributors] = useState(null)
+  const [contributorLinks, setContributorLinks] = useState(null)
   const history = useHistory()
   const isMounted = useIsMounted()
   const api = useApi()
 
-  const isLoading = project === null || contributors === null
+  const isLoading = project === null || contributorLinks === null
 
   const loadProject = async () => {
     const maybeBody = await api.get(`project/${id}`)
@@ -46,11 +56,20 @@ export default function ProjectLinker() {
       return
     }
 
-    const contributors = maybeBody.data.contributors.map(({ contributor }) => contributor)
+    const contributorLinks = R.pipe(
+      R.map(({ contributor, state }) => ({
+        ...contributor,
+        isContacted: state === PROJECT_CONTRIBUTOR_STATE.CONTACTED,
+        isRefused: state === PROJECT_CONTRIBUTOR_STATE.REFUSED,
+        isValidated: state === PROJECT_CONTRIBUTOR_STATE.VALIDATED,
+        state,
+      })),
+      R.sortBy(R.prop('lastName')),
+    )(maybeBody.data.contributors)
 
     if (isMounted()) {
       setProject(maybeBody.data)
-      setContributors(contributors)
+      setContributorLinks(contributorLinks)
     }
   }
 
@@ -64,20 +83,49 @@ export default function ProjectLinker() {
     history.push(`/project/${id}`)
   }
 
-  const updateNote = debounce(async event => {
+  const updateProjectNote = debounce(async event => {
     await api.patch(`project/${id}`, { note: event.target.value })
   }, 250)
+
+  const updateProjectContributorState = async (contributorId, state) => {
+    const contributorLink = R.find(R.propEq('id', contributorId))(contributorLinks)
+    const newState = state !== contributorLink.state ? state : PROJECT_CONTRIBUTOR_STATE.ASSIGNED
+
+    await api.patch(`project/${id}/${contributorId}`, {
+      state: newState,
+    })
+
+    await loadProject()
+  }
 
   const columns = [
     ...BASE_COLUMNS,
     {
-      accent: 'secondary',
-
-      action: () => undefined,
-
-      Icon: Square,
-      label: 'Edit project',
-      type: 'action',
+      action: id => updateProjectContributorState(id, PROJECT_CONTRIBUTOR_STATE.CONTACTED),
+      IconOff: () => <ToggleIconOff as={Send} />,
+      IconOn: () => <ToggleIconOn as={Send} />,
+      key: 'isContacted',
+      labelOff: 'Marquer comme contacté·e',
+      labelOn: 'Annuler',
+      type: 'toggle',
+    },
+    {
+      action: id => updateProjectContributorState(id, PROJECT_CONTRIBUTOR_STATE.REFUSED),
+      IconOff: () => <ToggleIconOff as={UserX} />,
+      IconOn: () => <ToggleIconOn as={UserX} />,
+      key: 'isRefused',
+      labelOff: 'Marquer comme refusé·e',
+      labelOn: 'Annuler',
+      type: 'toggle',
+    },
+    {
+      action: id => updateProjectContributorState(id, PROJECT_CONTRIBUTOR_STATE.VALIDATED),
+      IconOff: () => <ToggleIconOff as={UserCheck} />,
+      IconOn: () => <ToggleIconOn as={UserCheck} />,
+      key: 'isValidated',
+      labelOff: 'Marquer comme accepté·e',
+      labelOn: 'Annuler',
+      type: 'toggle',
     },
   ]
 
@@ -95,12 +143,12 @@ export default function ProjectLinker() {
 
       <Card>
         <Subtitle>Contributeur·rices</Subtitle>
-        <Table columns={columns} data={contributors} />
+        <Table columns={columns} data={contributorLinks} />
       </Card>
 
       <Card>
         <Subtitle>Notes</Subtitle>
-        <NoteTextarea defaultValue={project.note} name="note" onChange={updateNote} />
+        <NoteTextarea defaultValue={project.note} name="note" onChange={updateProjectNote} />
       </Card>
     </AdminBox>
   )
