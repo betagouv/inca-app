@@ -9,18 +9,22 @@ import useIsMounted from '../hooks/useIsMounted'
 
 const COLUMNS = [
   {
+    isSortable: true,
     key: 'firstName',
     label: 'Prénom',
   },
   {
+    isSortable: true,
     key: 'lastName',
     label: 'Nom',
   },
   {
+    isSortable: true,
     key: 'email',
     label: 'Email',
   },
   {
+    isSortable: true,
     key: 'phone',
     label: 'Téléphone',
   },
@@ -55,7 +59,7 @@ export default function ContributorList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={COLUMNS} data={contributors} />
+        <Table columns={COLUMNS} data={contributors} defaultSortedKey="lastName" />
       </Card>
     </AdminBox>
   )

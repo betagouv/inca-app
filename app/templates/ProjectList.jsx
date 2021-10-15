@@ -13,19 +13,10 @@ import useIsMounted from '../hooks/useIsMounted'
 
 const BASE_COLUMNS = [
   {
+    isSortable: true,
     key: 'name',
     label: 'Nom',
   },
-  // {
-  //   key: 'hasStarted',
-  //   label: 'D',
-  //   type: 'boolean',
-  // },
-  // {
-  //   key: 'hasEnded',
-  //   label: 'T',
-  //   type: 'boolean',
-  // },
 ]
 
 export default function ProjectList() {
@@ -115,7 +106,7 @@ export default function ProjectList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={columns} data={projects} />
+        <Table columns={columns} data={projects} defaultSortedKey="name" />
       </Card>
     </AdminBox>
   )

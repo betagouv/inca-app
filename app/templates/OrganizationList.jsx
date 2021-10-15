@@ -9,6 +9,7 @@ import useIsMounted from '../hooks/useIsMounted'
 
 const COLUMNS = [
   {
+    isSortable: true,
     key: 'name',
     label: 'Dénomination',
   },
@@ -43,7 +44,7 @@ export default function OrganizationList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={COLUMNS} data={organizations} />
+        <Table columns={COLUMNS} data={organizations} defaultSortedKey="name" />
       </Card>
     </AdminBox>
   )

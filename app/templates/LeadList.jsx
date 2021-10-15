@@ -9,22 +9,27 @@ import useIsMounted from '../hooks/useIsMounted'
 
 const COLUMNS = [
   {
+    isSortable: true,
     key: 'firstName',
     label: 'Prénom',
   },
   {
+    isSortable: true,
     key: 'lastName',
     label: 'Nom',
   },
   {
+    isSortable: true,
     key: 'organization.name',
     label: 'Organisation',
   },
   {
+    isSortable: true,
     key: 'email',
     label: 'Email',
   },
   {
+    isSortable: true,
     key: 'phone',
     label: 'Téléphone',
   },
@@ -59,7 +64,7 @@ export default function LeadList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={COLUMNS} data={leads} />
+        <Table columns={COLUMNS} data={leads} defaultSortedKey="lastName" />
       </Card>
     </AdminBox>
   )

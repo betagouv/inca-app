@@ -11,18 +11,22 @@ import useIsMounted from '../hooks/useIsMounted'
 
 const BASE_COLUMNS = [
   {
+    isSortable: true,
     key: 'firstName',
     label: 'Prénom',
   },
   {
+    isSortable: true,
     key: 'lastName',
     label: 'Nom',
   },
   {
+    isSortable: true,
     key: 'email',
     label: 'Email',
   },
   {
+    isSortable: true,
     key: 'role',
     label: 'Rôle',
   },
@@ -95,7 +99,7 @@ export default function UserList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={columns} data={users} />
+        <Table columns={columns} data={users} defaultSortedKey="lastName" />
       </Card>
     </AdminBox>
   )
