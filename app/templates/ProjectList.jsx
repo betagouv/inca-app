@@ -1,12 +1,14 @@
 import { Button, Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
-import { Edit, Trash } from 'react-feather'
+import { Edit, Users, Trash } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
+import { ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
+import useAuth from '../hooks/useAuth'
 import useIsMounted from '../hooks/useIsMounted'
 
 const BASE_COLUMNS = [
@@ -14,16 +16,16 @@ const BASE_COLUMNS = [
     key: 'name',
     label: 'Nom',
   },
-  {
-    key: 'hasStarted',
-    label: 'D',
-    type: 'boolean',
-  },
-  {
-    key: 'hasEnded',
-    label: 'T',
-    type: 'boolean',
-  },
+  // {
+  //   key: 'hasStarted',
+  //   label: 'D',
+  //   type: 'boolean',
+  // },
+  // {
+  //   key: 'hasEnded',
+  //   label: 'T',
+  //   type: 'boolean',
+  // },
 ]
 
 export default function ProjectList() {
@@ -31,10 +33,11 @@ export default function ProjectList() {
   const history = useHistory()
   const isMounted = useIsMounted()
   const api = useApi()
+  const { user } = useAuth()
 
   const loadProjects = async () => {
     const maybeBody = await api.get('projects')
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
@@ -49,8 +52,21 @@ export default function ProjectList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const goToProject = id => {
+  const goToProjectLinker = id => {
+    history.push(`/project/manager/${id}`)
+  }
+
+  const goToProjectEditor = id => {
     history.push(`/project/${id}`)
+  }
+
+  const deleteProject = async id => {
+    const maybeBody = await api.delete(`project/${id}`)
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    await loadProjects()
   }
 
   const columns = [
@@ -59,30 +75,41 @@ export default function ProjectList() {
       accent: 'secondary',
 
       // eslint-disable-next-line no-alert
-      action: goToProject,
+      action: goToProjectLinker,
 
-      Icon: () => <Edit />,
-      label: 'Edit project',
+      Icon: Users,
+      label: 'project',
       type: 'action',
     },
     {
+      accent: 'secondary',
+
+      action: goToProjectEditor,
+
+      Icon: Edit,
+      label: 'Edit project',
+      type: 'action',
+    },
+  ]
+
+  if (user.role === ROLE.ADMINISTRATOR) {
+    columns.push({
       accent: 'danger',
 
-      // eslint-disable-next-line no-alert
-      action: id => window.alert(`Delete ${id}`),
+      action: deleteProject,
 
       Icon: Trash,
       label: 'Delete project',
       type: 'action',
-    },
-  ]
+    })
+  }
 
   return (
     <AdminBox>
       <AdminHeader>
         <Title>Projets</Title>
 
-        <Button onClick={() => goToProject('new')} size="small">
+        <Button onClick={() => goToProjectEditor('new')} size="small">
           Ajouter un projet
         </Button>
       </AdminHeader>

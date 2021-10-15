@@ -21,7 +21,7 @@ export default function OrganizationList() {
 
   const loadOrganizations = async () => {
     const maybeBody = await api.get('organizations')
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 

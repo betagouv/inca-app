@@ -33,7 +33,7 @@ export default function ContributorList() {
 
   const loadContributors = async () => {
     const maybeBody = await api.get('contributors')
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 

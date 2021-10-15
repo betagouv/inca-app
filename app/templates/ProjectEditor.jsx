@@ -21,7 +21,7 @@ const FormSchema = Yup.object().shape({
 export default function ProjectEditor() {
   const { id } = useParams()
   const [initialValues, setInitialValues] = useState(null)
-  // const [contributorsAsOptions, setContributorsAsOptions] = useState(null)
+  const [contributorsAsOptions, setContributorsAsOptions] = useState(null)
   const [leadsAsOptions, setLeadsAsOptions] = useState(null)
   const [usersAsOptions, setUsersAsOptions] = useState(null)
   const history = useHistory()
@@ -33,13 +33,18 @@ export default function ProjectEditor() {
 
   const loadProject = async () => {
     const maybeBody = await api.get(`project/${id}`)
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
     const projectData = maybeBody.data
 
     const projectEditableData = R.pick(['description', 'hasEnded', 'hasStarted', 'name', 'need', 'note'])(projectData)
+
+    projectEditableData.contributorsAsOptions = projectData.contributors.map(({ contributor }) => ({
+      label: `${contributor.firstName} ${contributor.lastName}`,
+      value: contributor.id,
+    }))
 
     projectEditableData.leadAsOption = {
       label: `${projectData.lead.firstName} ${projectData.lead.lastName} [${projectData.organization.name}]`,
@@ -56,25 +61,25 @@ export default function ProjectEditor() {
     }
   }
 
-  // const loadContributorsAsOptions = async () => {
-  //   const maybeBody = await api.get(`contributors`)
-  //   if (maybeBody === null) {
-  //     return
-  //   }
+  const loadContributorsAsOptions = async () => {
+    const maybeBody = await api.get(`contributors`)
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
 
-  //   const contributorsAsOptions = maybeBody.data.map(({ firstName, id, lastName }) => ({
-  //     label: `${firstName} ${lastName}`,
-  //     value: id,
-  //   }))
+    const contributorsAsOptions = maybeBody.data.map(({ firstName, id, lastName }) => ({
+      label: `${firstName} ${lastName}`,
+      value: id,
+    }))
 
-  //   if (isMounted()) {
-  //     setContributorsAsOptions(contributorsAsOptions)
-  //   }
-  // }
+    if (isMounted()) {
+      setContributorsAsOptions(contributorsAsOptions)
+    }
+  }
 
   const loadLeadsAsOptions = async () => {
     const maybeBody = await api.get(`leads`)
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
@@ -91,7 +96,7 @@ export default function ProjectEditor() {
 
   const loadUsersAsOptions = async () => {
     const maybeBody = await api.get(`users`)
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
@@ -106,7 +111,7 @@ export default function ProjectEditor() {
   }
 
   useEffect(() => {
-    // loadContributorsAsOptions()
+    loadContributorsAsOptions()
     loadLeadsAsOptions()
     loadUsersAsOptions()
 
@@ -127,8 +132,8 @@ export default function ProjectEditor() {
     projectData.organizationId = values.leadAsOption.organizationId
     projectData.userId = values.userAsOption.value
 
-    // projectData.suggestedContributorIds = values.suggestedContributorsAsOptions.map(({ value }) => value)
-    // projectData.confirmedContributorIds = values.confirmedContributorsAsOptions.map(({ value }) => value)
+    projectData.contributorIds =
+      values.contributorsAsOptions !== undefined ? values.contributorsAsOptions.map(({ value }) => value) : []
 
     const maybeBody = isNew
       ? await api.post(`project/${id}`, projectData)
@@ -145,7 +150,7 @@ export default function ProjectEditor() {
     history.push('/projects')
   }
 
-  if (isLoading || usersAsOptions === null) {
+  if (isLoading) {
     return 'Loading...'
   }
 
@@ -167,23 +172,14 @@ export default function ProjectEditor() {
             <Form.Select label="Porteur·se" name="leadAsOption" options={leadsAsOptions} />
           </Field>
 
-          {/* <Field>
+          <Field>
             <Form.Select
               isMulti
               label="Contributeur·rices proposé·es"
-              name="suggestedContributorsAsOptions"
+              name="contributorsAsOptions"
               options={contributorsAsOptions}
             />
-          </Field> */}
-
-          {/* <Field>
-            <Form.Select
-              isMulti
-              label="Contributeur·rices confirmé·es"
-              name="confirmedContributorsAsOptions"
-              options={contributorsAsOptions}
-            />
-          </Field> */}
+          </Field>
 
           <Field>
             <Form.Select label="Chargé·e de projet" name="userAsOption" options={usersAsOptions} />
@@ -195,18 +191,6 @@ export default function ProjectEditor() {
 
           <Field>
             <Form.Textarea label="Besoin" name="need" />
-          </Field>
-
-          <Field>
-            <Form.Textarea label="Notes" name="note" />
-          </Field>
-
-          <Field>
-            <Form.Checkbox label="Projet débloqué" name="hasStarted" />
-          </Field>
-
-          <Field>
-            <Form.Checkbox label="Projet terminé" name="hasEnded" />
           </Field>
 
           <Field>

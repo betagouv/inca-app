@@ -1,7 +1,6 @@
 import { Select as SingularitySelect } from '@ivangabriele/singularity'
 import { useFormikContext } from 'formik'
 import PropTypes from 'prop-types'
-import * as R from 'ramda'
 
 export default function Select({ helper, isAsync, isDisabled, isMulti, label, name, noLabel, options }) {
   const { errors, setFieldValue, submitCount, touched, values } = useFormikContext()

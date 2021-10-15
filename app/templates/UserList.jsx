@@ -41,7 +41,7 @@ export default function UserList() {
 
   const loadUsers = async () => {
     const maybeBody = await api.get('users')
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 

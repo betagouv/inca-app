@@ -9,6 +9,7 @@ import ContributorList from '../../app/templates/ContributorList'
 import LeadList from '../../app/templates/LeadList'
 import OrganizationList from '../../app/templates/OrganizationList'
 import ProjectEditor from '../../app/templates/ProjectEditor'
+import ProjectLinker from '../../app/templates/ProjectLinker'
 import ProjectList from '../../app/templates/ProjectList'
 import UserEditor from '../../app/templates/UserEditor'
 import UserList from '../../app/templates/UserList'
@@ -76,6 +77,9 @@ export default function AdminSpaPage() {
 
                 <Route path="/projects">
                   <ProjectList />
+                </Route>
+                <Route path="/project/manager/:id">
+                  <ProjectLinker />
                 </Route>
                 <Route path="/project/:id">
                   <ProjectEditor />

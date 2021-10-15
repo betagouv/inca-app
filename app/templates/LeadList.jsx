@@ -33,7 +33,7 @@ export default function LeadList() {
 
   const loadLeads = async () => {
     const maybeBody = await api.get('leads')
-    if (maybeBody === null) {
+    if (maybeBody === null || maybeBody.hasError) {
       return
     }
 

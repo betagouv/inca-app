@@ -28,7 +28,7 @@ enum Role {
 
 model Contributor {
   id          String   @id @default(cuid())
-  pipedriveId Int      @unique
+  pipedriveId Int
   firstName   String
   lastName    String
   category    String?
@@ -38,7 +38,7 @@ model Contributor {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  projects ProjectsContributors[]
+  projects ContributorsOnProjects[]
 }
 
 model Lead {
@@ -80,17 +80,17 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  contributors   ProjectsContributors[]
-  lead           Lead                   @relation(fields: [leadId], references: [id])
+  contributors   ContributorsOnProjects[]
+  lead           Lead                     @relation(fields: [leadId], references: [id])
   leadId         String
-  organization   Organization           @relation(fields: [organizationId], references: [id])
+  organization   Organization             @relation(fields: [organizationId], references: [id])
   organizationId String
-  user           User                   @relation(fields: [userId], references: [id])
+  user           User                     @relation(fields: [userId], references: [id])
   userId         String
 }
 
-model ProjectsContributors {
-  state     ProjectContributorState
+model ContributorsOnProjects {
+  state     ProjectContributorState @default(ASSIGNED)
   createdAt DateTime                @default(now())
   updatedAt DateTime                @updatedAt
 
