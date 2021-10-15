@@ -131,6 +131,12 @@ async function PipedriveSynchronizeController(req, res) {
               leadData.organization = {
                 create: organization,
               }
+            } else {
+              leadData.organization = {
+                connect: {
+                  pipedriveId: organization.pipedriveId,
+                },
+              }
             }
 
             await req.db.lead.create({

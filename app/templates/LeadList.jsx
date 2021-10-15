@@ -17,6 +17,10 @@ const COLUMNS = [
     label: 'Nom',
   },
   {
+    key: 'organization.name',
+    label: 'Organisation',
+  },
+  {
     key: 'email',
     label: 'Email',
   },
