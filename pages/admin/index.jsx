@@ -4,10 +4,10 @@ import styled from 'styled-components'
 import useAuth from '../../app/hooks/useAuth'
 import LoginModal from '../../app/organisms/LoginModal'
 import Menu from '../../app/organisms/Menu'
-import Board from '../../app/templates/Board'
 import ContributorList from '../../app/templates/ContributorList'
 import LeadList from '../../app/templates/LeadList'
 import OrganizationList from '../../app/templates/OrganizationList'
+import ProjectBoard from '../../app/templates/ProjectBoard'
 import ProjectEditor from '../../app/templates/ProjectEditor'
 import ProjectLinker from '../../app/templates/ProjectLinker'
 import ProjectList from '../../app/templates/ProjectList'
@@ -60,7 +60,7 @@ export default function AdminSpaPage() {
             <Main>
               <Switch>
                 <Route exact path="/">
-                  <Board />
+                  <ProjectBoard />
                 </Route>
 
                 <Route path="/contributors">
@@ -78,7 +78,7 @@ export default function AdminSpaPage() {
                 <Route path="/projects">
                   <ProjectList />
                 </Route>
-                <Route path="/project/manager/:id">
+                <Route path="/project/linker/:id">
                   <ProjectLinker />
                 </Route>
                 <Route path="/project/:id">

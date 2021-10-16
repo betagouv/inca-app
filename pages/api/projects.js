@@ -14,7 +14,18 @@ async function OrganizationsController(req, res) {
   }
 
   try {
-    const projects = await req.db.project.findMany()
+    const projects = await req.db.project.findMany({
+      include: {
+        contributors: {
+          include: {
+            contributor: true,
+          },
+        },
+        lead: true,
+        organization: true,
+        user: true,
+      },
+    })
 
     res.status(200).json({
       data: projects,

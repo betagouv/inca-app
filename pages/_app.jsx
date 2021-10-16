@@ -18,6 +18,7 @@ const GlobalStyleCustom = createGlobalStyle`
 
   body {
     color: #495057;
+    line-height: 1.5;
   }
 
   body,

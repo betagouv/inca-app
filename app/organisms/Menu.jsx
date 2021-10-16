@@ -75,7 +75,7 @@ export default function Menu() {
         <Brand>Lab Agora</Brand>
 
         <List>
-          <Link to="/">Mise en relation</Link>
+          <Link to="/">Suivi des projets</Link>
 
           <Link to="/projects">Projets</Link>
           <Link to="/organizations">Organisations</Link>

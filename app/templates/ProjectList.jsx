@@ -44,7 +44,7 @@ export default function ProjectList() {
   }, [])
 
   const goToProjectLinker = id => {
-    history.push(`/project/manager/${id}`)
+    history.push(`/project/linker/${id}`)
   }
 
   const goToProjectEditor = id => {
