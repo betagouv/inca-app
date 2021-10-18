@@ -41,10 +41,13 @@ export default function ProjectEditor() {
 
     const projectEditableData = R.pick(['description', 'hasEnded', 'hasStarted', 'name', 'need', 'note'])(projectData)
 
-    projectEditableData.contributorsAsOptions = projectData.contributors.map(({ contributor }) => ({
-      label: `${contributor.firstName} ${contributor.lastName}`,
-      value: contributor.id,
-    }))
+    projectEditableData.contributorsAsOptions = R.pipe(
+      R.sortBy(R.path(['contributor', 'lastName'])),
+      R.map(({ contributor }) => ({
+        label: `${contributor.firstName} ${contributor.lastName}`,
+        value: contributor.id,
+      })),
+    )(projectData.contributors)
 
     projectEditableData.leadAsOption = {
       label: `${projectData.lead.firstName} ${projectData.lead.lastName} [${projectData.organization.name}]`,
@@ -67,10 +70,13 @@ export default function ProjectEditor() {
       return
     }
 
-    const contributorsAsOptions = maybeBody.data.map(({ firstName, id, lastName }) => ({
-      label: `${firstName} ${lastName}`,
-      value: id,
-    }))
+    const contributorsAsOptions = R.pipe(
+      R.sortBy(R.prop('lastName')),
+      R.map(({ firstName, id, lastName }) => ({
+        label: `${firstName} ${lastName}`,
+        value: id,
+      })),
+    )(maybeBody.data)
 
     if (isMounted()) {
       setContributorsAsOptions(contributorsAsOptions)
@@ -83,11 +89,14 @@ export default function ProjectEditor() {
       return
     }
 
-    const leadsAsOptions = maybeBody.data.map(({ firstName, id, lastName, organization, organizationId }) => ({
-      label: `${firstName} ${lastName} [${organization.name}]`,
-      organizationId,
-      value: id,
-    }))
+    const leadsAsOptions = R.pipe(
+      R.sortBy(R.prop('lastName')),
+      R.map(({ firstName, id, lastName, organization, organizationId }) => ({
+        label: `${firstName} ${lastName} [${organization.name}]`,
+        organizationId,
+        value: id,
+      })),
+    )(maybeBody.data)
 
     if (isMounted()) {
       setLeadsAsOptions(leadsAsOptions)
@@ -100,10 +109,13 @@ export default function ProjectEditor() {
       return
     }
 
-    const usersAsOptions = maybeBody.data.map(({ firstName, id, lastName }) => ({
-      label: `${firstName} ${lastName}`,
-      value: id,
-    }))
+    const usersAsOptions = R.pipe(
+      R.sortBy(R.prop('lastName')),
+      R.map(({ firstName, id, lastName }) => ({
+        label: `${firstName} ${lastName}`,
+        value: id,
+      })),
+    )(maybeBody.data)
 
     if (isMounted()) {
       setUsersAsOptions(usersAsOptions)

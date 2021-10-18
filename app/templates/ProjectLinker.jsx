@@ -17,10 +17,12 @@ import useIsMounted from '../hooks/useIsMounted'
 
 const BASE_COLUMNS = [
   {
+    isSortable: true,
     key: 'firstName',
     label: 'Prénom',
   },
   {
+    isSortable: true,
     key: 'lastName',
     label: 'Nom',
   },
@@ -143,7 +145,7 @@ export default function ProjectLinker() {
 
       <Card>
         <Subtitle>Contributeur·rices</Subtitle>
-        <Table columns={columns} data={contributorLinks} />
+        <Table columns={columns} data={contributorLinks} defaultSortedKey="lastName" />
       </Card>
 
       <Card>
