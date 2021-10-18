@@ -4,7 +4,7 @@ import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
-import { ROLE } from '../../../common/constants'
+import { PROJECT_CONTRIBUTOR_STATE, ROLE } from '../../../common/constants'
 
 const ERROR_PATH = 'pages/api/ProjectController()'
 
@@ -99,11 +99,27 @@ async function ProjectController(req, res) {
           return
         }
 
-        if (req.body.contributorIds !== undefined && maybeProject.contributors.length > 0) {
+        if (req.body.contributorIds !== undefined) {
+          const contributorIdsToDelete = R.pipe(
+            R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.ASSIGNED)),
+            R.map(R.prop('contributorId')),
+            R.without(req.body.contributorIds),
+          )(maybeProject.contributors)
+
+          const contributorIds = R.map(R.prop('contributorId'))(maybeProject.contributors)
+          const contributorIdsToConnect = R.without(contributorIds)(req.body.contributorIds)
+
           await req.db.project.update({
             data: {
               contributors: {
-                deleteMany: {},
+                create: contributorIdsToConnect.map(contributorId => ({
+                  contributor: {
+                    connect: { id: contributorId },
+                  },
+                })),
+                deleteMany: {
+                  OR: contributorIdsToDelete.map(contributorId => ({ contributorId })),
+                },
               },
             },
             where: {
@@ -116,22 +132,6 @@ async function ProjectController(req, res) {
           ['description', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
           req.body,
         )
-
-        if (req.body.contributorIds !== undefined) {
-          const updatedProjectContributorsQuery = req.body.contributorIds.map(contributorId => ({
-            contributor: {
-              connect: {
-                id: contributorId,
-              },
-            },
-          }))
-
-          if (updatedProjectContributorsQuery.length > 0) {
-            updatedProjectData.contributors = {
-              create: updatedProjectContributorsQuery,
-            }
-          }
-        }
 
         await req.db.project.update({
           data: updatedProjectData,
