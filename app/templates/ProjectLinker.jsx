@@ -68,8 +68,8 @@ export default function ProjectLinker() {
     )(maybeBody.data.contributors)
 
     if (isMounted()) {
-      setProject(maybeBody.data)
-      setContributorLinks(contributorLinks)
+      setProject({ ...maybeBody.data })
+      setContributorLinks([...contributorLinks])
     }
   }
 
