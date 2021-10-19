@@ -28,7 +28,7 @@ enum Role {
 
 model Contributor {
   id          String   @id @default(cuid())
-  pipedriveId Int
+  pipedriveId Int      @unique
   firstName   String
   lastName    String
   category    String?
