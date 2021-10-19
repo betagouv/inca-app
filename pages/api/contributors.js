@@ -17,7 +17,15 @@ async function ContributorsController(req, res) {
     const { query: maybeQuery } = req.query
 
     if (maybeQuery === undefined) {
-      const contributors = await req.db.contributor.findMany()
+      const contributors = await req.db.contributor.findMany({
+        include: {
+          projects: {
+            include: {
+              project: true,
+            },
+          },
+        },
+      })
 
       res.status(200).json({
         data: contributors,
