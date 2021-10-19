@@ -6,6 +6,7 @@ import LoginModal from '../../app/organisms/LoginModal'
 import Menu from '../../app/organisms/Menu'
 import ContributorEditor from '../../app/templates/ContributorEditor'
 import ContributorList from '../../app/templates/ContributorList'
+import LeadEditor from '../../app/templates/LeadEditor'
 import LeadList from '../../app/templates/LeadList'
 import OrganizationList from '../../app/templates/OrganizationList'
 import ProjectBoard from '../../app/templates/ProjectBoard'
@@ -73,6 +74,9 @@ export default function AdminSpaPage() {
 
                 <Route path="/leads">
                   <LeadList />
+                </Route>
+                <Route path="/lead/:id">
+                  <LeadEditor />
                 </Route>
 
                 <Route path="/organizations">

@@ -1,13 +1,17 @@
 import { Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
+import { Edit, Trash } from 'react-feather'
+import { useHistory } from 'react-router-dom'
 
+import { ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
+import useAuth from '../hooks/useAuth'
 import useIsMounted from '../hooks/useIsMounted'
 
-const COLUMNS = [
+const BASE_COLUMNS = [
   {
     isSortable: true,
     key: 'firstName',
@@ -36,9 +40,11 @@ const COLUMNS = [
 ]
 
 export default function LeadList() {
-  const api = useApi()
   const [leads, setLeads] = useState([])
+  const history = useHistory()
   const isMounted = useIsMounted()
+  const api = useApi()
+  const { user } = useAuth()
 
   const loadLeads = async () => {
     const maybeBody = await api.get('leads')
@@ -57,6 +63,45 @@ export default function LeadList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const deleteLead = async id => {
+    const maybeBody = await api.delete(`lead/${id}`)
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    await loadLeads()
+  }
+
+  const goToLeadEditor = id => {
+    history.push(`/lead/${id}`)
+  }
+
+  const columns = [
+    ...BASE_COLUMNS,
+    {
+      accent: 'secondary',
+
+      // eslint-disable-next-line no-alert
+      action: goToLeadEditor,
+
+      Icon: () => <Edit />,
+      label: 'Edit user',
+      type: 'action',
+    },
+  ]
+
+  if (user.role === ROLE.ADMINISTRATOR) {
+    columns.push({
+      accent: 'danger',
+
+      action: deleteLead,
+
+      Icon: Trash,
+      label: 'Delete project',
+      type: 'action',
+    })
+  }
+
   return (
     <AdminBox>
       <AdminHeader>
@@ -64,7 +109,7 @@ export default function LeadList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={COLUMNS} data={leads} defaultSortedKey="lastName" />
+        <Table columns={columns} data={leads} defaultSortedKey="lastName" />
       </Card>
     </AdminBox>
   )
