@@ -13,7 +13,7 @@ const Box = styled(Tasker.Task)`
   padding: 0 0 0.25rem 0;
 
   :hover {
-    outline: 1px solid ${p => p.theme.color.success.default};
+    box-shadow: 0 0 0 1px ${p => p.theme.color.success.default};
   }
 `
 
