@@ -71,40 +71,23 @@ export default function ContributorList() {
     history.push(`/contributor/${id}`)
   }
 
-  const columns = [...BASE_COLUMNS]
-
-  if (user.role === ROLE.ADMINISTRATOR) {
-    columns.unshift({
-      isSortable: true,
-      key: 'pipedriveId',
-      label: 'PID',
-    })
-
-    columns.push({
-      key: 'projects.length',
-      label: '',
-    })
-  }
-
-  columns.push({
-    accent: 'secondary',
-
-    // eslint-disable-next-line no-alert
-    action: goToContributorEditor,
-
-    Icon: () => <Edit />,
-    label: 'Edit user',
-    type: 'action',
-  })
+  const columns = [
+    ...BASE_COLUMNS,
+    {
+      accent: 'secondary',
+      action: goToContributorEditor,
+      Icon: () => <Edit />,
+      label: 'Éditer ce·tte contributeur·rice',
+      type: 'action',
+    },
+  ]
 
   if (user.role === ROLE.ADMINISTRATOR) {
     columns.push({
       accent: 'danger',
-
       action: deleteContributor,
-
       Icon: Trash,
-      label: 'Delete project',
+      label: 'Supprimer ce·tte contributeur·rice',
       type: 'action',
     })
   }

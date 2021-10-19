@@ -68,22 +68,16 @@ export default function UserList() {
     ...BASE_COLUMNS,
     {
       accent: 'secondary',
-
-      // eslint-disable-next-line no-alert
       action: goToUserEditor,
-
       Icon: () => <Edit />,
-      label: 'Edit user',
+      label: 'Éditer ce·tte utilisateur·rice',
       type: 'action',
     },
     {
       accent: 'danger',
-
-      // eslint-disable-next-line no-alert
-      action: id => window.alert(`Delete ${id}`),
-
+      action: () => undefined,
       Icon: Trash,
-      label: 'Delete user',
+      label: 'Supprimer ce·tte utilisateur·rice',
       type: 'action',
     },
   ]

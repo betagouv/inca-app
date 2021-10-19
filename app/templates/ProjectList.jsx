@@ -64,21 +64,16 @@ export default function ProjectList() {
     ...BASE_COLUMNS,
     {
       accent: 'secondary',
-
-      // eslint-disable-next-line no-alert
       action: goToProjectLinker,
-
       Icon: Users,
-      label: 'project',
+      label: 'Gérer les mise en relation de ce projet',
       type: 'action',
     },
     {
       accent: 'secondary',
-
       action: goToProjectEditor,
-
       Icon: Edit,
-      label: 'Edit project',
+      label: 'Éditer ce projet',
       type: 'action',
     },
   ]
@@ -86,11 +81,9 @@ export default function ProjectList() {
   if (user.role === ROLE.ADMINISTRATOR) {
     columns.push({
       accent: 'danger',
-
       action: deleteProject,
-
       Icon: Trash,
-      label: 'Delete project',
+      label: 'Supprimer ce projet',
       type: 'action',
     })
   }

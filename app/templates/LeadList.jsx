@@ -80,12 +80,9 @@ export default function LeadList() {
     ...BASE_COLUMNS,
     {
       accent: 'secondary',
-
-      // eslint-disable-next-line no-alert
       action: goToLeadEditor,
-
       Icon: () => <Edit />,
-      label: 'Edit user',
+      label: 'Éditer ce·tte porteur·se',
       type: 'action',
     },
   ]
@@ -93,11 +90,9 @@ export default function LeadList() {
   if (user.role === ROLE.ADMINISTRATOR) {
     columns.push({
       accent: 'danger',
-
       action: deleteLead,
-
       Icon: Trash,
-      label: 'Delete project',
+      label: 'Supprimer ce·tte porteur·se',
       type: 'action',
     })
   }
