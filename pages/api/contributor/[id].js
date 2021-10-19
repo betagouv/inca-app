@@ -48,7 +48,7 @@ async function ContributorController(req, res) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
-        const updatedContributorData = R.pick(['email', 'firstName', 'lastName', 'phone'], req.body)
+        const updatedContributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'], req.body)
         await req.db.contributor.update({
           data: updatedContributorData,
           where: {

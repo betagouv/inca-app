@@ -37,7 +37,7 @@ export default function ContributorEditor() {
     }
 
     const contributorData = maybeBody.data
-    const contributorEditableData = R.pick(['firstName', 'lastName', 'email', 'phone'])(contributorData)
+    const contributorEditableData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(contributorData)
 
     if (isMounted()) {
       setInitialValues(contributorEditableData)
@@ -59,7 +59,7 @@ export default function ContributorEditor() {
   }, [])
 
   const updateContributorAndGoToContributorList = async (values, { setErrors, setSubmitting }) => {
-    const contributorData = R.pick(['firstName', 'lastName', 'email', 'phone'])(values)
+    const contributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
 
     const maybeBody = isNew
       ? await api.post(`contributor/${id}`, values)
@@ -106,6 +106,10 @@ export default function ContributorEditor() {
 
           <Field>
             <Form.Input label="Téléphone" name="phone" type="tel" />
+          </Field>
+
+          <Field>
+            <Form.Textarea label="Notes" name="note" />
           </Field>
 
           <Field>
