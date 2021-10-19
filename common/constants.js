@@ -13,4 +13,10 @@ export const ROLE = {
   MEMBER: 'MEMBER',
 }
 
+export const ROLE_LABEL = {
+  ADMINISTRATOR: 'Administrateur·rice',
+  MANAGER: 'Chargé·e de projets',
+  MEMBER: 'Membre',
+}
+
 export const ROLES = Object.values(ROLE)

@@ -60,7 +60,7 @@ export default function UserList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const goToUser = id => {
+  const goToUserEditor = id => {
     history.push(`/user/${id}`)
   }
 
@@ -70,7 +70,7 @@ export default function UserList() {
       accent: 'secondary',
 
       // eslint-disable-next-line no-alert
-      action: goToUser,
+      action: goToUserEditor,
 
       Icon: () => <Edit />,
       label: 'Edit user',
@@ -93,7 +93,7 @@ export default function UserList() {
       <AdminHeader>
         <Title>Utilisateur·rices</Title>
 
-        <Button onClick={() => goToUser('new')} size="small">
+        <Button onClick={() => goToUserEditor('new')} size="small">
           Ajouter un utilisateur
         </Button>
       </AdminHeader>

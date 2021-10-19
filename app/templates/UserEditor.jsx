@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 
-import { ROLE } from '../../common/constants'
+import { ROLE_LABEL } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
 import Field from '../atoms/Field'
@@ -14,8 +14,18 @@ import useIsMounted from '../hooks/useIsMounted'
 import Form from '../molecules/Form'
 
 const FormSchema = Yup.object().shape({
-  email: Yup.string().required(`Email field is mandatory.`).email(`This email doesn't look well formatted.`),
+  email: Yup.string()
+    .required(`L’adresse email est obligatoire.`)
+    .email(`Cette addresse email ne semble pas correctement formatté.`),
+  firstName: Yup.string().required(`Le prénom est obligatoire.`),
+  lastName: Yup.string().required(`Le nom de famille est obligatoire.`),
+  roleAsOption: Yup.object().required(`Le rôle est obligatoire.`),
 })
+
+const ROLES_AS_OPTIONS = R.pipe(
+  R.toPairs,
+  R.map(([value, label]) => ({ label, value })),
+)(ROLE_LABEL)
 
 export default function UserEditor() {
   const api = useApi()
@@ -33,7 +43,14 @@ export default function UserEditor() {
       return
     }
 
-    const userEditableData = R.pick(['email', 'firstName', 'lastName', 'isActive', 'role'])(maybeBody.data)
+    const userData = maybeBody.data
+
+    const userEditableData = R.pick(['email', 'firstName', 'lastName', 'isActive'])(userData)
+
+    userEditableData.roleAsOption = {
+      label: ROLE_LABEL[userData.role],
+      value: userData.role,
+    }
 
     if (isMounted()) {
       setInitialValues(userEditableData)
@@ -55,7 +72,10 @@ export default function UserEditor() {
   }, [])
 
   const updateUserAndGoToUserList = async (values, { setErrors, setSubmitting }) => {
-    const maybeBody = isNew ? await api.post(`user/${id}`, values) : await api.patch(`user/${id}`, values)
+    const userData = R.pick(['email', 'firstName', 'lastName', 'isActive'])(values)
+    userData.role = values.roleAsOption.value
+
+    const maybeBody = isNew ? await api.post(`user/${id}`, values) : await api.patch(`user/${id}`, userData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
         email: 'Sorry, but something went wrong.',
@@ -75,7 +95,7 @@ export default function UserEditor() {
   return (
     <AdminBox>
       <AdminHeader>
-        <Title>{isNew ? 'Nouvel·le utilisateur·rice' : 'Édition d’utilisateur·rice'}</Title>
+        <Title>{isNew ? 'Nouvel·le utilisateur·rice' : 'Édition d’un·e utilisateur·rice'}</Title>
       </AdminHeader>
 
       <Card>
@@ -97,24 +117,7 @@ export default function UserEditor() {
           </Field>
 
           <Field>
-            <Form.Select
-              label="Rôle"
-              name="role"
-              options={[
-                {
-                  label: 'Administrateur',
-                  value: ROLE.ADMINISTRATOR,
-                },
-                {
-                  label: 'Gestionnaire',
-                  value: ROLE.MANAGER,
-                },
-                {
-                  label: 'Membre',
-                  value: ROLE.MEMBER,
-                },
-              ]}
-            />
+            <Form.Select label="Rôle" name="roleAsOption" options={ROLES_AS_OPTIONS} />
           </Field>
 
           <Field>

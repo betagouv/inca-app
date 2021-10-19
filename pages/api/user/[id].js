@@ -60,16 +60,14 @@ async function UserController(req, res) {
         if (req.body.password !== undefined) {
           updatedUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
         }
-        const updatedUser = await req.db.user.update({
+        await req.db.user.update({
           data: updatedUserData,
           where: {
             id: req.query.id,
           },
         })
 
-        res.status(200).json({
-          data: updatedUser,
-        })
+        res.status(202).json({})
       } catch (err) {
         handleError(err, ERROR_PATH, res)
       }
