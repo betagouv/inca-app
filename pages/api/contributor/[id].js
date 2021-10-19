@@ -1,12 +1,15 @@
+import * as R from 'ramda'
+
 import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
+import { ROLE } from '../../../common/constants'
 
-const ERROR_PATH = 'pages/api/UserController()'
+const ERROR_PATH = 'pages/api/ContributorController()'
 
-async function UserController(req, res) {
-  if (!['DELETE'].includes(req.method)) {
+async function ContributorController(req, res) {
+  if (!['DELETE', 'GET', 'PATCH'].includes(req.method)) {
     handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
 
     return
@@ -14,6 +17,52 @@ async function UserController(req, res) {
 
   // eslint-disable-next-line default-case
   switch (req.method) {
+    case 'GET':
+      try {
+        const maybeContributor = await req.db.contributor.findUnique({
+          where: {
+            id: req.query.id,
+          },
+        })
+        if (maybeContributor === null) {
+          handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
+        }
+
+        res.status(200).json({
+          data: maybeContributor,
+        })
+      } catch (err) {
+        handleError(err, ERROR_PATH, res)
+      }
+
+      return
+
+    case 'PATCH':
+      try {
+        const maybeContributor = await req.db.contributor.findUnique({
+          where: {
+            id: req.query.id,
+          },
+        })
+        if (maybeContributor === null) {
+          handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
+        }
+
+        const updatedContributorData = R.pick(['email', 'firstName', 'lastName', 'phone'], req.body)
+        await req.db.contributor.update({
+          data: updatedContributorData,
+          where: {
+            id: req.query.id,
+          },
+        })
+
+        res.status(202).json({})
+      } catch (err) {
+        handleError(err, ERROR_PATH, res)
+      }
+
+      return
+
     case 'DELETE':
       try {
         const maybeContributor = await req.db.contributor.findUnique({
@@ -40,4 +89,4 @@ async function UserController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(UserController))
+export default withPrisma(withAuthentication(ContributorController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))

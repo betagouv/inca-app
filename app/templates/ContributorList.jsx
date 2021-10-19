@@ -1,6 +1,7 @@
 import { Card, Table } from '@ivangabriele/singularity'
 import { useEffect, useState } from 'react'
-import { Trash } from 'react-feather'
+import { Edit, Trash } from 'react-feather'
+import { useHistory } from 'react-router-dom'
 
 import { ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
@@ -35,6 +36,7 @@ const BASE_COLUMNS = [
 
 export default function ContributorList() {
   const [contributors, setContributors] = useState([])
+  const history = useHistory()
   const isMounted = useIsMounted()
   const api = useApi()
   const { user } = useAuth()
@@ -65,6 +67,10 @@ export default function ContributorList() {
     await loadContributors()
   }
 
+  const goToContributorEditor = id => {
+    history.push(`/contributor/${id}`)
+  }
+
   const columns = [...BASE_COLUMNS]
 
   if (user.role === ROLE.ADMINISTRATOR) {
@@ -74,21 +80,33 @@ export default function ContributorList() {
       label: 'PID',
     })
 
-    columns.push(
-      {
-        key: 'projects.length',
-        label: '',
-      },
-      {
-        accent: 'danger',
+    columns.push({
+      key: 'projects.length',
+      label: '',
+    })
+  }
 
-        action: deleteContributor,
+  columns.push({
+    accent: 'secondary',
 
-        Icon: Trash,
-        label: 'Delete project',
-        type: 'action',
-      },
-    )
+    // eslint-disable-next-line no-alert
+    action: goToContributorEditor,
+
+    Icon: () => <Edit />,
+    label: 'Edit user',
+    type: 'action',
+  })
+
+  if (user.role === ROLE.ADMINISTRATOR) {
+    columns.push({
+      accent: 'danger',
+
+      action: deleteContributor,
+
+      Icon: Trash,
+      label: 'Delete project',
+      type: 'action',
+    })
   }
 
   return (

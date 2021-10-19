@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import useAuth from '../../app/hooks/useAuth'
 import LoginModal from '../../app/organisms/LoginModal'
 import Menu from '../../app/organisms/Menu'
+import ContributorEditor from '../../app/templates/ContributorEditor'
 import ContributorList from '../../app/templates/ContributorList'
 import LeadList from '../../app/templates/LeadList'
 import OrganizationList from '../../app/templates/OrganizationList'
@@ -65,6 +66,9 @@ export default function AdminSpaPage() {
 
                 <Route path="/contributors">
                   <ContributorList />
+                </Route>
+                <Route path="/contributor/:id">
+                  <ContributorEditor />
                 </Route>
 
                 <Route path="/leads">
