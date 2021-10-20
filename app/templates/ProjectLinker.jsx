@@ -2,7 +2,7 @@ import { Button, Table, Textarea } from '@ivangabriele/singularity'
 import debounce from 'lodash.debounce'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { Send, UserCheck, UserX } from 'react-feather'
+import { Send, Star, UserCheck, UserX } from 'react-feather'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -63,6 +63,7 @@ export default function ProjectLinker() {
         ...contributor,
         isContacted: state === PROJECT_CONTRIBUTOR_STATE.CONTACTED,
         isRefused: state === PROJECT_CONTRIBUTOR_STATE.REFUSED,
+        isSuccessful: state === PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL,
         isValidated: state === PROJECT_CONTRIBUTOR_STATE.VALIDATED,
         state,
       })),
@@ -125,6 +126,15 @@ export default function ProjectLinker() {
       IconOff: () => <ToggleIconOff as={UserCheck} />,
       IconOn: () => <ToggleIconOn as={UserCheck} />,
       key: 'isValidated',
+      labelOff: 'Marquer comme accepté·e',
+      labelOn: 'Annuler',
+      type: 'toggle',
+    },
+    {
+      action: id => updateProjectContributorState(id, PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL),
+      IconOff: () => <ToggleIconOff as={Star} />,
+      IconOn: () => <ToggleIconOn as={Star} />,
+      key: 'isSuccessful',
       labelOff: 'Marquer comme accepté·e',
       labelOn: 'Annuler',
       type: 'toggle',

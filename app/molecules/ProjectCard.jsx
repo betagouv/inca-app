@@ -1,6 +1,6 @@
 import { Tasker } from '@ivangabriele/singularity'
 import PropTypes from 'prop-types'
-import { HelpCircle, Send, UserCheck } from 'react-feather'
+import { HelpCircle, Send, Star, UserCheck } from 'react-feather'
 import styled from 'styled-components'
 
 import { PROJECT_CONTRIBUTOR_STATE } from '../../common/constants'
@@ -80,6 +80,7 @@ export default function ProjectCard({ contributors, lead, name, onClick }) {
               {state === PROJECT_CONTRIBUTOR_STATE.ASSIGNED && <HelpCircle />}
               {state === PROJECT_CONTRIBUTOR_STATE.CONTACTED && <Send />}
               {state === PROJECT_CONTRIBUTOR_STATE.VALIDATED && <UserCheck />}
+              {state === PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL && <Star />}
 
               <span>
                 {contributor.firstName} {contributor.lastName}
