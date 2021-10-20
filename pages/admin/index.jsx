@@ -8,6 +8,7 @@ import ContributorEditor from '../../app/templates/ContributorEditor'
 import ContributorList from '../../app/templates/ContributorList'
 import LeadEditor from '../../app/templates/LeadEditor'
 import LeadList from '../../app/templates/LeadList'
+import OrganizationEditor from '../../app/templates/OrganizationEditor'
 import OrganizationList from '../../app/templates/OrganizationList'
 import ProjectBoard from '../../app/templates/ProjectBoard'
 import ProjectEditor from '../../app/templates/ProjectEditor'
@@ -81,6 +82,9 @@ export default function AdminSpaPage() {
 
                 <Route path="/organizations">
                   <OrganizationList />
+                </Route>
+                <Route path="/organization/:id">
+                  <OrganizationEditor />
                 </Route>
 
                 <Route path="/projects">
