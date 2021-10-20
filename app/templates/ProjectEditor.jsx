@@ -138,7 +138,7 @@ export default function ProjectEditor() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const updateProjectAndGoBackToProjectList = async (values, { setErrors, setSubmitting }) => {
+  const updateProjectAndGoBack = async (values, { setErrors, setSubmitting }) => {
     const projectData = R.pick(['description', 'hasEnded', 'hasStarted', 'name', 'need', 'note'])(values)
     projectData.leadId = values.leadAsOption.value
     projectData.organizationId = values.leadAsOption.organizationId
@@ -159,7 +159,7 @@ export default function ProjectEditor() {
       return
     }
 
-    history.push('/projects')
+    history.goBack()
   }
 
   if (isLoading) {
@@ -173,11 +173,7 @@ export default function ProjectEditor() {
       </AdminHeader>
 
       <Card>
-        <Form
-          initialValues={initialValues}
-          onSubmit={updateProjectAndGoBackToProjectList}
-          validationSchema={FormSchema}
-        >
+        <Form initialValues={initialValues} onSubmit={updateProjectAndGoBack} validationSchema={FormSchema}>
           <Form.Input label="Nom" name="name" />
 
           <Field>

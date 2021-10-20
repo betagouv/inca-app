@@ -71,7 +71,7 @@ export default function UserEditor() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const updateUserAndGoToUserList = async (values, { setErrors, setSubmitting }) => {
+  const updateUserAndGoBack = async (values, { setErrors, setSubmitting }) => {
     const userData = R.pick(['email', 'firstName', 'lastName', 'isActive'])(values)
     userData.role = values.roleAsOption.value
 
@@ -85,7 +85,7 @@ export default function UserEditor() {
       return
     }
 
-    history.push('/users')
+    history.goBack()
   }
 
   if (isLoading) {
@@ -99,7 +99,7 @@ export default function UserEditor() {
       </AdminHeader>
 
       <Card>
-        <Form initialValues={initialValues} onSubmit={updateUserAndGoToUserList} validationSchema={FormSchema}>
+        <Form initialValues={initialValues} onSubmit={updateUserAndGoBack} validationSchema={FormSchema}>
           <Form.Input label="Email" name="email" type="email" />
 
           {isNew && (

@@ -58,7 +58,7 @@ export default function LeadEditor() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const updateLeadAndGoToLeadList = async (values, { setErrors, setSubmitting }) => {
+  const updateLeadAndGoBack = async (values, { setErrors, setSubmitting }) => {
     const leadData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
 
     const maybeBody = isNew ? await api.post(`lead/${id}`, values) : await api.patch(`lead/${id}`, leadData)
@@ -71,7 +71,7 @@ export default function LeadEditor() {
       return
     }
 
-    history.push('/leads')
+    history.goBack()
   }
 
   if (isLoading) {
@@ -85,7 +85,7 @@ export default function LeadEditor() {
       </AdminHeader>
 
       <Card>
-        <Form initialValues={initialValues} onSubmit={updateLeadAndGoToLeadList} validationSchema={FormSchema}>
+        <Form initialValues={initialValues} onSubmit={updateLeadAndGoBack} validationSchema={FormSchema}>
           <Field>
             <Form.Input label="Prénom" name="firstName" />
           </Field>

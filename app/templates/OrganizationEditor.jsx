@@ -54,7 +54,7 @@ export default function OrganizationEditor() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const updateOrganizationAndGoToOrganizationList = async (values, { setErrors, setSubmitting }) => {
+  const updateOrganizationAndGoBack = async (values, { setErrors, setSubmitting }) => {
     const organizationData = R.pick(['name', 'note'])(values)
 
     const maybeBody = isNew
@@ -69,7 +69,7 @@ export default function OrganizationEditor() {
       return
     }
 
-    history.push('/organizations')
+    history.goBack()
   }
 
   if (isLoading) {
@@ -83,11 +83,7 @@ export default function OrganizationEditor() {
       </AdminHeader>
 
       <Card>
-        <Form
-          initialValues={initialValues}
-          onSubmit={updateOrganizationAndGoToOrganizationList}
-          validationSchema={FormSchema}
-        >
+        <Form initialValues={initialValues} onSubmit={updateOrganizationAndGoBack} validationSchema={FormSchema}>
           <Field>
             <Form.Input label="Dénomination" name="name" />
           </Field>

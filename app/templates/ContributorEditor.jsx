@@ -58,7 +58,7 @@ export default function ContributorEditor() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const updateContributorAndGoToContributorList = async (values, { setErrors, setSubmitting }) => {
+  const updateContributorAndGoBack = async (values, { setErrors, setSubmitting }) => {
     const contributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
 
     const maybeBody = isNew
@@ -73,7 +73,7 @@ export default function ContributorEditor() {
       return
     }
 
-    history.push('/contributors')
+    history.goBack()
   }
 
   if (isLoading) {
@@ -87,11 +87,7 @@ export default function ContributorEditor() {
       </AdminHeader>
 
       <Card>
-        <Form
-          initialValues={initialValues}
-          onSubmit={updateContributorAndGoToContributorList}
-          validationSchema={FormSchema}
-        >
+        <Form initialValues={initialValues} onSubmit={updateContributorAndGoBack} validationSchema={FormSchema}>
           <Field>
             <Form.Input label="Prénom" name="firstName" />
           </Field>
