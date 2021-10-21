@@ -1,4 +1,4 @@
-import { Select as SingularitySelect } from '@ivangabriele/singularity'
+import { Select as SingularitySelect } from '@singularity-ui/core'
 import { useFormikContext } from 'formik'
 import PropTypes from 'prop-types'
 

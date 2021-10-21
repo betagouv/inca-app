@@ -1,4 +1,4 @@
-import { Card, Table } from '@ivangabriele/singularity'
+import { Card, Table } from '@singularity-ui/core'
 import { useEffect, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 import { useHistory } from 'react-router-dom'

@@ -1,4 +1,4 @@
-import { Button, Table, Textarea } from '@ivangabriele/singularity'
+import { Button, Table, Textarea } from '@singularity-ui/core'
 import debounce from 'lodash.debounce'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'

@@ -1,4 +1,4 @@
-import { Button, Tasker } from '@ivangabriele/singularity'
+import { Button, Tasker } from '@singularity-ui/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
@@ -21,8 +21,7 @@ const StyledAdminHeader = styled(AdminHeader)`
   padding: 0 1rem;
 `
 
-// const countContactedLinks = R.pipe(R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.CONTACTED)), R.length)
-// const countRefusedLinks = R.pipe(R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.REFUSED)), R.length)
+const countSucessfulLinks = R.pipe(R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL)), R.length)
 const countValidatedLinks = R.pipe(R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.VALIDATED)), R.length)
 
 export default function ProjectBoard() {
@@ -55,11 +54,9 @@ export default function ProjectBoard() {
         const Project = getProjectCard(project)
 
         const linksCount = R.length(contributors)
-        // const contactedLinksCount = countContactedLinks(contributors)
-        // const refusedLinksCount = countRefusedLinks(contributors)
-        const validatedLinksCount = countValidatedLinks(contributors)
+        const validatedOrSuccessfulLinksCount = countValidatedLinks(contributors) + countSucessfulLinks(contributors)
 
-        if (validatedLinksCount > 0) {
+        if (validatedOrSuccessfulLinksCount > 0) {
           return [[...projectCards[0]], [...projectCards[1]], [...projectCards[2], Project], [...projectCards[3]]]
         }
 

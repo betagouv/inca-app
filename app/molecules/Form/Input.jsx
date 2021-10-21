@@ -1,4 +1,4 @@
-import { TextInput } from '@ivangabriele/singularity'
+import { TextInput } from '@singularity-ui/core'
 import { useFormikContext } from 'formik'
 import PropTypes from 'prop-types'
 

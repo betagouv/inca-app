@@ -1,4 +1,4 @@
-import { Button } from '@ivangabriele/singularity'
+import { Button } from '@singularity-ui/core'
 import { useFormikContext } from 'formik'
 
 export default function Submit({ children }) {

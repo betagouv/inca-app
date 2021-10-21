@@ -1,4 +1,4 @@
-import { Card as SingularityCard } from '@ivangabriele/singularity'
+import { Card as SingularityCard } from '@singularity-ui/core'
 import styled from 'styled-components'
 
 const Card = styled(SingularityCard)`

@@ -1,4 +1,4 @@
-import { Button } from '@ivangabriele/singularity'
+import { Button } from '@singularity-ui/core'
 import styled from 'styled-components'
 
 const StyledButton = styled(Button)`

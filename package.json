@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@fontsource/poppins": "4.5.0",
-    "@ivangabriele/singularity": "1.0.3",
+    "@singularity-ui/core": "1.0.4",
     "@prisma/client": "3.2.1",
     "axios": "0.22.0",
     "bcryptjs": "2.4.3",

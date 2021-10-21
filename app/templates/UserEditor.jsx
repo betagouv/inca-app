@@ -1,4 +1,4 @@
-import { Card } from '@ivangabriele/singularity'
+import { Card } from '@singularity-ui/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
