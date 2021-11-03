@@ -17,7 +17,6 @@ const GlobalStyleCustom = createGlobalStyle`
   }
 
   body {
-    color: #495057;
     line-height: 1.5;
   }
 
@@ -31,8 +30,9 @@ const GlobalStyleCustom = createGlobalStyle`
 `
 
 export default function LabAgoraApp({ Component, pageProps }) {
-  const WrappedComponent = withAuth(withApi(Component))
   const { pathname } = useRouter()
+
+  const WrappedComponent = withAuth(withApi(Component))
 
   if (pathname.startsWith('/admin') && !process.browser) {
     return <div id="__laa" suppressHydrationWarning />
