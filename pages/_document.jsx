@@ -1,7 +1,7 @@
 import Document from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 
-export default class TellMeDocument extends Document {
+export default class LabAgoraDocument extends Document {
   static async getInitialProps(ctx) {
     const sheet = new ServerStyleSheet()
     const originalRenderPage = ctx.renderPage
