@@ -45,6 +45,22 @@ async function UserController(req, res) {
 
       return
 
+    case 'POST':
+      try {
+        const newUserData = R.pick(['email', 'firstName', 'isActive', 'lastName', 'role'], req.body)
+        newUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
+
+        await req.db.user.create({
+          data: newUserData,
+        })
+
+        res.status(201).json({})
+      } catch (err) {
+        handleError(err, ERROR_PATH, res)
+      }
+
+      return
+
     case 'PATCH':
       try {
         const maybeUser = await req.db.user.findUnique({
@@ -68,22 +84,6 @@ async function UserController(req, res) {
         })
 
         res.status(202).json({})
-      } catch (err) {
-        handleError(err, ERROR_PATH, res)
-      }
-
-      return
-
-    case 'POST':
-      try {
-        const newUserData = R.pick(['email', 'firstName', 'isActive', 'lastName', 'role'], req.body)
-        newUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
-
-        await req.db.user.create({
-          data: newUserData,
-        })
-
-        res.status(201).json({})
       } catch (err) {
         handleError(err, ERROR_PATH, res)
       }

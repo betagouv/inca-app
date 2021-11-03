@@ -1,5 +1,6 @@
 import * as R from 'ramda'
 
+import getRandomPipedriveId from '../../../api/helpers/getRandomPipedriveId'
 import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
@@ -9,7 +10,7 @@ import { ROLE } from '../../../common/constants'
 const ERROR_PATH = 'pages/api/ContributorController()'
 
 async function ContributorController(req, res) {
-  if (!['DELETE', 'GET', 'PATCH'].includes(req.method)) {
+  if (!['DELETE', 'GET', 'PATCH', 'POST'].includes(req.method)) {
     handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
 
     return
@@ -31,6 +32,22 @@ async function ContributorController(req, res) {
         res.status(200).json({
           data: maybeContributor,
         })
+      } catch (err) {
+        handleError(err, ERROR_PATH, res)
+      }
+
+      return
+
+    case 'POST':
+      try {
+        const newContributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'], req.body)
+        newContributorData.pipedriveId = await getRandomPipedriveId(req, 'contributor')
+
+        await req.db.contributor.create({
+          data: newContributorData,
+        })
+
+        res.status(201).json({})
       } catch (err) {
         handleError(err, ERROR_PATH, res)
       }

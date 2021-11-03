@@ -1,5 +1,6 @@
 import * as R from 'ramda'
 
+import getRandomPipedriveId from '../../../api/helpers/getRandomPipedriveId'
 import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
@@ -9,7 +10,7 @@ import { ROLE } from '../../../common/constants'
 const ERROR_PATH = 'pages/api/OrganizationController()'
 
 async function OrganizationController(req, res) {
-  if (!['DELETE', 'GET', 'PATCH'].includes(req.method)) {
+  if (!['DELETE', 'GET', 'PATCH', 'POST'].includes(req.method)) {
     handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
 
     return
@@ -31,6 +32,22 @@ async function OrganizationController(req, res) {
         res.status(200).json({
           data: maybeOrganization,
         })
+      } catch (err) {
+        handleError(err, ERROR_PATH, res)
+      }
+
+      return
+
+    case 'POST':
+      try {
+        const newOrganizationdData = R.pick(['name', 'note'], req.body)
+        newOrganizationdData.pipedriveId = await getRandomPipedriveId(req, 'organization')
+
+        await req.db.organization.create({
+          data: newOrganizationdData,
+        })
+
+        res.status(201).json({})
       } catch (err) {
         handleError(err, ERROR_PATH, res)
       }

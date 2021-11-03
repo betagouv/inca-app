@@ -1,11 +1,7 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { BeatLoader } from 'react-spinners'
 import styled from 'styled-components'
 
 import { ROLE } from '../../common/constants'
-import SyncButton from '../atoms/SyncButton'
-import useApi from '../hooks/useApi'
 import useAuth from '../hooks/useAuth'
 
 const Container = styled.div`
@@ -56,18 +52,7 @@ const List = styled.div`
 `
 
 export default function Menu() {
-  const [isSynchronizing, setIsSynchronizing] = useState(false)
   const { user } = useAuth()
-
-  const api = useApi()
-
-  const synchronizePipedrive = async () => {
-    setIsSynchronizing(true)
-
-    await api.get('pipedrive/synchronize')
-
-    setIsSynchronizing(false)
-  }
 
   return (
     <Container>
@@ -85,10 +70,6 @@ export default function Menu() {
           {user.role === ROLE.ADMINISTRATOR && <Link to="/users">Utilisateur·rices</Link>}
         </List>
       </div>
-
-      <SyncButton onClick={synchronizePipedrive}>
-        {isSynchronizing ? <BeatLoader size={12} /> : 'Synchroniser'}
-      </SyncButton>
     </Container>
   )
 }

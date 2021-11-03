@@ -62,7 +62,7 @@ export default function ContributorEditor() {
     const contributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
 
     const maybeBody = isNew
-      ? await api.post(`contributor/${id}`, values)
+      ? await api.post(`contributor/${id}`, contributorData)
       : await api.patch(`contributor/${id}`, contributorData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({

@@ -1,4 +1,4 @@
-import { Card, Table } from '@singularity-ui/core'
+import { Button, Card, Table } from '@singularity-ui/core'
 import { useEffect, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 import { useHistory } from 'react-router-dom'
@@ -96,6 +96,10 @@ export default function ContributorList() {
     <AdminBox>
       <AdminHeader>
         <Title>Contributeur·rices</Title>
+
+        <Button onClick={() => goToContributorEditor('new')} size="small">
+          Ajouter un·e contributeur·rice
+        </Button>
       </AdminHeader>
 
       <Card>

@@ -18,16 +18,18 @@ const FormSchema = Yup.object().shape({
     .email(`Cette addresse email ne semble pas correctement formatté.`),
   firstName: Yup.string().required(`Le prénom est obligatoire.`),
   lastName: Yup.string().required(`Le nom de famille est obligatoire.`),
+  organizationAsOption: Yup.object().required(`Associer une organisation est obligatoire.`),
 })
 
 export default function LeadEditor() {
-  const api = useApi()
-  const { id } = useParams()
-  const [isLoading, setIsLoading] = useState(true)
+  const [organizationsAsOptions, setOrganizationsAsOptions] = useState(null)
   const [initialValues, setInitialValues] = useState(null)
+  const { id } = useParams()
   const history = useHistory()
+  const api = useApi()
   const isMounted = useIsMounted()
 
+  const isLoading = initialValues === null || organizationsAsOptions === null
   const isNew = id === 'new'
 
   const loadLead = async () => {
@@ -39,16 +41,40 @@ export default function LeadEditor() {
     const leadData = maybeBody.data
     const leadEditableData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(leadData)
 
+    leadEditableData.organizationAsOption = {
+      label: leadData.organization.name,
+      value: leadData.organizationId,
+    }
+
     if (isMounted()) {
       setInitialValues(leadEditableData)
-      setIsLoading(false)
+    }
+  }
+
+  const loadOrganizationsAsOptions = async () => {
+    const maybeBody = await api.get(`organizations`)
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    const organizationsAsOptions = R.pipe(
+      R.sortBy(R.prop('name')),
+      R.map(({ id, name }) => ({
+        label: name,
+        value: id,
+      })),
+    )(maybeBody.data)
+
+    if (isMounted()) {
+      setOrganizationsAsOptions(organizationsAsOptions)
     }
   }
 
   useEffect(() => {
+    loadOrganizationsAsOptions()
+
     if (isNew) {
       setInitialValues({})
-      setIsLoading(false)
 
       return
     }
@@ -60,8 +86,9 @@ export default function LeadEditor() {
 
   const updateLeadAndGoBack = async (values, { setErrors, setSubmitting }) => {
     const leadData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
+    leadData.organizationId = values.organizationAsOption.value
 
-    const maybeBody = isNew ? await api.post(`lead/${id}`, values) : await api.patch(`lead/${id}`, leadData)
+    const maybeBody = isNew ? await api.post(`lead/${id}`, leadData) : await api.patch(`lead/${id}`, leadData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
         firstName: 'Sorry, but something went wrong.',
@@ -100,6 +127,10 @@ export default function LeadEditor() {
 
           <Field>
             <Form.Input label="Téléphone" name="phone" type="tel" />
+          </Field>
+
+          <Field>
+            <Form.Select label="Organisation" name="organizationAsOption" options={organizationsAsOptions} />
           </Field>
 
           <Field>

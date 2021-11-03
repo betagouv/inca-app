@@ -58,7 +58,7 @@ export default function OrganizationEditor() {
     const organizationData = R.pick(['name', 'note'])(values)
 
     const maybeBody = isNew
-      ? await api.post(`organization/${id}`, values)
+      ? await api.post(`organization/${id}`, organizationData)
       : await api.patch(`organization/${id}`, organizationData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({

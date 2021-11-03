@@ -1,4 +1,4 @@
-import { Card, Table } from '@singularity-ui/core'
+import { Button, Card, Table } from '@singularity-ui/core'
 import { useEffect, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 import { useHistory } from 'react-router-dom'
@@ -81,6 +81,10 @@ export default function OrganizationList() {
     <AdminBox>
       <AdminHeader>
         <Title>Organisations</Title>
+
+        <Button onClick={() => goToOrganizationEditor('new')} size="small">
+          Ajouter une organisation
+        </Button>
       </AdminHeader>
 
       <Card>
