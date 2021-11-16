@@ -21,6 +21,7 @@ const BASE_COLUMNS = [
 
 export default function OrganizationList() {
   const [organizations, setOrganizations] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const history = useHistory()
   const isMounted = useIsMounted()
   const api = useApi()
@@ -34,6 +35,7 @@ export default function OrganizationList() {
 
     if (isMounted()) {
       setOrganizations(maybeBody.data)
+      setIsLoading(false)
     }
   }
 
@@ -61,7 +63,7 @@ export default function OrganizationList() {
     {
       accent: 'secondary',
       action: goToOrganizationEditor,
-      Icon: () => <Edit />,
+      Icon: Edit,
       label: 'Éditer cette organisation',
       type: 'action',
     },
@@ -88,7 +90,14 @@ export default function OrganizationList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={columns} data={organizations} defaultSortedKey="name" />
+        <Table
+          columns={columns}
+          data={organizations}
+          defaultSortedKey="name"
+          defaultSortedKeyIsDesc={false}
+          isLoading={isLoading}
+          perPage={10}
+        />
       </Card>
     </AdminBox>
   )

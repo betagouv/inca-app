@@ -6,10 +6,6 @@ import { createGlobalStyle } from 'styled-components'
 import withApi from '../app/hocs/withApi'
 import withAuth from '../app/hocs/withAuth'
 
-import '@fontsource/poppins/300.css'
-import '@fontsource/poppins/400.css'
-import '@fontsource/poppins/500.css'
-
 const GlobalStyleCustom = createGlobalStyle`
   html {
     display: flex;
