@@ -6,7 +6,7 @@ export default function Textarea({ helper, isDisabled, label, name, type }) {
   const { errors, handleChange, submitCount, touched, values } = useFormikContext()
 
   const hasError = (touched[name] !== undefined || submitCount > 0) && Boolean(errors[name])
-  const maybeError = hasError ? errors[name] : null
+  const maybeError = hasError ? errors[name] : undefined
 
   return (
     <SingularityTextarea

@@ -40,6 +40,7 @@ const BASE_COLUMNS = [
 ]
 
 export default function LeadList() {
+  const [isLoading, setIsLoading] = useState(true)
   const [leads, setLeads] = useState([])
   const history = useHistory()
   const isMounted = useIsMounted()
@@ -54,6 +55,7 @@ export default function LeadList() {
 
     if (isMounted()) {
       setLeads(maybeBody.data)
+      setIsLoading(false)
     }
   }
 
@@ -81,7 +83,7 @@ export default function LeadList() {
     {
       accent: 'secondary',
       action: goToLeadEditor,
-      Icon: () => <Edit />,
+      Icon: Edit,
       label: 'Éditer ce·tte porteur·se',
       type: 'action',
     },
@@ -108,7 +110,7 @@ export default function LeadList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={columns} data={leads} defaultSortedKey="lastName" />
+        <Table columns={columns} data={leads} defaultSortedKey="lastName" isLoading={isLoading} />
       </Card>
     </AdminBox>
   )

@@ -6,7 +6,7 @@ export default function Input({ autoComplete, helper, isDisabled, label, name, n
   const { errors, handleChange, submitCount, touched, values } = useFormikContext()
 
   const hasError = (touched[name] !== undefined || submitCount > 0) && Boolean(errors[name])
-  const maybeError = hasError ? errors[name] : null
+  const maybeError = hasError ? errors[name] : undefined
 
   return (
     <TextInput
@@ -15,7 +15,7 @@ export default function Input({ autoComplete, helper, isDisabled, label, name, n
       disabled={isDisabled}
       error={maybeError}
       helper={helper}
-      label={!noLabel ? label : null}
+      label={!noLabel ? label : undefined}
       name={name}
       onChange={handleChange}
       placeholder={noLabel ? label : null}

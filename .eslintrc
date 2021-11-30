@@ -6,6 +6,8 @@
   "rules": {
     "no-shadow": "off",
 
+    "react/function-component-definition": "off",
+    "react/no-unstable-nested-components": "off",
     "react/prop-types": [
       "error",
       {

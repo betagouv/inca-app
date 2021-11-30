@@ -1,6 +1,6 @@
 import { Button, Card, Table } from '@singularity-ui/core'
 import { useEffect, useState } from 'react'
-import { Edit, Trash } from 'react-feather'
+import { CheckCircle, Edit, Trash, XCircle } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
 import AdminBox from '../atoms/AdminBox'
@@ -31,13 +31,19 @@ const BASE_COLUMNS = [
     label: 'Rôle',
   },
   {
+    IconOff: XCircle,
+    IconOn: CheckCircle,
     key: 'isActive',
-    label: '',
+    label: 'Compte actif',
+    labelOff: 'Compte inactif',
+    labelOn: 'Compte actif',
     type: 'boolean',
+    withTootip: true,
   },
 ]
 
 export default function UserList() {
+  const [isLoading, setIsLoading] = useState(true)
   const [users, setUsers] = useState([])
   const history = useHistory()
   const api = useApi()
@@ -51,6 +57,7 @@ export default function UserList() {
 
     if (isMounted()) {
       setUsers(maybeBody.data)
+      setIsLoading(false)
     }
   }
 
@@ -69,7 +76,7 @@ export default function UserList() {
     {
       accent: 'secondary',
       action: goToUserEditor,
-      Icon: () => <Edit />,
+      Icon: Edit,
       label: 'Éditer ce·tte utilisateur·rice',
       type: 'action',
     },
@@ -93,7 +100,7 @@ export default function UserList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={columns} data={users} defaultSortedKey="lastName" />
+        <Table columns={columns} data={users} defaultSortedKey="lastName" isLoading={isLoading} />
       </Card>
     </AdminBox>
   )

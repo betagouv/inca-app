@@ -12,6 +12,7 @@ import AdminHeader from '../atoms/AdminHeader'
 import Card from '../atoms/Card'
 import Subtitle from '../atoms/Subtitle'
 import Title from '../atoms/Title'
+import getRandomKey from '../helpers/getRandomKey'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
 
@@ -108,36 +109,44 @@ export default function ProjectLinker() {
       IconOff: () => <ToggleIconOff as={Send} />,
       IconOn: () => <ToggleIconOn as={Send} />,
       key: 'isContacted',
+      label: 'Statut: Contacté·e',
       labelOff: 'Marquer comme contacté·e',
       labelOn: 'Annuler',
-      type: 'toggle',
+      type: 'boolean',
+      withTooltip: true,
     },
     {
       action: id => updateProjectContributorState(id, PROJECT_CONTRIBUTOR_STATE.REFUSED),
       IconOff: () => <ToggleIconOff as={UserX} />,
       IconOn: () => <ToggleIconOn as={UserX} />,
       key: 'isRefused',
+      label: 'Statut: Refusé·e',
       labelOff: 'Marquer comme refusé·e',
       labelOn: 'Annuler',
-      type: 'toggle',
+      type: 'boolean',
+      withTooltip: true,
     },
     {
       action: id => updateProjectContributorState(id, PROJECT_CONTRIBUTOR_STATE.VALIDATED),
       IconOff: () => <ToggleIconOff as={UserCheck} />,
       IconOn: () => <ToggleIconOn as={UserCheck} />,
       key: 'isValidated',
+      label: 'Statut: Accepté·e',
       labelOff: 'Marquer comme accepté·e',
       labelOn: 'Annuler',
-      type: 'toggle',
+      type: 'boolean',
+      withTooltip: true,
     },
     {
       action: id => updateProjectContributorState(id, PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL),
       IconOff: () => <ToggleIconOff as={Star} />,
       IconOn: () => <ToggleIconOn as={Star} />,
       key: 'isSuccessful',
-      labelOff: 'Marquer comme accepté·e',
+      label: 'Statut: Débloqué·e',
+      labelOff: 'Marquer comme débloqué·e',
       labelOn: 'Annuler',
-      type: 'toggle',
+      type: 'boolean',
+      withTooltip: true,
     },
   ]
 
@@ -155,7 +164,7 @@ export default function ProjectLinker() {
 
       <Card>
         <Subtitle>Contributeur·rices</Subtitle>
-        <Table columns={columns} data={contributorLinks} defaultSortedKey="lastName" />
+        <Table key={getRandomKey()} columns={columns} data={contributorLinks} defaultSortedKey="lastName" />
       </Card>
 
       <Card>

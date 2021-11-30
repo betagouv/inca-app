@@ -35,6 +35,7 @@ const BASE_COLUMNS = [
 ]
 
 export default function ContributorList() {
+  const [isLoading, setIsLoading] = useState(true)
   const [contributors, setContributors] = useState([])
   const history = useHistory()
   const isMounted = useIsMounted()
@@ -49,6 +50,7 @@ export default function ContributorList() {
 
     if (isMounted()) {
       setContributors(maybeBody.data)
+      setIsLoading(false)
     }
   }
 
@@ -76,7 +78,7 @@ export default function ContributorList() {
     {
       accent: 'secondary',
       action: goToContributorEditor,
-      Icon: () => <Edit />,
+      Icon: Edit,
       label: 'Éditer ce·tte contributeur·rice',
       type: 'action',
     },
@@ -103,7 +105,7 @@ export default function ContributorList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={columns} data={contributors} defaultSortedKey="lastName" />
+        <Table columns={columns} data={contributors} defaultSortedKey="lastName" isLoading={isLoading} />
       </Card>
     </AdminBox>
   )

@@ -20,6 +20,7 @@ const BASE_COLUMNS = [
 ]
 
 export default function ProjectList() {
+  const [isLoading, setIsLoading] = useState(true)
   const [projects, setProjects] = useState([])
   const history = useHistory()
   const isMounted = useIsMounted()
@@ -34,6 +35,7 @@ export default function ProjectList() {
 
     if (isMounted()) {
       setProjects(maybeBody.data)
+      setIsLoading(false)
     }
   }
 
@@ -99,7 +101,7 @@ export default function ProjectList() {
       </AdminHeader>
 
       <Card>
-        <Table columns={columns} data={projects} defaultSortedKey="name" />
+        <Table columns={columns} data={projects} defaultSortedKey="name" isLoading={isLoading} />
       </Card>
     </AdminBox>
   )
