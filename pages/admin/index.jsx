@@ -54,64 +54,62 @@ export default function AdminSpaPage() {
   }
 
   return (
-    <>
-      <BrowserRouter basename="/admin">
-        <Page>
-          <Menu />
+    <BrowserRouter basename="/admin">
+      <Page>
+        <Menu />
 
-          <Body>
-            <Main>
-              <Switch>
-                <Route exact path="/">
-                  <ProjectBoard />
-                </Route>
+        <Body>
+          <Main>
+            <Switch>
+              <Route exact path="/">
+                <ProjectBoard />
+              </Route>
 
-                <Route path="/contributors">
-                  <ContributorList />
-                </Route>
-                <Route path="/contributor/:id">
-                  <ContributorEditor />
-                </Route>
+              <Route path="/contributors">
+                <ContributorList />
+              </Route>
+              <Route path="/contributor/:id">
+                <ContributorEditor />
+              </Route>
 
-                <Route path="/leads">
-                  <LeadList />
-                </Route>
-                <Route path="/lead/:id">
-                  <LeadEditor />
-                </Route>
+              <Route path="/leads">
+                <LeadList />
+              </Route>
+              <Route path="/lead/:id">
+                <LeadEditor />
+              </Route>
 
-                <Route path="/organizations">
-                  <OrganizationList />
-                </Route>
-                <Route path="/organization/:id">
-                  <OrganizationEditor />
-                </Route>
+              <Route path="/organizations">
+                <OrganizationList />
+              </Route>
+              <Route path="/organization/:id">
+                <OrganizationEditor />
+              </Route>
 
-                <Route path="/projects">
-                  <ProjectList />
-                </Route>
-                <Route path="/project/linker/:id">
-                  <ProjectLinker />
-                </Route>
-                <Route path="/project/:id">
-                  <ProjectEditor />
-                </Route>
+              <Route path="/projects">
+                <ProjectList />
+              </Route>
+              <Route path="/project/linker/:id">
+                <ProjectLinker />
+              </Route>
+              <Route path="/project/:id">
+                <ProjectEditor />
+              </Route>
 
-                <Route path="/users">
-                  <UserList />
-                </Route>
-                <Route path="/user/:id">
-                  <UserEditor />
-                </Route>
+              <Route path="/users">
+                <UserList />
+              </Route>
+              <Route path="/user/:id">
+                <UserEditor />
+              </Route>
 
-                <Route path="*">
-                  <div>404</div>
-                </Route>
-              </Switch>
-            </Main>
-          </Body>
-        </Page>
-      </BrowserRouter>
-    </>
+              <Route path="*">
+                <div>404</div>
+              </Route>
+            </Switch>
+          </Main>
+        </Body>
+      </Page>
+    </BrowserRouter>
   )
 }

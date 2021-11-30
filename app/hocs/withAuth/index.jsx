@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import getJwtPayload from '../../helpers/getJwtPayload'
 import isJwtExpired from '../../helpers/isJwtExpired'
@@ -85,13 +85,18 @@ export default function withAuth(Component) {
       }
     }
 
-    const providerValue = {
-      clearSessionToken,
-      logIn,
-      logOut,
-      state,
-      user,
-    }
+    const providerValue = useMemo(
+      () => ({
+        clearSessionToken,
+        logIn,
+        logOut,
+        state,
+        user,
+      }),
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [state, user],
+    )
 
     useEffect(() => {
       if (state.sessionToken === null && isMounted()) {

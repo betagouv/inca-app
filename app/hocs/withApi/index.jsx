@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import handleError from '../../helpers/handleError'
 import useAuth from '../../hooks/useAuth'
 import api from '../../libs/api'
@@ -93,13 +95,17 @@ export default function withApi(Component) {
       }
     }
 
-    const providerValue = {
-      delete: _delete,
-      get,
-      patch,
-      post,
-      put,
-    }
+    const providerValue = useMemo(
+      () => ({
+        delete: _delete,
+        get,
+        patch,
+        post,
+        put,
+      }),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [],
+    )
 
     return (
       <Context.Provider value={providerValue}>
