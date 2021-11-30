@@ -149,9 +149,11 @@ async function ProjectController(req, res) {
 
     case 'DELETE':
       try {
+        const projectId = req.query.id
+
         const maybeProject = await req.db.project.findUnique({
           where: {
-            id: req.query.id,
+            id: projectId,
           },
         })
         if (maybeProject === null) {
@@ -160,9 +162,20 @@ async function ProjectController(req, res) {
           return
         }
 
+        await req.db.project.update({
+          data: {
+            contributors: {
+              deleteMany: {},
+            },
+          },
+          where: {
+            id: projectId,
+          },
+        })
+
         await req.db.project.delete({
           where: {
-            id: req.query.id,
+            id: projectId,
           },
         })
 

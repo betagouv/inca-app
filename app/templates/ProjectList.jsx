@@ -1,4 +1,5 @@
 import { Button, Card, Table } from '@singularity-ui/core'
+import * as R from 'ramda'
 import { useEffect, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
 import { useHistory } from 'react-router-dom'
@@ -10,6 +11,7 @@ import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useAuth from '../hooks/useAuth'
 import useIsMounted from '../hooks/useIsMounted'
+import DeletionModal from '../organisms/DeletionModal'
 
 const BASE_COLUMNS = [
   {
@@ -20,8 +22,11 @@ const BASE_COLUMNS = [
 ]
 
 export default function ProjectList() {
+  const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [projects, setProjects] = useState([])
+  const [selectedId, setSelectedId] = useState('')
+  const [selectedEntity, setSelectedEntity] = useState('')
   const history = useHistory()
   const isMounted = useIsMounted()
   const api = useApi()
@@ -45,21 +50,35 @@ export default function ProjectList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const closeProjectDeletionModal = () => {
+    setHasDeletionModal(false)
+  }
+
+  const confirmProjectDeletion = async id => {
+    const project = R.find(R.propEq('id', id))(projects)
+
+    setSelectedId(id)
+    setSelectedEntity(project.name)
+    setHasDeletionModal(true)
+  }
+
+  const deleteProject = async () => {
+    setHasDeletionModal(false)
+
+    const maybeBody = await api.delete(`project/${selectedId}`)
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    await loadProjects()
+  }
+
   const goToProjectLinker = id => {
     history.push(`/project/linker/${id}`)
   }
 
   const goToProjectEditor = id => {
     history.push(`/project/${id}`)
-  }
-
-  const deleteProject = async id => {
-    const maybeBody = await api.delete(`project/${id}`)
-    if (maybeBody === null || maybeBody.hasError) {
-      return
-    }
-
-    await loadProjects()
   }
 
   const updateProjectLockState = async (id, isUnlocked) => {
@@ -101,7 +120,7 @@ export default function ProjectList() {
   if (user.role === ROLE.ADMINISTRATOR) {
     columns.push({
       accent: 'danger',
-      action: deleteProject,
+      action: confirmProjectDeletion,
       Icon: Trash,
       label: 'Supprimer ce projet',
       type: 'action',
@@ -121,6 +140,10 @@ export default function ProjectList() {
       <Card>
         <Table columns={columns} data={projects} defaultSortedKey="name" isLoading={isLoading} />
       </Card>
+
+      {hasDeletionModal && (
+        <DeletionModal entity={selectedEntity} onCancel={closeProjectDeletionModal} onConfirm={deleteProject} />
+      )}
     </AdminBox>
   )
 }

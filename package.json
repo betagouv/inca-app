@@ -20,10 +20,11 @@
   },
   "dependencies": {
     "@fontsource/poppins": "4.5.0",
-    "@singularity-ui/core": "2.0.0-beta.9",
     "@prisma/client": "3.2.1",
+    "@singularity-ui/core": "2.0.0-beta.9",
     "axios": "0.22.0",
     "bcryptjs": "2.4.3",
+    "better-prop-types": "1.0.0",
     "bhala": "1.0.0-alpha.1",
     "dayjs": "1.10.7",
     "dotenv": "10.0.0",

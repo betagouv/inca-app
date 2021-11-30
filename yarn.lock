@@ -1441,7 +1441,7 @@ bcryptjs@2.4.3:
   resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-2.4.3.tgz#9ab5627b93e60621ff7cdac5da9733027df1d0cb"
   integrity sha1-mrVie5PmBiH/fNrF2pczAn3x0Ms=
 
-better-prop-types@^1.0.0:
+better-prop-types@1.0.0, better-prop-types@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/better-prop-types/-/better-prop-types-1.0.0.tgz#fd6a162a361c605af9740ddcd3a823eb505e3574"
   integrity sha512-4k1ZHHDhOv51brN9XltZSoUD1Vci6GhOwOWCjMPOZvM0G0KzwH7EyoxXBBBDTlikwhW1YbM4D4BWM46akHkNwQ==
