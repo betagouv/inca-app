@@ -81,6 +81,7 @@ model Project {
   note        String?
   hasStarted  Boolean  @default(false)
   hasEnded    Boolean  @default(false)
+  isUnlocked  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

@@ -1,6 +1,6 @@
 import { Button, Card, Table } from '@singularity-ui/core'
 import { useEffect, useState } from 'react'
-import { Edit, Users, Trash } from 'react-feather'
+import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
 import { ROLE } from '../../common/constants'
@@ -62,8 +62,26 @@ export default function ProjectList() {
     await loadProjects()
   }
 
+  const updateProjectLockState = async (id, isUnlocked) => {
+    await api.patch(`project/${id}`, { isUnlocked })
+
+    await loadProjects()
+  }
+
   const columns = [
     ...BASE_COLUMNS,
+    {
+      accent: 'success',
+      action: updateProjectLockState,
+      IconOff: Lock,
+      IconOn: Unlock,
+      key: 'isUnlocked',
+      label: 'Projet débloqué',
+      labelOff: 'Projet bloqué',
+      labelOn: 'Projet débloqué',
+      type: 'boolean',
+      withTootip: true,
+    },
     {
       accent: 'secondary',
       action: goToProjectLinker,

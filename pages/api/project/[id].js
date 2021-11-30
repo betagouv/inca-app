@@ -52,7 +52,7 @@ async function ProjectController(req, res) {
     case 'POST':
       try {
         const newProjectData = R.pick(
-          ['description', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
+          ['description', 'isUnlocked', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
           req.body,
         )
 
@@ -129,7 +129,7 @@ async function ProjectController(req, res) {
         }
 
         const updatedProjectData = R.pick(
-          ['description', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
+          ['description', 'isUnlocked', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
           req.body,
         )
 

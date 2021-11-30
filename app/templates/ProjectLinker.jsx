@@ -164,11 +164,13 @@ export default function ProjectLinker() {
 
       <Card>
         <Subtitle>Contributeur·rices</Subtitle>
+
         <Table key={getRandomKey()} columns={columns} data={contributorLinks} defaultSortedKey="lastName" />
       </Card>
 
       <Card>
         <Subtitle>Notes</Subtitle>
+
         <NoteTextarea defaultValue={project.note} name="note" onChange={updateProjectNote} />
       </Card>
     </AdminBox>

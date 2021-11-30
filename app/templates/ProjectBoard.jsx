@@ -49,9 +49,12 @@ export default function ProjectBoard() {
 
     const projectCards = maybeBody.data.reduce(
       (projectCards, project) => {
-        const { contributors } = project
-
+        const { contributors, isUnlocked } = project
         const Project = getProjectCard(project)
+
+        if (isUnlocked) {
+          return [[...projectCards[0]], [...projectCards[1]], [...projectCards[2]], [...projectCards[3], Project]]
+        }
 
         const linksCount = R.length(contributors)
         const validatedOrSuccessfulLinksCount = countValidatedLinks(contributors) + countSucessfulLinks(contributors)
