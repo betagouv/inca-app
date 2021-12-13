@@ -1,4 +1,4 @@
-import { Textarea as SingularityTextarea } from '@singularity-ui/core'
+import { Textarea as SingularityTextarea } from '@singularity/core'
 import { useFormikContext } from 'formik'
 import PropTypes from 'prop-types'
 

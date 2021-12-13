@@ -1,4 +1,4 @@
-import { Button, Dialog } from '@singularity-ui/core'
+import { Button, Dialog } from '@singularity/core'
 import BetterPropTypes from 'better-prop-types'
 
 export default function DeletionModal({ entity, onCancel, onConfirm }) {

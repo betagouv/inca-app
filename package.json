@@ -21,7 +21,7 @@
   "dependencies": {
     "@fontsource/poppins": "4.5.0",
     "@prisma/client": "3.2.1",
-    "@singularity-ui/core": "2.0.0-beta.9",
+    "@singularity/core": "2.0.0-beta.10",
     "axios": "0.22.0",
     "bcryptjs": "2.4.3",
     "better-prop-types": "1.0.0",

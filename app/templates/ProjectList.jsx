@@ -1,4 +1,4 @@
-import { Button, Card, Table } from '@singularity-ui/core'
+import { Button, Card, Table } from '@singularity/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'

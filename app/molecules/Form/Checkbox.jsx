@@ -1,4 +1,4 @@
-import { Checkbox as SingularityCheckbox } from '@singularity-ui/core'
+import { Checkbox as SingularityCheckbox } from '@singularity/core'
 import { useFormikContext } from 'formik'
 import PropTypes from 'prop-types'
 

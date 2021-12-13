@@ -1,4 +1,4 @@
-import { Tasker } from '@singularity-ui/core'
+import { Tasker } from '@singularity/core'
 import PropTypes from 'prop-types'
 import { HelpCircle, Send, Star, UserCheck } from 'react-feather'
 import styled from 'styled-components'

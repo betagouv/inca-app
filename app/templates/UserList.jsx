@@ -1,4 +1,4 @@
-import { Button, Card, Table } from '@singularity-ui/core'
+import { Button, Card, Table } from '@singularity/core'
 import { useEffect, useState } from 'react'
 import { CheckCircle, Edit, Trash, XCircle } from 'react-feather'
 import { useHistory } from 'react-router-dom'
