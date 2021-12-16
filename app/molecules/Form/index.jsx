@@ -1,5 +1,5 @@
+import PropTypes from 'better-prop-types'
 import { Formik, Form as FormikForm } from 'formik'
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as Yup from 'yup'
 

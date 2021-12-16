@@ -1,6 +1,6 @@
 import { Select as SingularitySelect } from '@singularity/core'
+import PropTypes from 'better-prop-types'
 import { useFormikContext } from 'formik'
-import PropTypes from 'prop-types'
 
 export default function Select({ helper, isAsync, isDisabled, isMulti, label, name, noLabel, options }) {
   const { errors, setFieldValue, submitCount, touched, values } = useFormikContext()

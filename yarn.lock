@@ -1654,12 +1654,13 @@ better-prop-types@1.0.0, better-prop-types@^1.0.0:
     "@types/prop-types" "15.7.4"
     prop-types "15.7.2"
 
-bhala@1.0.0-alpha.1:
-  version "1.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/bhala/-/bhala-1.0.0-alpha.1.tgz#03bee13957daa358f296746107e4329b44afb936"
-  integrity sha512-hs0olkVwBrqTwPRrjbRSP1uO+fiCtARCnq6hmTnNlRoTtIMfXEhFXFojeGyNNJShwgpENc3WlktE+ej/RMWZBQ==
+bhala@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/bhala/-/bhala-1.0.2.tgz#b389da6857aeb78fb9ec389c1d06a149d83e744b"
+  integrity sha512-qiClowBg5/e5g/bLOoT73Nx1fnHeR4sKl/nU7DrMQX/RkQ9bGOIDCtxo9Xcy6AYdNfwxbE5AlSmTEBKQDKHvdA==
   dependencies:
-    chalk "4.1.2"
+    chalk "^4.1.2"
+    node-emoji "^1.11.0"
 
 big.js@^5.2.2:
   version "5.2.2"
@@ -1912,7 +1913,7 @@ chalk@4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chalk@4.1.2, chalk@^4.0.0:
+chalk@^4.0.0, chalk@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"
   integrity sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==
@@ -4792,6 +4793,13 @@ node-cache@5.1.2:
   integrity sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==
   dependencies:
     clone "2.x"
+
+node-emoji@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/node-emoji/-/node-emoji-1.11.0.tgz#69a0150e6946e2f115e9d7ea4df7971e2628301c"
+  integrity sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==
+  dependencies:
+    lodash "^4.17.21"
 
 node-fetch@2.6.1:
   version "2.6.1"

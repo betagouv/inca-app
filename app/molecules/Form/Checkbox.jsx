@@ -1,6 +1,6 @@
 import { Checkbox as SingularityCheckbox } from '@singularity/core'
+import PropTypes from 'better-prop-types'
 import { useFormikContext } from 'formik'
-import PropTypes from 'prop-types'
 
 export default function Checkbox({ isDisabled, label, name }) {
   const { setFieldValue, values } = useFormikContext()

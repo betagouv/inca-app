@@ -1,6 +1,6 @@
 import { Textarea as SingularityTextarea } from '@singularity/core'
+import PropTypes from 'better-prop-types'
 import { useFormikContext } from 'formik'
-import PropTypes from 'prop-types'
 
 export default function Textarea({ helper, isDisabled, label, name, type }) {
   const { errors, handleChange, submitCount, touched, values } = useFormikContext()
