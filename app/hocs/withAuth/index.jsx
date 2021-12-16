@@ -1,9 +1,12 @@
+import { HTTPError } from 'ky'
 import * as R from 'ramda'
 import { useEffect, useMemo, useState } from 'react'
 
 import getJwtPayload from '../../helpers/getJwtPayload'
+import handleError from '../../helpers/handleError'
 import isJwtExpired from '../../helpers/isJwtExpired'
 import useIsMounted from '../../hooks/useIsMounted'
+import api from '../../libs/api'
 import Context from './Context'
 
 const getInitialState = () => {
@@ -19,10 +22,6 @@ const getInitialState = () => {
 }
 
 const getInitialUser = () => {
-  if (!process.browser) {
-    return null
-  }
-
   const maybeUserJson = window.localStorage.getItem('user')
   const maybeUser = maybeUserJson !== null ? JSON.parse(maybeUserJson) : null
 
@@ -35,8 +34,24 @@ export default function withAuth(Component) {
     const [user, setUser] = useState(getInitialUser())
     const isMounted = useIsMounted()
 
+    // Useful to force a re-login with the email field prefilled
+    const clearSessionToken = () => {
+      window.localStorage.removeItem('sessionToken')
+
+      if (isMounted()) {
+        setState({
+          ...state,
+          isAuthenticated: false,
+          sessionToken: null,
+        })
+      }
+    }
+
     const logIn = async (sessionToken, refreshToken = null) => {
       const sessionTokenPayload = await getJwtPayload(sessionToken)
+      if (sessionTokenPayload === null) {
+        return
+      }
 
       const user = R.pick(['id', 'email', 'role'])(sessionTokenPayload)
       const userJson = JSON.stringify(user)
@@ -48,25 +63,12 @@ export default function withAuth(Component) {
       window.localStorage.setItem('user', userJson)
 
       if (isMounted()) {
+        setUser(user)
         setState({
           ...state,
           isAuthenticated: true,
           refreshToken,
           sessionToken,
-        })
-        setUser(user)
-      }
-    }
-
-    // Useful to force a re-login with the email field prefilled
-    const clearSessionToken = () => {
-      window.localStorage.removeItem('sessionToken')
-
-      if (isMounted()) {
-        setState({
-          ...state,
-          isAuthenticated: false,
-          sessionToken: null,
         })
       }
     }
@@ -85,18 +87,43 @@ export default function withAuth(Component) {
       }
     }
 
-    const providerValue = useMemo(
-      () => ({
-        clearSessionToken,
-        logIn,
-        logOut,
-        state,
-        user,
-      }),
+    const refreshSessionToken = async () => {
+      try {
+        if (state.refreshToken === null) {
+          return null
+        }
 
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [state, user],
-    )
+        const body = await api.ky
+          .post('auth/refresh', {
+            json: {
+              refreshToken: state.refreshToken,
+            },
+          })
+          .json()
+        if (body === null || body.hasError) {
+          return null
+        }
+
+        const { sessionToken } = body.data
+
+        window.localStorage.setItem('sessionToken', sessionToken)
+
+        setState({
+          ...state,
+          sessionToken,
+        })
+
+        return sessionToken
+      } catch (err) {
+        if (err instanceof HTTPError) {
+          clearSessionToken()
+        } else {
+          handleError(err, 'app/hocs/withAuth#refreshSessionToken()')
+        }
+
+        return null
+      }
+    }
 
     useEffect(() => {
       if (state.sessionToken === null && isMounted()) {
@@ -110,6 +137,10 @@ export default function withAuth(Component) {
       }
 
       ;(async () => {
+        if (state.sessionToken === null) {
+          return
+        }
+
         const isSessionExpired = await isJwtExpired(state.sessionToken)
 
         if (isSessionExpired) {
@@ -127,6 +158,20 @@ export default function withAuth(Component) {
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const providerValue = useMemo(
+      () => ({
+        clearSessionToken,
+        logIn,
+        logOut,
+        refreshSessionToken,
+        state,
+        user,
+      }),
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [state, user],
+    )
 
     return (
       <Context.Provider value={providerValue}>

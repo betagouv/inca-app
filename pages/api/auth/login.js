@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs'
+import dayjs from 'dayjs'
 import R from 'ramda'
 
 import getJwt from '../../../api/helpers/getJwt'
@@ -6,6 +7,7 @@ import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withPrisma from '../../../api/middlewares/withPrisma'
 
+const { NODE_ENV } = process.env
 const ERROR_PATH = 'pages/api/auth/login.js'
 
 async function AuthLoginController(req, res) {
@@ -16,9 +18,14 @@ async function AuthLoginController(req, res) {
   }
 
   try {
+    const loginUserData = {
+      email: String(req.body.email),
+      password: String(req.body.password),
+    }
+
     const maybeUser = await req.db.user.findUnique({
       where: {
-        email: req.body.email,
+        email: loginUserData.email,
       },
     })
     if (maybeUser === null) {
@@ -33,53 +40,60 @@ async function AuthLoginController(req, res) {
 
       return
     }
-
     if (!maybeUser.isActive) {
       handleError(new ApiError('Forbidden.', 403, true), ERROR_PATH, res)
 
       return
     }
 
-    const maybeIp = req.headers['x-real-ip']
-    const tokenPayload = R.pick(['id', 'email', 'role'], maybeUser)
-    const sessionToken = await getJwt(tokenPayload)
-
-    // If we can't resolve the client IP for the authenticated user,
-    // let's skip the Refresh JWT step
+    const maybeIp = NODE_ENV === 'production' ? req.headers['x-real-ip'] : '0.0.0.0'
     if (maybeIp === undefined) {
-      res.status(200).json({
-        data: {
-          sessionToken,
-        },
-      })
+      handleError(new ApiError(`Unresolvable IP.`, 403, true), ERROR_PATH, res)
+
+      return
+    }
+
+    const ip = Array.isArray(maybeIp) ? maybeIp.join(', ') : maybeIp
+    const userId = maybeUser.id
+
+    const tokenPayload = R.pick(['email', 'firstName', 'id', 'lastName', 'role'], maybeUser)
+    const sessionTokenValue = await getJwt(tokenPayload)
+    if (sessionTokenValue === null) {
+      handleError(new ApiError(`JWT generation failed.`, 500), ERROR_PATH, res)
 
       return
     }
 
     // Delete all existing Refresh JWT for the authenticated user client
-    await req.db.token.deleteMany({
+    await req.db.refreshToken.deleteMany({
       where: {
-        email: maybeUser.email,
-        ip: maybeIp,
+        ip,
+        userId,
       },
     })
 
-    const refreshToken = await getJwt(tokenPayload, maybeIp)
+    const expiredAt = dayjs().add(7, 'day').toDate()
+    const refreshTokenValue = await getJwt(tokenPayload, ip)
+    if (refreshTokenValue === null) {
+      handleError(new ApiError(`JWT generation failed.`, 500), ERROR_PATH, res)
+
+      return
+    }
 
     // Save the new Refresh JWT for the authenticated user client
-    const newTokenData = {
-      email: maybeUser.email,
-      ip: maybeIp,
-      value: refreshToken,
-    }
-    await req.db.token.create({
-      data: newTokenData,
+    await req.db.refreshToken.create({
+      data: {
+        expiredAt,
+        ip,
+        userId,
+        value: refreshTokenValue,
+      },
     })
 
     res.status(200).json({
       data: {
-        refreshToken,
-        sessionToken,
+        refreshToken: refreshTokenValue,
+        sessionToken: sessionTokenValue,
       },
     })
   } catch (err) {

@@ -144,13 +144,15 @@ model Prospect {
   contactCategoryId String
 }
 
-model Token {
+model RefreshToken {
   id        String   @id @default(cuid())
-  email     String
   ip        String
   value     String   @unique
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  expiredAt DateTime
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model User {
@@ -164,5 +166,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Project Project[]
+  projects      Project[]
+  refreshTokens RefreshToken[]
 }

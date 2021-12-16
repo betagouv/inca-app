@@ -1,5 +1,3 @@
-import R from 'ramda'
-
 import { USER_ROLE } from '../../common/constants'
 import getJwtPayload from '../helpers/getJwtPayload'
 import handleError from '../helpers/handleError'
@@ -22,22 +20,27 @@ export default function withAuthentication(handler, allowedRoles = [USER_ROLE.AD
         return handleError(new ApiError(`Unauthorized.`, 401, true), ERROR_PATH, res)
       }
 
-      const user = await req.db.user.findUnique({
+      const userId = maybeTokenPayload.id
+      const maybeUser = await req.db.user.findUnique({
         where: {
-          id: maybeTokenPayload.id,
+          id: userId,
         },
       })
-      if (user === null || !user.isActive) {
+      if (maybeUser === null || !maybeUser.isActive) {
         return handleError(new ApiError(`Unauthorized.`, 401, true), ERROR_PATH, res)
       }
 
-      if (!allowedRoles.includes(user.role)) {
+      if (!allowedRoles.includes(maybeUser.role)) {
         return handleError(new ApiError(`Forbidden.`, 403, true), ERROR_PATH, res)
       }
 
-      req.user = R.pick(['id'], user)
+      const reqWithAuth = Object.assign(req, {
+        me: {
+          id: userId,
+        },
+      })
 
-      return handler(req, res)
+      return await handler(reqWithAuth, res)
     } catch (err) {
       return handleError(err, ERROR_PATH, res)
     }
