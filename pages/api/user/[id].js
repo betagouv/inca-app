@@ -7,7 +7,7 @@ import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
 
 const BCRYPT_SALT_WORK_FACTOR = 10
-const ERROR_PATH = 'pages/api/UserController()'
+const ERROR_PATH = 'pages/api/user/[id].js'
 
 const excludePassword = R.omit(['password'])
 

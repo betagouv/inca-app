@@ -2,9 +2,9 @@ import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 import withAuthentication from '../../api/middlewares/withAuthentication'
 import withPrisma from '../../api/middlewares/withPrisma'
-import { ROLE } from '../../common/constants'
+import { USER_ROLE } from '../../common/constants'
 
-const ERROR_PATH = 'pages/api/OrganizationsController()'
+const ERROR_PATH = 'pages/api/projects.js'
 
 async function OrganizationsController(req, res) {
   if (req.method !== 'GET') {
@@ -35,4 +35,4 @@ async function OrganizationsController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(OrganizationsController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))
+export default withPrisma(withAuthentication(OrganizationsController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))

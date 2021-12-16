@@ -5,9 +5,9 @@ import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
-import { ROLE } from '../../../common/constants'
+import { USER_ROLE } from '../../../common/constants'
 
-const ERROR_PATH = 'pages/api/ContributorController()'
+const ERROR_PATH = 'pages/api/contributor/[id].js'
 
 async function ContributorController(req, res) {
   if (!['DELETE', 'GET', 'PATCH', 'POST'].includes(req.method)) {
@@ -106,4 +106,4 @@ async function ContributorController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(ContributorController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))
+export default withPrisma(withAuthentication(ContributorController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))

@@ -4,9 +4,9 @@ import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
-import { PROJECT_CONTRIBUTOR_STATE, ROLE } from '../../../common/constants'
+import { PROJECT_CONTRIBUTOR_STATE, USER_ROLE } from '../../../common/constants'
 
-const ERROR_PATH = 'pages/api/ProjectController()'
+const ERROR_PATH = 'pages/api/project/[id].js'
 
 async function ProjectController(req, res) {
   if (!['DELETE', 'GET', 'PATCH', 'POST'].includes(req.method)) {
@@ -186,4 +186,4 @@ async function ProjectController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(ProjectController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))
+export default withPrisma(withAuthentication(ProjectController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))

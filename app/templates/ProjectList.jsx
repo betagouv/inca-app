@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
-import { ROLE } from '../../common/constants'
+import { USER_ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
@@ -90,7 +90,6 @@ export default function ProjectList() {
   const columns = [
     ...BASE_COLUMNS,
     {
-      accent: 'success',
       action: updateProjectLockState,
       IconOff: Lock,
       IconOn: Unlock,
@@ -99,7 +98,7 @@ export default function ProjectList() {
       labelOff: 'Projet bloqué',
       labelOn: 'Projet débloqué',
       type: 'boolean',
-      withTootip: true,
+      withTooltip: true,
     },
     {
       accent: 'secondary',
@@ -117,7 +116,7 @@ export default function ProjectList() {
     },
   ]
 
-  if (user.role === ROLE.ADMINISTRATOR) {
+  if (user.role === USER_ROLE.ADMINISTRATOR) {
     columns.push({
       accent: 'danger',
       action: confirmProjectDeletion,

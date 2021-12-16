@@ -6,7 +6,7 @@ import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withPrisma from '../../../api/middlewares/withPrisma'
 
-const ERROR_PATH = 'pages/api/auth/AuthLoginController()'
+const ERROR_PATH = 'pages/api/auth/login.js'
 
 async function AuthLoginController(req, res) {
   if (req.method !== 'POST') {

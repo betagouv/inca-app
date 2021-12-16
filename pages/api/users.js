@@ -4,9 +4,9 @@ import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 import withAuthentication from '../../api/middlewares/withAuthentication'
 import withPrisma from '../../api/middlewares/withPrisma'
-import { ROLE } from '../../common/constants'
+import { USER_ROLE } from '../../common/constants'
 
-const ERROR_PATH = 'pages/api/UsersController()'
+const ERROR_PATH = 'pages/api/users.js'
 
 const excludePassword = R.omit(['password'])
 
@@ -32,4 +32,4 @@ async function UsersController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(UsersController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))
+export default withPrisma(withAuthentication(UsersController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))

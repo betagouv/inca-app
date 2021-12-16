@@ -2,7 +2,7 @@ import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 
 const { npm_package_version: VERSION } = process.env
-const ERROR_PATH = 'pages/api/auth/IndexController()'
+const ERROR_PATH = 'pages/api/index.js'
 
 async function IndexController(req, res) {
   if (req.method !== 'GET') {

@@ -38,7 +38,7 @@ const BASE_COLUMNS = [
     labelOff: 'Compte inactif',
     labelOn: 'Compte actif',
     type: 'boolean',
-    withTootip: true,
+    withTooltip: true,
   },
 ]
 

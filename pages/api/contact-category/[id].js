@@ -1,15 +1,14 @@
 import * as R from 'ramda'
 
-import getRandomPipedriveId from '../../../api/helpers/getRandomPipedriveId'
 import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
 import { USER_ROLE } from '../../../common/constants'
 
-const ERROR_PATH = 'pages/api/lead/[id].js'
+const ERROR_PATH = 'pages/api/contact-category/[id].js'
 
-async function LeadController(req, res) {
+async function ContactCategoryController(req, res) {
   if (!['DELETE', 'GET', 'PATCH', 'POST'].includes(req.method)) {
     handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
 
@@ -20,20 +19,17 @@ async function LeadController(req, res) {
   switch (req.method) {
     case 'GET':
       try {
-        const maybeLead = await req.db.lead.findUnique({
-          include: {
-            organization: true,
-          },
+        const maybeContactCategory = await req.db.contactCategory.findUnique({
           where: {
             id: req.query.id,
           },
         })
-        if (maybeLead === null) {
+        if (maybeContactCategory === null) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
         res.status(200).json({
-          data: maybeLead,
+          data: maybeContactCategory,
         })
       } catch (err) {
         handleError(err, ERROR_PATH, res)
@@ -43,11 +39,10 @@ async function LeadController(req, res) {
 
     case 'POST':
       try {
-        const newLeadData = R.pick(['email', 'firstName', 'lastName', 'note', 'organizationId', 'phone'], req.body)
-        newLeadData.pipedriveId = await getRandomPipedriveId(req, 'lead')
+        const newContactCategoryData = R.pick(['description', 'label'], req.body)
 
-        await req.db.lead.create({
-          data: newLeadData,
+        await req.db.contactCategory.create({
+          data: newContactCategoryData,
         })
 
         res.status(201).json({})
@@ -59,18 +54,18 @@ async function LeadController(req, res) {
 
     case 'PATCH':
       try {
-        const maybeLead = await req.db.lead.findUnique({
+        const maybeContactCategory = await req.db.contactCategory.findUnique({
           where: {
             id: req.query.id,
           },
         })
-        if (maybeLead === null) {
+        if (maybeContactCategory === null) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
-        const updatedLeadData = R.pick(['email', 'firstName', 'lastName', 'note', 'organizationId', 'phone'], req.body)
-        await req.db.lead.update({
-          data: updatedLeadData,
+        const updatedContactCategoryData = R.pick(['description', 'label'], req.body)
+        await req.db.contactCategory.update({
+          data: updatedContactCategoryData,
           where: {
             id: req.query.id,
           },
@@ -85,18 +80,18 @@ async function LeadController(req, res) {
 
     case 'DELETE':
       try {
-        const maybeLead = await req.db.lead.findUnique({
+        const maybeContactCategory = await req.db.contactCategory.findUnique({
           where: {
             id: req.query.id,
           },
         })
-        if (maybeLead === null) {
+        if (maybeContactCategory === null) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
 
           return
         }
 
-        await req.db.lead.delete({
+        await req.db.contactCategory.delete({
           where: {
             id: req.query.id,
           },
@@ -109,4 +104,4 @@ async function LeadController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(LeadController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))
+export default withPrisma(withAuthentication(ContactCategoryController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))

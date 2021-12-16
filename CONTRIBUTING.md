@@ -29,6 +29,8 @@ git clone https://github.com/betagouv/tell-me.git
 cd tell-me
 yarn
 yarn dev:docker
+yarn db:migrate
+yarn db:seed
 yarn dev
 ```
 
@@ -40,6 +42,7 @@ It will also watch for file changes and automatically re-hydrate the webapp on t
 > 📋 **Note**  
 > The `yarn` command install the dependencies but also run the `scripts/dev/setup.js` scripts. This script does the
 > following tasks, if necessary:
+>
 > - Copy `.env.example` file to a `.env` one.
 > - Generate a RSA Key Pair (required in order to generate and verify [JWTs](https://jwt.io))
 
@@ -93,7 +96,7 @@ chmod +x ~/repositories/inca-app.git/hooks/post-receive
 
 You can now exit and go into you your local proxy directory to add your server repository reference:
 
-```
+```sh
 git remote add live ssh://<USERNAME>@<SERVER_IP>/home/<USERNAME>/repositories/inca-app.git
 ```
 

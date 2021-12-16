@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import useAuth from '../../app/hooks/useAuth'
 import LoginModal from '../../app/organisms/LoginModal'
 import Menu from '../../app/organisms/Menu'
+import ContactCategoryEditor from '../../app/templates/ContactCategoryEditor'
+import ContactCategoryList from '../../app/templates/ContactCategoryList'
 import ContributorEditor from '../../app/templates/ContributorEditor'
 import ContributorList from '../../app/templates/ContributorList'
 import LeadEditor from '../../app/templates/LeadEditor'
@@ -14,6 +16,8 @@ import ProjectBoard from '../../app/templates/ProjectBoard'
 import ProjectEditor from '../../app/templates/ProjectEditor'
 import ProjectLinker from '../../app/templates/ProjectLinker'
 import ProjectList from '../../app/templates/ProjectList'
+import ProspectEditor from '../../app/templates/ProspectEditor'
+import ProspectList from '../../app/templates/ProspectList'
 import UserEditor from '../../app/templates/UserEditor'
 import UserList from '../../app/templates/UserList'
 
@@ -65,6 +69,13 @@ export default function AdminSpaPage() {
                 <ProjectBoard />
               </Route>
 
+              <Route path="/contact-categories">
+                <ContactCategoryList />
+              </Route>
+              <Route path="/contact-category/:id">
+                <ContactCategoryEditor />
+              </Route>
+
               <Route path="/contributors">
                 <ContributorList />
               </Route>
@@ -94,6 +105,13 @@ export default function AdminSpaPage() {
               </Route>
               <Route path="/project/:id">
                 <ProjectEditor />
+              </Route>
+
+              <Route path="/prospects">
+                <ProspectList />
+              </Route>
+              <Route path="/prospect/:id">
+                <ProspectEditor />
               </Route>
 
               <Route path="/users">

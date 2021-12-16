@@ -1,13 +1,13 @@
 import R from 'ramda'
 
-import { ROLE } from '../../common/constants'
+import { USER_ROLE } from '../../common/constants'
 import getJwtPayload from '../helpers/getJwtPayload'
 import handleError from '../helpers/handleError'
 import ApiError from '../libs/ApiError'
 
 const ERROR_PATH = 'middlewares/withAuthentication()'
 
-export default function withAuthentication(handler, allowedRoles = [ROLE.ADMINISTRATOR]) {
+export default function withAuthentication(handler, allowedRoles = [USER_ROLE.ADMINISTRATOR]) {
   return async (req, res) => {
     try {
       const authorizationHeader = req.headers.authorization

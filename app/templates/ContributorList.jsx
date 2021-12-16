@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
-import { ROLE } from '../../common/constants'
+import { USER_ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
@@ -84,7 +84,7 @@ export default function ContributorList() {
     },
   ]
 
-  if (user.role === ROLE.ADMINISTRATOR) {
+  if (user.role === USER_ROLE.ADMINISTRATOR) {
     columns.push({
       accent: 'danger',
       action: deleteContributor,

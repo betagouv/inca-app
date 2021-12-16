@@ -1,4 +1,9 @@
-/* eslint-disable import/prefer-default-export */
+export const PROSPECT_STATE = {
+  ADDED: 'ADDED',
+  CONTACTED: 'CONTACTED',
+  REFUSED: 'REFUSED',
+  REGISTERED: 'REGISTERED',
+}
 
 export const PROJECT_CONTRIBUTOR_STATE = {
   ASSIGNED: 'ASSIGNED',
@@ -8,16 +13,16 @@ export const PROJECT_CONTRIBUTOR_STATE = {
   VALIDATED: 'VALIDATED',
 }
 
-export const ROLE = {
+export const USER_ROLE = {
   ADMINISTRATOR: 'ADMINISTRATOR',
   MANAGER: 'MANAGER',
   MEMBER: 'MEMBER',
 }
 
-export const ROLE_LABEL = {
+export const USER_ROLE_LABEL = {
   ADMINISTRATOR: 'Administrateur·rice',
   MANAGER: 'Chargé·e de projets',
   MEMBER: 'Membre',
 }
 
-export const ROLES = Object.values(ROLE)
+export const USER_ROLES = Object.values(USER_ROLE)

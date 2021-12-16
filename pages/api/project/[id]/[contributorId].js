@@ -4,9 +4,9 @@ import handleError from '../../../../api/helpers/handleError'
 import ApiError from '../../../../api/libs/ApiError'
 import withAuthentication from '../../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../../api/middlewares/withPrisma'
-import { ROLE } from '../../../../common/constants'
+import { USER_ROLE } from '../../../../common/constants'
 
-const ERROR_PATH = 'pages/api/ProjectController()'
+const ERROR_PATH = 'pages/api/project/[id]/[contributorId].js'
 
 async function ProjectController(req, res) {
   if (!['PATCH'].includes(req.method)) {
@@ -63,4 +63,4 @@ async function ProjectController(req, res) {
   }
 }
 
-export default withPrisma(withAuthentication(ProjectController, [ROLE.ADMINISTRATOR, ROLE.MANAGER]))
+export default withPrisma(withAuthentication(ProjectController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))

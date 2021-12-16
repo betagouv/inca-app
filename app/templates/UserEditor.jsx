@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 
-import { ROLE_LABEL } from '../../common/constants'
+import { USER_ROLE_LABEL } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
 import Field from '../atoms/Field'
@@ -22,10 +22,10 @@ const FormSchema = Yup.object().shape({
   roleAsOption: Yup.object().required(`Le rôle est obligatoire.`),
 })
 
-const ROLES_AS_OPTIONS = R.pipe(
+const USER_ROLES_AS_OPTIONS = R.pipe(
   R.toPairs,
   R.map(([value, label]) => ({ label, value })),
-)(ROLE_LABEL)
+)(USER_ROLE_LABEL)
 
 export default function UserEditor() {
   const api = useApi()
@@ -48,7 +48,7 @@ export default function UserEditor() {
     const userEditableData = R.pick(['email', 'firstName', 'lastName', 'isActive'])(userData)
 
     userEditableData.roleAsOption = {
-      label: ROLE_LABEL[userData.role],
+      label: USER_ROLE_LABEL[userData.role],
       value: userData.role,
     }
 
@@ -117,7 +117,7 @@ export default function UserEditor() {
           </Field>
 
           <Field>
-            <Form.Select label="Rôle" name="roleAsOption" options={ROLES_AS_OPTIONS} />
+            <Form.Select label="Rôle" name="roleAsOption" options={USER_ROLES_AS_OPTIONS} />
           </Field>
 
           <Field>

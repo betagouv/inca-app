@@ -10,6 +10,16 @@ generator client {
   previewFeatures = ["fullTextSearch"]
 }
 
+// =========================================================
+// Constants
+
+enum ProspectState {
+  ADDED
+  CONTACTED
+  REFUSED
+  REGISTERED
+}
+
 enum ProjectContributorState {
   ASSIGNED
   CONTACTED
@@ -27,6 +37,16 @@ enum Role {
 // =========================================================
 // Models
 
+model ContactCategory {
+  id          String   @id @default(cuid())
+  label       String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  Prospect Prospect[]
+}
+
 model Contributor {
   id          String   @id @default(cuid())
   pipedriveId Int      @unique
@@ -41,6 +61,19 @@ model Contributor {
   updatedAt   DateTime @updatedAt
 
   projects ContributorsOnProjects[]
+}
+
+model ContributorsOnProjects {
+  state     ProjectContributorState @default(ASSIGNED)
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+
+  contributor   Contributor @relation(fields: [contributorId], references: [id])
+  contributorId String
+  project       Project     @relation(fields: [projectId], references: [id])
+  projectId     String
+
+  @@id([contributorId, projectId])
 }
 
 model Lead {
@@ -94,17 +127,21 @@ model Project {
   userId         String
 }
 
-model ContributorsOnProjects {
-  state     ProjectContributorState @default(ASSIGNED)
-  createdAt DateTime                @default(now())
-  updatedAt DateTime                @updatedAt
+model Prospect {
+  id           String        @id @default(cuid())
+  firstName    String
+  lastName     String
+  position     String?
+  email        String
+  phone        String?
+  note         String?
+  state        ProspectState @default(ADDED)
+  organization String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  contributor   Contributor @relation(fields: [contributorId], references: [id])
-  contributorId String
-  project       Project     @relation(fields: [projectId], references: [id])
-  projectId     String
-
-  @@id([contributorId, projectId])
+  contactCategory   ContactCategory @relation(fields: [contactCategoryId], references: [id])
+  contactCategoryId String
 }
 
 model Token {

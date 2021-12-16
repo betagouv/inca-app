@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ROLE } from '../../common/constants'
+import { USER_ROLE } from '../../common/constants'
 import useAuth from '../hooks/useAuth'
 
 const Container = styled.div`
@@ -66,8 +66,10 @@ export default function Menu() {
           <Link to="/organizations">Organisations</Link>
           <Link to="/leads">Porteur·ses</Link>
           <Link to="/contributors">Contributeur·rices</Link>
+          <Link to="/prospects">Prospect·es</Link>
+          <Link to="/contact-categories">Catégories de contact</Link>
 
-          {user.role === ROLE.ADMINISTRATOR && <Link to="/users">Utilisateur·rices</Link>}
+          {user.role === USER_ROLE.ADMINISTRATOR && <Link to="/users">Utilisateur·rices</Link>}
         </List>
       </div>
     </Container>

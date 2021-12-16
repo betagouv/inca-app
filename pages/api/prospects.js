@@ -4,9 +4,9 @@ import withAuthentication from '../../api/middlewares/withAuthentication'
 import withPrisma from '../../api/middlewares/withPrisma'
 import { USER_ROLE } from '../../common/constants'
 
-const ERROR_PATH = 'pages/api/leads.js'
+const ERROR_PATH = 'pages/api/prospects.js'
 
-async function LeadsController(req, res) {
+async function ProspectsController(req, res) {
   if (req.method !== 'GET') {
     handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
 
@@ -17,45 +17,33 @@ async function LeadsController(req, res) {
     const { query: maybeQuery } = req.query
 
     if (maybeQuery === undefined) {
-      const leads = await req.db.lead.findMany({
+      const prospects = await req.db.prospect.findMany({
         include: {
-          organization: true,
+          contactCategory: true,
         },
       })
 
       res.status(200).json({
-        data: leads,
+        data: prospects,
       })
 
       return
     }
 
-    const queryTerms = maybeQuery.split(/\s+/)
-    const orStatements = ['firstName', 'lastName']
-      .map(field =>
-        queryTerms.map(queryTerm => ({
-          [field]: {
-            contains: queryTerm,
-            mode: 'insensitive',
-          },
-        })),
-      )
-      .flat()
-    const filteredLeads = await req.db.lead.findMany({
-      include: {
-        organization: true,
-      },
+    const searchQuery = maybeQuery.replace(/\s+/g, ' | ')
+    const orStatements = ['firstName', 'lastName', 'organization'].map(field => ({ [field]: { search: searchQuery } }))
+    const filteredProspects = await req.db.prospect.findMany({
       where: {
         OR: orStatements,
       },
     })
 
     res.status(200).json({
-      data: filteredLeads,
+      data: filteredProspects,
     })
   } catch (err) {
     handleError(err, ERROR_PATH, res)
   }
 }
 
-export default withPrisma(withAuthentication(LeadsController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))
+export default withPrisma(withAuthentication(ProspectsController, [USER_ROLE.ADMINISTRATOR, USER_ROLE.MANAGER]))
