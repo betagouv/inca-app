@@ -54,6 +54,7 @@
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
+    "@ivangabriele/commitlint-config": "1.0.2",
     "@ivangabriele/eslint-config-react": "2.1.4",
     "@ivangabriele/prettier-config": "2.0.2",
     "@types/jest": "27.0.2",
