@@ -1,5 +1,6 @@
-import { Button, Card, Table } from '@singularity/core'
-import { useEffect, useState } from 'react'
+import { Button, Card, Table, TextInput } from '@singularity/core'
+import debounce from 'lodash.debounce'
+import { useEffect, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
@@ -35,6 +36,7 @@ const BASE_COLUMNS = [
 ]
 
 export default function ContributorList() {
+  const $searchInput = useRef(null)
   const [isLoading, setIsLoading] = useState(true)
   const [contributors, setContributors] = useState([])
   const history = useHistory()
@@ -73,6 +75,30 @@ export default function ContributorList() {
     history.push(`/contributor/${id}`)
   }
 
+  const searchContributors = debounce(async () => {
+    setIsLoading(true)
+
+    const query = $searchInput.current.value
+    const urlParams = new URLSearchParams({
+      query,
+    })
+    const path = `contributors?${urlParams}`
+
+    const maybeBody = await api.get(path)
+    if (maybeBody === null || maybeBody.hasError) {
+      if (isMounted()) {
+        setIsLoading(false)
+      }
+
+      return
+    }
+
+    if (isMounted()) {
+      setContributors(maybeBody.data)
+      setIsLoading(false)
+    }
+  }, 250)
+
   const columns = [
     ...BASE_COLUMNS,
     {
@@ -105,6 +131,8 @@ export default function ContributorList() {
       </AdminHeader>
 
       <Card>
+        <TextInput ref={$searchInput} onInput={searchContributors} placeholder="Rechercher un·e contributeur·rice" />
+
         <Table columns={columns} data={contributors} defaultSortedKey="lastName" isLoading={isLoading} />
       </Card>
     </AdminBox>

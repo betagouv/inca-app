@@ -92,7 +92,7 @@ export default function ProspectList() {
     await loadProspects()
   }
 
-  const searchProspect = debounce(async () => {
+  const searchProspects = debounce(async () => {
     setIsLoading(true)
 
     const query = $searchInput.current.value
@@ -149,7 +149,7 @@ export default function ProspectList() {
       </AdminHeader>
 
       <Card>
-        <TextInput ref={$searchInput} onInput={searchProspect} placeholder="Rechercher un·e prospect·e" />
+        <TextInput ref={$searchInput} onInput={searchProspects} placeholder="Rechercher un·e prospect·e" />
 
         <Table columns={columns} data={prospects} defaultSortedKey="lastName" isLoading={isLoading} />
       </Card>

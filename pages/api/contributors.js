@@ -1,3 +1,4 @@
+import buildSearchFilter from '../../api/helpers/buildSearchFilter'
 import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 import withAuthentication from '../../api/middlewares/withAuthentication'
@@ -16,7 +17,7 @@ async function ContributorsController(req, res) {
   try {
     const { query: maybeQuery } = req.query
 
-    if (maybeQuery === undefined) {
+    if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
       const contributors = await req.db.contributor.findMany({
         include: {
           projects: {
@@ -34,13 +35,8 @@ async function ContributorsController(req, res) {
       return
     }
 
-    const searchQuery = maybeQuery.replace(/\s+/g, ' | ')
-    const orStatements = ['firstName', 'lastName'].map(field => ({ [field]: { search: searchQuery } }))
-    const filteredContributors = await req.db.contributor.findMany({
-      where: {
-        OR: orStatements,
-      },
-    })
+    const searchFilter = buildSearchFilter(['email', 'firstName', 'lastName'], maybeQuery)
+    const filteredContributors = await req.db.contributor.findMany(searchFilter)
 
     res.status(200).json({
       data: filteredContributors,

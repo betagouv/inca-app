@@ -1,4 +1,4 @@
-import buildSearchQuery from '../../api/helpers/buildSearchQuery'
+import buildSearchFilter from '../../api/helpers/buildSearchFilter'
 import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 import withAuthentication from '../../api/middlewares/withAuthentication'
@@ -31,13 +31,8 @@ async function ProspectsController(req, res) {
       return
     }
 
-    const searchQuery = maybeQuery.replace(/\s+/g, ' | ')
-    const orStatements = buildSearchQuery(['email', 'firstName', 'lastName', 'organization'], searchQuery)
-    const filteredProspects = await req.db.prospect.findMany({
-      where: {
-        OR: orStatements,
-      },
-    })
+    const searchFilter = buildSearchFilter(['email', 'firstName', 'lastName', 'organization'], maybeQuery)
+    const filteredProspects = await req.db.prospect.findMany(searchFilter)
 
     res.status(200).json({
       data: filteredProspects,
