@@ -1,5 +1,6 @@
-import { Button, Card, Table } from '@singularity/core'
-import { useEffect, useState } from 'react'
+import { Button, Card, Table, TextInput } from '@singularity/core'
+import debounce from 'lodash.debounce'
+import { useEffect, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
@@ -40,6 +41,7 @@ const BASE_COLUMNS = [
 ]
 
 export default function LeadList() {
+  const $searchInput = useRef(null)
   const [isLoading, setIsLoading] = useState(true)
   const [leads, setLeads] = useState([])
   const history = useHistory()
@@ -78,6 +80,30 @@ export default function LeadList() {
     history.push(`/lead/${id}`)
   }
 
+  const searchLeads = debounce(async () => {
+    setIsLoading(true)
+
+    const query = $searchInput.current.value
+    const urlParams = new URLSearchParams({
+      query,
+    })
+    const path = `leads?${urlParams}`
+
+    const maybeBody = await api.get(path)
+    if (maybeBody === null || maybeBody.hasError) {
+      if (isMounted()) {
+        setIsLoading(false)
+      }
+
+      return
+    }
+
+    if (isMounted()) {
+      setLeads(maybeBody.data)
+      setIsLoading(false)
+    }
+  }, 250)
+
   const columns = [
     ...BASE_COLUMNS,
     {
@@ -110,6 +136,8 @@ export default function LeadList() {
       </AdminHeader>
 
       <Card>
+        <TextInput ref={$searchInput} onInput={searchLeads} placeholder="Rechercher un·e porteur·se" />
+
         <Table columns={columns} data={leads} defaultSortedKey="lastName" isLoading={isLoading} />
       </Card>
     </AdminBox>

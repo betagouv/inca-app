@@ -1,3 +1,4 @@
+import buildSearchFilter from '../../api/helpers/buildSearchFilter'
 import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 import withAuthentication from '../../api/middlewares/withAuthentication'
@@ -16,7 +17,7 @@ async function LeadsController(req, res) {
   try {
     const { query: maybeQuery } = req.query
 
-    if (maybeQuery === undefined) {
+    if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
       const leads = await req.db.lead.findMany({
         include: {
           organization: true,
@@ -30,25 +31,8 @@ async function LeadsController(req, res) {
       return
     }
 
-    const queryTerms = maybeQuery.split(/\s+/)
-    const orStatements = ['firstName', 'lastName']
-      .map(field =>
-        queryTerms.map(queryTerm => ({
-          [field]: {
-            contains: queryTerm,
-            mode: 'insensitive',
-          },
-        })),
-      )
-      .flat()
-    const filteredLeads = await req.db.lead.findMany({
-      include: {
-        organization: true,
-      },
-      where: {
-        OR: orStatements,
-      },
-    })
+    const searchFilter = buildSearchFilter(['email', 'firstName', 'lastName', 'organization.name'], maybeQuery)
+    const filteredLeads = await req.db.lead.findMany(searchFilter)
 
     res.status(200).json({
       data: filteredLeads,
