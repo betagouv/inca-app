@@ -39,7 +39,7 @@ export default function LeadEditor() {
     }
 
     const leadData = maybeBody.data
-    const leadEditableData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(leadData)
+    const leadEditableData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone', 'position'])(leadData)
 
     leadEditableData.organizationAsOption = {
       label: leadData.organization.name,
@@ -85,7 +85,7 @@ export default function LeadEditor() {
   }, [])
 
   const updateLeadAndGoBack = async (values, { setErrors, setSubmitting }) => {
-    const leadData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
+    const leadData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone', 'position'])(values)
     leadData.organizationId = values.organizationAsOption.value
 
     const maybeBody = isNew ? await api.post(`lead/${id}`, leadData) : await api.patch(`lead/${id}`, leadData)
@@ -131,6 +131,10 @@ export default function LeadEditor() {
 
           <Field>
             <Form.Select label="Organisation" name="organizationAsOption" options={organizationsAsOptions} />
+          </Field>
+
+          <Field>
+            <Form.Input label="Poste" name="position" />
           </Field>
 
           <Field>

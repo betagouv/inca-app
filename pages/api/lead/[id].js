@@ -43,7 +43,10 @@ async function LeadController(req, res) {
 
     case 'POST':
       try {
-        const newLeadData = R.pick(['email', 'firstName', 'lastName', 'note', 'organizationId', 'phone'], req.body)
+        const newLeadData = R.pick(
+          ['email', 'firstName', 'lastName', 'note', 'organizationId', 'phone', 'position'],
+          req.body,
+        )
         newLeadData.pipedriveId = await getRandomPipedriveId(req, 'lead')
 
         await req.db.lead.create({
@@ -68,7 +71,10 @@ async function LeadController(req, res) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
-        const updatedLeadData = R.pick(['email', 'firstName', 'lastName', 'note', 'organizationId', 'phone'], req.body)
+        const updatedLeadData = R.pick(
+          ['email', 'firstName', 'lastName', 'note', 'organizationId', 'phone', 'position'],
+          req.body,
+        )
         await req.db.lead.update({
           data: updatedLeadData,
           where: {
