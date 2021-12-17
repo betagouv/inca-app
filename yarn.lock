@@ -1004,10 +1004,10 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-3.2.1-1.b71d8cb16c4ddc7e3e9821f42fd09b0f82d7934c.tgz#d2a41a76a89548ea411043c3198eee4a75475dbb"
   integrity sha512-wnHODKLQGKkE2ZCHxHQEf/4Anq/EP0ZCvX++D5w34033mwZ94iZiOsEKZZ31fgki7MTh28F1VNF5ZSFdnRjgvQ==
 
-"@singularity/core@2.0.0-beta.10":
-  version "2.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/@singularity/core/-/core-2.0.0-beta.10.tgz#df5c393b88feebacc8f56fd29c35a80868cfff4d"
-  integrity sha512-HGwFaOcC0e2ukcKf8cV8sV8f5XmTxehBirPdp3mbjF/hhorIduew4eoLiqVF7C/iFxrrKioFQdcgq7YMwk99Qg==
+"@singularity/core@2.0.0-beta.11":
+  version "2.0.0-beta.11"
+  resolved "https://registry.yarnpkg.com/@singularity/core/-/core-2.0.0-beta.11.tgz#3908bdac2019e1caacca2ffba32b586368f41131"
+  integrity sha512-ibEWhjT58mFbdsHOGVucGuc7dyjTOL5y15HzyvlOIVChVCh/3r9LtU1PxXwaKMh2iaeJLV3na2WpwCWX0J5suw==
   dependencies:
     better-prop-types "^1.0.0"
     ramda "^0.27.1"
