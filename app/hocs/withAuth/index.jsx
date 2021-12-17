@@ -108,10 +108,12 @@ export default function withAuth(Component) {
 
         window.localStorage.setItem('sessionToken', sessionToken)
 
-        setState({
-          ...state,
-          sessionToken,
-        })
+        if (isMounted()) {
+          setState({
+            ...state,
+            sessionToken,
+          })
+        }
 
         return sessionToken
       } catch (err) {
