@@ -1,4 +1,5 @@
 import { Button, Card, Table, TextInput } from '@singularity/core'
+import debounce from 'lodash.debounce'
 import * as R from 'ramda'
 import { useEffect, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
@@ -91,7 +92,7 @@ export default function ProspectList() {
     await loadProspects()
   }
 
-  const searchProspect = async () => {
+  const searchProspect = debounce(async () => {
     setIsLoading(true)
 
     const query = $searchInput.current.value
@@ -113,7 +114,7 @@ export default function ProspectList() {
       setProspects(maybeBody.data)
       setIsLoading(false)
     }
-  }
+  }, 250)
 
   const goToProspectEditor = id => {
     history.push(`/prospect/${id}`)
