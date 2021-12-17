@@ -17,11 +17,11 @@ async function AuthRefreshController(req, res) {
   }
 
   try {
-    const tokenValue = String(req.body.token)
+    const refreshTokenValue = String(req.body.refreshToken)
 
     const maybeToken = await req.db.refreshToken.findUnique({
       where: {
-        value: tokenValue,
+        value: refreshTokenValue,
       },
     })
     if (maybeToken === null) {
@@ -29,10 +29,10 @@ async function AuthRefreshController(req, res) {
 
       return
     }
-    if (dayjs().isAfter(dayjs(maybeToken.expiredAt)) || (await isJwtExpired(tokenValue))) {
+    if (dayjs().isAfter(dayjs(maybeToken.expiredAt)) || (await isJwtExpired(refreshTokenValue))) {
       await req.db.refreshToken.delete({
         where: {
-          value: tokenValue,
+          value: refreshTokenValue,
         },
       })
 
