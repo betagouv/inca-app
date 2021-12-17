@@ -35,6 +35,8 @@ async function OrganizationsController(req, res) {
       res.status(200).json({
         data: projects,
       })
+
+      return
     }
 
     const searchFilter = buildSearchFilter(['name'], maybeQuery)
