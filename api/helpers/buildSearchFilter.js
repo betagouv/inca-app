@@ -1,21 +1,19 @@
 import * as R from 'ramda'
 
-const buildInclude = R.pipe(
-  R.map(R.split('.')),
-  R.map(([releationField]) => [releationField, true]),
-  R.fromPairs,
-)
-
-const buildNativeStatements = (nativeFields, searchQuery) =>
-  R.map(nativeFields => ({
-    [nativeFields]: {
-      contains: searchQuery,
-      mode: 'insensitive',
-    },
-  }))(nativeFields)
-
-const buildRelationStatements = (relationFields, searchQuery) =>
+const buildNativeStatements = (fields, searchQuery) =>
   R.pipe(
+    R.reject(R.test(/\./)),
+    R.map(nativeFields => ({
+      [nativeFields]: {
+        contains: searchQuery,
+        mode: 'insensitive',
+      },
+    })),
+  )(fields)
+
+const buildRelationStatements = (fields, searchQuery) =>
+  R.pipe(
+    R.filter(R.test(/\./)),
     R.map(R.split('.')),
     R.map(([relationField, foreignField]) => ({
       [relationField]: {
@@ -25,29 +23,15 @@ const buildRelationStatements = (relationFields, searchQuery) =>
         },
       },
     })),
-  )(relationFields)
-
-const filterRelationFields = R.filter(R.test(/\./))
-const rejectRelationFields = R.reject(R.test(/\./))
+  )(fields)
 
 export default function buildSearchFilter(fields, searchQuery) {
-  const nativeFields = rejectRelationFields(fields)
-  const relationFields = filterRelationFields(fields)
+  const nativeStatements = buildNativeStatements(fields, searchQuery)
+  const relationStatements = buildRelationStatements(fields, searchQuery)
 
-  const nativeStatements = buildNativeStatements(nativeFields, searchQuery)
-  const relationStatements = buildRelationStatements(relationFields, searchQuery)
-
-  const filter = {
+  return {
     where: {
       OR: [...nativeStatements, ...relationStatements],
     },
   }
-
-  if (relationFields.length === 0) {
-    return filter
-  }
-
-  filter.include = buildInclude(relationFields)
-
-  return filter
 }

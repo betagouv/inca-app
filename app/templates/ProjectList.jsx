@@ -1,6 +1,7 @@
-import { Button, Card, Table } from '@singularity/core'
+import { Button, Card, Table, TextInput } from '@singularity/core'
+import debounce from 'lodash.debounce'
 import * as R from 'ramda'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
@@ -22,6 +23,7 @@ const BASE_COLUMNS = [
 ]
 
 export default function ProjectList() {
+  const $searchInput = useRef(null)
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [projects, setProjects] = useState([])
@@ -81,6 +83,30 @@ export default function ProjectList() {
     history.push(`/project/${id}`)
   }
 
+  const searchProjects = debounce(async () => {
+    setIsLoading(true)
+
+    const query = $searchInput.current.value
+    const urlParams = new URLSearchParams({
+      query,
+    })
+    const path = `projects?${urlParams}`
+
+    const maybeBody = await api.get(path)
+    if (maybeBody === null || maybeBody.hasError) {
+      if (isMounted()) {
+        setIsLoading(false)
+      }
+
+      return
+    }
+
+    if (isMounted()) {
+      setProjects(maybeBody.data)
+      setIsLoading(false)
+    }
+  }, 250)
+
   const updateProjectLockState = async (id, isUnlocked) => {
     await api.patch(`project/${id}`, { isUnlocked })
 
@@ -137,6 +163,8 @@ export default function ProjectList() {
       </AdminHeader>
 
       <Card>
+        <TextInput ref={$searchInput} onInput={searchProjects} placeholder="Rechercher un projet" />
+
         <Table columns={columns} data={projects} defaultSortedKey="name" isLoading={isLoading} />
       </Card>
 
