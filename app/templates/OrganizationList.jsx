@@ -1,5 +1,6 @@
-import { Button, Card, Table } from '@singularity/core'
-import { useEffect, useState } from 'react'
+import { Button, Card, Table, TextInput } from '@singularity/core'
+import debounce from 'lodash.debounce'
+import { useEffect, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
@@ -20,6 +21,7 @@ const BASE_COLUMNS = [
 ]
 
 export default function OrganizationList() {
+  const $searchInput = useRef(null)
   const [isLoading, setIsLoading] = useState(true)
   const [organizations, setOrganizations] = useState([])
   const history = useHistory()
@@ -58,6 +60,30 @@ export default function OrganizationList() {
     history.push(`/organization/${id}`)
   }
 
+  const searchOrganizations = debounce(async () => {
+    setIsLoading(true)
+
+    const query = $searchInput.current.value
+    const urlParams = new URLSearchParams({
+      query,
+    })
+    const path = `organizations?${urlParams}`
+
+    const maybeBody = await api.get(path)
+    if (maybeBody === null || maybeBody.hasError) {
+      if (isMounted()) {
+        setIsLoading(false)
+      }
+
+      return
+    }
+
+    if (isMounted()) {
+      setOrganizations(maybeBody.data)
+      setIsLoading(false)
+    }
+  }, 250)
+
   const columns = [
     ...BASE_COLUMNS,
     {
@@ -90,6 +116,8 @@ export default function OrganizationList() {
       </AdminHeader>
 
       <Card>
+        <TextInput ref={$searchInput} onInput={searchOrganizations} placeholder="Rechercher une organisation" />
+
         <Table columns={columns} data={organizations} defaultSortedKey="name" isLoading={isLoading} />
       </Card>
     </AdminBox>

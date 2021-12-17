@@ -1,3 +1,4 @@
+import buildSearchFilter from '../../api/helpers/buildSearchFilter'
 import handleError from '../../api/helpers/handleError'
 import ApiError from '../../api/libs/ApiError'
 import withAuthentication from '../../api/middlewares/withAuthentication'
@@ -14,10 +15,23 @@ async function OrganizationsController(req, res) {
   }
 
   try {
-    const organizations = await req.db.organization.findMany()
+    const { query: maybeQuery } = req.query
+
+    if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
+      const organizations = await req.db.organization.findMany()
+
+      res.status(200).json({
+        data: organizations,
+      })
+
+      return
+    }
+
+    const searchFilter = buildSearchFilter(['name'], maybeQuery)
+    const filteredOrganizations = await req.db.organization.findMany(searchFilter)
 
     res.status(200).json({
-      data: organizations,
+      data: filteredOrganizations,
     })
   } catch (err) {
     handleError(err, ERROR_PATH, res)
