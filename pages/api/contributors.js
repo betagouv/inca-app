@@ -16,16 +16,22 @@ async function ContributorsController(req, res) {
 
   try {
     const { query: maybeQuery } = req.query
+    const filterInclude = {
+      contactCategory: true,
+      projects: {
+        include: {
+          project: true,
+        },
+      },
+    }
+    const filterOrderBy = {
+      lastName: 'asc',
+    }
 
     if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
       const contributors = await req.db.contributor.findMany({
-        include: {
-          projects: {
-            include: {
-              project: true,
-            },
-          },
-        },
+        include: filterInclude,
+        orderBy: filterOrderBy,
       })
 
       res.status(200).json({
@@ -36,7 +42,11 @@ async function ContributorsController(req, res) {
     }
 
     const searchFilter = buildSearchFilter(['email', 'firstName', 'lastName'], maybeQuery)
-    const filteredContributors = await req.db.contributor.findMany(searchFilter)
+    const filteredContributors = await req.db.contributor.findMany({
+      include: filterInclude,
+      orderBy: filterOrderBy,
+      ...searchFilter,
+    })
 
     res.status(200).json({
       data: filteredContributors,

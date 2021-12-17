@@ -16,12 +16,17 @@ async function ProspectsController(req, res) {
 
   try {
     const { query: maybeQuery } = req.query
+    const filterInclude = {
+      contactCategory: true,
+    }
+    const filterOrderBy = {
+      lastName: 'asc',
+    }
 
     if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
       const prospects = await req.db.prospect.findMany({
-        include: {
-          contactCategory: true,
-        },
+        include: filterInclude,
+        orderBy: filterOrderBy,
       })
 
       res.status(200).json({
@@ -32,7 +37,11 @@ async function ProspectsController(req, res) {
     }
 
     const searchFilter = buildSearchFilter(['email', 'firstName', 'lastName', 'organization'], maybeQuery)
-    const filteredProspects = await req.db.prospect.findMany(searchFilter)
+    const filteredProspects = await req.db.prospect.findMany({
+      include: filterInclude,
+      orderBy: filterOrderBy,
+      ...searchFilter,
+    })
 
     res.status(200).json({
       data: filteredProspects,

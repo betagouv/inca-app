@@ -13,6 +13,7 @@ import useIsMounted from '../hooks/useIsMounted'
 import Form from '../molecules/Form'
 
 const FormSchema = Yup.object().shape({
+  contactCategoryAsOption: Yup.object().required(`Associer une catégorie de contact est obligatoire.`),
   email: Yup.string()
     .required(`L’adresse email est obligatoire.`)
     .email(`Cette addresse email ne semble pas correctement formatté.`),
@@ -21,13 +22,14 @@ const FormSchema = Yup.object().shape({
 })
 
 export default function ContributorEditor() {
-  const api = useApi()
-  const { id } = useParams()
-  const [isLoading, setIsLoading] = useState(true)
+  const [contactCategoriesAsOptions, setContactCategoriesAsOptions] = useState(null)
   const [initialValues, setInitialValues] = useState(null)
+  const { id } = useParams()
   const history = useHistory()
+  const api = useApi()
   const isMounted = useIsMounted()
 
+  const isLoading = initialValues === null || contactCategoriesAsOptions === null
   const isNew = id === 'new'
 
   const loadContributor = async () => {
@@ -38,17 +40,42 @@ export default function ContributorEditor() {
 
     const contributorData = maybeBody.data
     const contributorEditableData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(contributorData)
+    if (contributorData.contactCategoryId !== null) {
+      contributorEditableData.contactCategoryAsOption = {
+        label: contributorData.contactCategory.label,
+        value: contributorData.contactCategoryId,
+      }
+    }
 
     if (isMounted()) {
       setInitialValues(contributorEditableData)
-      setIsLoading(false)
+    }
+  }
+
+  const loadContactCategoriesAsOptions = async () => {
+    const maybeBody = await api.get(`contact-categories`)
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    const contactCategoriesAsOptions = R.pipe(
+      R.sortBy(R.prop('label')),
+      R.map(({ id, label }) => ({
+        label,
+        value: id,
+      })),
+    )(maybeBody.data)
+
+    if (isMounted()) {
+      setContactCategoriesAsOptions(contactCategoriesAsOptions)
     }
   }
 
   useEffect(() => {
+    loadContactCategoriesAsOptions()
+
     if (isNew) {
       setInitialValues({})
-      setIsLoading(false)
 
       return
     }
@@ -60,6 +87,7 @@ export default function ContributorEditor() {
 
   const updateContributorAndGoBack = async (values, { setErrors, setSubmitting }) => {
     const contributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
+    contributorData.contactCategoryId = values.contactCategoryAsOption.value
 
     const maybeBody = isNew
       ? await api.post(`contributor/${id}`, contributorData)
@@ -88,6 +116,14 @@ export default function ContributorEditor() {
 
       <Card>
         <Form initialValues={initialValues} onSubmit={updateContributorAndGoBack} validationSchema={FormSchema}>
+          <Field>
+            <Form.Select
+              label="Catégorie de contact"
+              name="contactCategoryAsOption"
+              options={contactCategoriesAsOptions}
+            />
+          </Field>
+
           <Field>
             <Form.Input label="Prénom" name="firstName" />
           </Field>

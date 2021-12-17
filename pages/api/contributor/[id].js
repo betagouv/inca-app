@@ -21,6 +21,14 @@ async function ContributorController(req, res) {
     case 'GET':
       try {
         const maybeContributor = await req.db.contributor.findUnique({
+          include: {
+            contactCategory: true,
+            projects: {
+              include: {
+                project: true,
+              },
+            },
+          },
           where: {
             id: req.query.id,
           },
@@ -40,7 +48,10 @@ async function ContributorController(req, res) {
 
     case 'POST':
       try {
-        const newContributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'], req.body)
+        const newContributorData = R.pick(
+          ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'phone'],
+          req.body,
+        )
         newContributorData.pipedriveId = await getRandomPipedriveId(req, 'contributor')
 
         await req.db.contributor.create({
@@ -65,7 +76,10 @@ async function ContributorController(req, res) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
-        const updatedContributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'], req.body)
+        const updatedContributorData = R.pick(
+          ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'phone'],
+          req.body,
+        )
         await req.db.contributor.update({
           data: updatedContributorData,
           where: {

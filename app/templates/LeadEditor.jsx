@@ -13,6 +13,7 @@ import useIsMounted from '../hooks/useIsMounted'
 import Form from '../molecules/Form'
 
 const FormSchema = Yup.object().shape({
+  contactCategoryAsOption: Yup.object().required(`Associer une catégorie de contact est obligatoire.`),
   email: Yup.string()
     .required(`L’adresse email est obligatoire.`)
     .email(`Cette addresse email ne semble pas correctement formatté.`),
@@ -22,6 +23,7 @@ const FormSchema = Yup.object().shape({
 })
 
 export default function LeadEditor() {
+  const [contactCategoriesAsOptions, setContactCategoriesAsOptions] = useState(null)
   const [organizationsAsOptions, setOrganizationsAsOptions] = useState(null)
   const [initialValues, setInitialValues] = useState(null)
   const { id } = useParams()
@@ -29,7 +31,7 @@ export default function LeadEditor() {
   const api = useApi()
   const isMounted = useIsMounted()
 
-  const isLoading = initialValues === null || organizationsAsOptions === null
+  const isLoading = initialValues === null || contactCategoriesAsOptions === null || organizationsAsOptions === null
   const isNew = id === 'new'
 
   const loadLead = async () => {
@@ -40,7 +42,12 @@ export default function LeadEditor() {
 
     const leadData = maybeBody.data
     const leadEditableData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone', 'position'])(leadData)
-
+    if (leadData.contactCategoryId !== null) {
+      leadEditableData.contactCategoryAsOption = {
+        label: leadData.contactCategory.label,
+        value: leadData.contactCategoryId,
+      }
+    }
     leadEditableData.organizationAsOption = {
       label: leadData.organization.name,
       value: leadData.organizationId,
@@ -48,6 +55,25 @@ export default function LeadEditor() {
 
     if (isMounted()) {
       setInitialValues(leadEditableData)
+    }
+  }
+
+  const loadContactCategoriesAsOptions = async () => {
+    const maybeBody = await api.get(`contact-categories`)
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    const contactCategoriesAsOptions = R.pipe(
+      R.sortBy(R.prop('label')),
+      R.map(({ id, label }) => ({
+        label,
+        value: id,
+      })),
+    )(maybeBody.data)
+
+    if (isMounted()) {
+      setContactCategoriesAsOptions(contactCategoriesAsOptions)
     }
   }
 
@@ -71,6 +97,7 @@ export default function LeadEditor() {
   }
 
   useEffect(() => {
+    loadContactCategoriesAsOptions()
     loadOrganizationsAsOptions()
 
     if (isNew) {
@@ -86,6 +113,7 @@ export default function LeadEditor() {
 
   const updateLeadAndGoBack = async (values, { setErrors, setSubmitting }) => {
     const leadData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone', 'position'])(values)
+    leadData.contactCategoryId = values.contactCategoryAsOption.value
     leadData.organizationId = values.organizationAsOption.value
 
     const maybeBody = isNew ? await api.post(`lead/${id}`, leadData) : await api.patch(`lead/${id}`, leadData)
@@ -113,6 +141,14 @@ export default function LeadEditor() {
 
       <Card>
         <Form initialValues={initialValues} onSubmit={updateLeadAndGoBack} validationSchema={FormSchema}>
+          <Field>
+            <Form.Select
+              label="Catégorie de contact"
+              name="contactCategoryAsOption"
+              options={contactCategoriesAsOptions}
+            />
+          </Field>
+
           <Field>
             <Form.Input label="Prénom" name="firstName" />
           </Field>

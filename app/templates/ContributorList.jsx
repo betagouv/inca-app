@@ -33,6 +33,11 @@ const BASE_COLUMNS = [
     key: 'phone',
     label: 'Téléphone',
   },
+  {
+    isSortable: true,
+    key: 'contactCategory.label',
+    label: 'Catégorie',
+  },
 ]
 
 export default function ContributorList() {

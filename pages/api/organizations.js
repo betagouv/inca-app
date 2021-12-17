@@ -16,9 +16,14 @@ async function OrganizationsController(req, res) {
 
   try {
     const { query: maybeQuery } = req.query
+    const filterOrderBy = {
+      name: 'asc',
+    }
 
     if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
-      const organizations = await req.db.organization.findMany()
+      const organizations = await req.db.organization.findMany({
+        orderBy: filterOrderBy,
+      })
 
       res.status(200).json({
         data: organizations,
@@ -28,7 +33,10 @@ async function OrganizationsController(req, res) {
     }
 
     const searchFilter = buildSearchFilter(['name'], maybeQuery)
-    const filteredOrganizations = await req.db.organization.findMany(searchFilter)
+    const filteredOrganizations = await req.db.organization.findMany({
+      orderBy: filterOrderBy,
+      ...searchFilter,
+    })
 
     res.status(200).json({
       data: filteredOrganizations,

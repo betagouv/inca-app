@@ -9,7 +9,7 @@ import withPrisma from '../../../api/middlewares/withPrisma'
 const BCRYPT_SALT_WORK_FACTOR = 10
 const ERROR_PATH = 'pages/api/user/[id].js'
 
-const excludePassword = R.omit(['password'])
+const withoutPassword = R.omit(['password'])
 
 async function UserController(req, res) {
   if (!['GET', 'PATCH', 'POST'].includes(req.method)) {
@@ -34,7 +34,7 @@ async function UserController(req, res) {
         // TODO Replace programatically user password exclusion in API by a Prisma mechanism as soon as available.
         // Prisma field exclusion is still a feature request in progress:
         // https://github.com/prisma/prisma/issues/7380
-        const userWithoutPassword = excludePassword(maybeUser)
+        const userWithoutPassword = withoutPassword(maybeUser)
 
         res.status(200).json({
           data: userWithoutPassword,

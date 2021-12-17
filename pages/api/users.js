@@ -8,7 +8,7 @@ import { USER_ROLE } from '../../common/constants'
 
 const ERROR_PATH = 'pages/api/users.js'
 
-const excludePassword = R.omit(['password'])
+const withoutPassword = R.map(R.omit(['password']))
 
 async function UsersController(req, res) {
   if (req.method !== 'GET') {
@@ -18,11 +18,17 @@ async function UsersController(req, res) {
   }
 
   try {
-    const users = await req.db.user.findMany()
+    const filterOrderBy = {
+      lastName: 'asc',
+    }
+
+    const users = await req.db.user.findMany({
+      orderBy: filterOrderBy,
+    })
     // TODO Replace programatically user password exclusion in API by a Prisma mechanism as soon as available.
     // Prisma field exclusion is still a feature request in progress:
     // https://github.com/prisma/prisma/issues/7380
-    const usersWithoutPassword = R.map(excludePassword)(users)
+    const usersWithoutPassword = withoutPassword(users)
 
     res.status(200).json({
       data: usersWithoutPassword,

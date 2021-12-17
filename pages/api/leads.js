@@ -17,12 +17,18 @@ async function LeadsController(req, res) {
   try {
     const { query: maybeQuery } = req.query
     const filterInclude = {
+      contactCategory: true,
       organization: true,
+      projects: true,
+    }
+    const filterOrderBy = {
+      lastName: 'asc',
     }
 
     if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
       const leads = await req.db.lead.findMany({
         include: filterInclude,
+        orderBy: filterOrderBy,
       })
 
       res.status(200).json({
@@ -35,6 +41,7 @@ async function LeadsController(req, res) {
     const searchFilter = buildSearchFilter(['email', 'firstName', 'lastName', 'organization.name'], maybeQuery)
     const filteredLeads = await req.db.lead.findMany({
       include: filterInclude,
+      orderBy: filterOrderBy,
       ...searchFilter,
     })
 

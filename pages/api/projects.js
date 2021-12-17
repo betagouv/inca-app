@@ -26,10 +26,14 @@ async function OrganizationsController(req, res) {
       organization: true,
       user: true,
     }
+    const filterOrderBy = {
+      name: 'asc',
+    }
 
     if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
       const projects = await req.db.project.findMany({
         include: filterInclude,
+        orderBy: filterOrderBy,
       })
 
       res.status(200).json({
@@ -42,6 +46,7 @@ async function OrganizationsController(req, res) {
     const searchFilter = buildSearchFilter(['name'], maybeQuery)
     const filteredProjects = await req.db.project.findMany({
       include: filterInclude,
+      orderBy: filterOrderBy,
       ...searchFilter,
     })
 

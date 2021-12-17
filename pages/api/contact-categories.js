@@ -14,7 +14,11 @@ async function ContactCategoriesController(req, res) {
   }
 
   try {
-    const contactCategories = await req.db.contactCategory.findMany()
+    const contactCategories = await req.db.contactCategory.findMany({
+      orderBy: {
+        label: 'asc',
+      },
+    })
 
     res.status(200).json({
       data: contactCategories,

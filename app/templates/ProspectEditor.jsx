@@ -22,12 +22,12 @@ const FormSchema = Yup.object().shape({
 })
 
 export default function ProspectEditor() {
-  const [initialValues, setInitialValues] = useState(null)
   const [contactCategoriesAsOptions, setContactCategoriesAsOptions] = useState(null)
+  const [initialValues, setInitialValues] = useState(null)
   const { id } = useParams()
   const history = useHistory()
-  const isMounted = useIsMounted()
   const api = useApi()
+  const isMounted = useIsMounted()
 
   const isLoading = initialValues === null || contactCategoriesAsOptions === null
   const isNew = id === 'new'
@@ -39,7 +39,6 @@ export default function ProspectEditor() {
     }
 
     const prospectData = maybeBody.data
-
     const prospectEditableData = R.pick([
       'email',
       'firstName',
@@ -49,7 +48,6 @@ export default function ProspectEditor() {
       'phone',
       'position',
     ])(prospectData)
-
     prospectEditableData.contactCategoryAsOption = {
       label: prospectData.contactCategory.label,
       value: prospectData.contactCategoryId,

@@ -22,7 +22,9 @@ async function LeadController(req, res) {
       try {
         const maybeLead = await req.db.lead.findUnique({
           include: {
+            contactCategory: true,
             organization: true,
+            projects: true,
           },
           where: {
             id: req.query.id,
@@ -44,7 +46,7 @@ async function LeadController(req, res) {
     case 'POST':
       try {
         const newLeadData = R.pick(
-          ['email', 'firstName', 'lastName', 'note', 'organizationId', 'phone', 'position'],
+          ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'organizationId', 'phone', 'position'],
           req.body,
         )
         newLeadData.pipedriveId = await getRandomPipedriveId(req, 'lead')
@@ -72,7 +74,7 @@ async function LeadController(req, res) {
         }
 
         const updatedLeadData = R.pick(
-          ['email', 'firstName', 'lastName', 'note', 'organizationId', 'phone', 'position'],
+          ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'organizationId', 'phone', 'position'],
           req.body,
         )
         await req.db.lead.update({
