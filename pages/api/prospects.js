@@ -16,7 +16,7 @@ async function ProspectsController(req, res) {
   try {
     const { query: maybeQuery } = req.query
 
-    if (maybeQuery === undefined) {
+    if (maybeQuery === undefined || maybeQuery.trim().length === 0) {
       const prospects = await req.db.prospect.findMany({
         include: {
           contactCategory: true,
