@@ -51,7 +51,7 @@ model ContactCategory {
 
 model Contributor {
   id          String   @id @default(cuid())
-  pipedriveId Int      @unique
+  pipedriveId Int?
   firstName   String
   lastName    String
   category    String?
@@ -82,7 +82,7 @@ model ContributorsOnProjects {
 
 model Lead {
   id          String   @id @default(cuid())
-  pipedriveId Int      @unique
+  pipedriveId Int?
   firstName   String
   lastName    String
   category    String?
@@ -102,7 +102,7 @@ model Lead {
 
 model Organization {
   id          String   @id @default(cuid())
-  pipedriveId Int      @unique
+  pipedriveId Int?
   name        String
   note        String?
   createdAt   DateTime @default(now())

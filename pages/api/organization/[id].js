@@ -1,6 +1,5 @@
 import * as R from 'ramda'
 
-import getRandomPipedriveId from '../../../api/helpers/getRandomPipedriveId'
 import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
@@ -41,7 +40,6 @@ async function OrganizationController(req, res) {
     case 'POST':
       try {
         const newOrganizationdData = R.pick(['name', 'note'], req.body)
-        newOrganizationdData.pipedriveId = await getRandomPipedriveId(req, 'organization')
 
         await req.db.organization.create({
           data: newOrganizationdData,

@@ -1,6 +1,5 @@
 import * as R from 'ramda'
 
-import getRandomPipedriveId from '../../../api/helpers/getRandomPipedriveId'
 import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
@@ -49,7 +48,6 @@ async function LeadController(req, res) {
           ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'organizationId', 'phone', 'position'],
           req.body,
         )
-        newLeadData.pipedriveId = await getRandomPipedriveId(req, 'lead')
 
         await req.db.lead.create({
           data: newLeadData,

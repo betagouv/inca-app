@@ -1,6 +1,5 @@
 import * as R from 'ramda'
 
-import getRandomPipedriveId from '../../../api/helpers/getRandomPipedriveId'
 import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
@@ -52,7 +51,6 @@ async function ContributorController(req, res) {
           ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'phone'],
           req.body,
         )
-        newContributorData.pipedriveId = await getRandomPipedriveId(req, 'contributor')
 
         await req.db.contributor.create({
           data: newContributorData,
