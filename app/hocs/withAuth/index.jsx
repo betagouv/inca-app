@@ -22,6 +22,10 @@ const getInitialState = () => {
 }
 
 const getInitialUser = () => {
+  if (!process.browser) {
+    return null
+  }
+
   const maybeUserJson = window.localStorage.getItem('user')
   const maybeUser = maybeUserJson !== null ? JSON.parse(maybeUserJson) : null
 
