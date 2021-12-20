@@ -10,8 +10,7 @@ French actors in the fight against cancer to establish beneficial relationships 
 ---
 
 [img-codecov]: https://img.shields.io/codecov/c/github/betagouv/inca-app/main?style=flat-square
-[img-github]:
-  https://img.shields.io/github/workflow/status/betagouv/inca-app/Test%20&%20Release/main?style=flat-square
+[img-github]: https://img.shields.io/github/workflow/status/betagouv/inca-app/Check/main?style=flat-square
 [img-license]: https://img.shields.io/github/license/betagouv/inca-app?style=flat-square
 
 [lnk-codecov]: https://codecov.io/gh/betagouv/inca-app/branch/main
