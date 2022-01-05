@@ -1,4 +1,4 @@
-import { Card } from '@singularity/core'
+import { Card, Field } from '@singularity/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
@@ -7,7 +7,6 @@ import * as Yup from 'yup'
 import { USER_ROLE_LABEL } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
-import Field from '../atoms/Field'
 import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
@@ -72,7 +71,7 @@ export default function UserEditor() {
   }, [])
 
   const updateUserAndGoBack = async (values, { setErrors, setSubmitting }) => {
-    const userData = R.pick(['email', 'firstName', 'lastName', 'isActive'])(values)
+    const userData = R.pick(['email', 'firstName', 'isActive', 'lastName', 'password'])(values)
     userData.role = values.roleAsOption.value
 
     const maybeBody = isNew ? await api.post(`user/${id}`, values) : await api.patch(`user/${id}`, userData)
@@ -100,13 +99,17 @@ export default function UserEditor() {
 
       <Card>
         <Form initialValues={initialValues} onSubmit={updateUserAndGoBack} validationSchema={FormSchema}>
-          <Form.Input label="Email" name="email" type="email" />
+          <Field>
+            <Form.Input label="Email" name="email" type="email" />
+          </Field>
 
-          {isNew && (
-            <Field>
-              <Form.Input label="Mot de passe" name="password" type="password" />
-            </Field>
-          )}
+          <Field>
+            <Form.Input label="Mot de passe" name="password" type="password" />
+          </Field>
+
+          <Field>
+            <Form.Input label="Prénom" name="firstName" />
+          </Field>
 
           <Field>
             <Form.Input label="Prénom" name="firstName" />

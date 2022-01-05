@@ -1004,14 +1004,13 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-3.2.1-1.b71d8cb16c4ddc7e3e9821f42fd09b0f82d7934c.tgz#d2a41a76a89548ea411043c3198eee4a75475dbb"
   integrity sha512-wnHODKLQGKkE2ZCHxHQEf/4Anq/EP0ZCvX++D5w34033mwZ94iZiOsEKZZ31fgki7MTh28F1VNF5ZSFdnRjgvQ==
 
-"@singularity/core@2.0.0-beta.11":
-  version "2.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@singularity/core/-/core-2.0.0-beta.11.tgz#3908bdac2019e1caacca2ffba32b586368f41131"
-  integrity sha512-ibEWhjT58mFbdsHOGVucGuc7dyjTOL5y15HzyvlOIVChVCh/3r9LtU1PxXwaKMh2iaeJLV3na2WpwCWX0J5suw==
+"@singularity/core@2.0.0-beta.17":
+  version "2.0.0-beta.17"
+  resolved "https://registry.yarnpkg.com/@singularity/core/-/core-2.0.0-beta.17.tgz#17b3fd1eeba36f84ce312148f41a82c80be56da0"
+  integrity sha512-1UqLoPp8x4VfbQy/f73KJMcZynxcdSrh49Oe50M3v1cdkL28pxDlLGlaZanmWTHfYavgsp8zLjBS/JT7P28EkA==
   dependencies:
     better-prop-types "^1.0.0"
     ramda "^0.27.1"
-    react-feather "^2.0.9"
     react-select "^5.1.0"
     sha1 "^1.1.1"
     tslib "2.3.1"
@@ -5421,7 +5420,7 @@ react-fast-compare@^2.0.1:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
 
-react-feather@2.0.9, react-feather@^2.0.9:
+react-feather@2.0.9:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/react-feather/-/react-feather-2.0.9.tgz#6e42072130d2fa9a09d4476b0e61b0ed17814480"
   integrity sha512-yMfCGRkZdXwIs23Zw/zIWCJO3m3tlaUvtHiXlW+3FH7cIT6fiK1iJ7RJWugXq7Fso8ZaQyUm92/GOOHXvkiVUw==

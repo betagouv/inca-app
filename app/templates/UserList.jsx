@@ -1,6 +1,8 @@
 import { Button, Card, Table } from '@singularity/core'
+import MaterialEditOutlined from '@singularity/core/icons/material/MaterialEditOutlined'
+import MaterialPersonOffOutlined from '@singularity/core/icons/material/MaterialPersonOffOutlined'
+import MaterialPersonOutlined from '@singularity/core/icons/material/MaterialPersonOutlined'
 import { useEffect, useState } from 'react'
-import { CheckCircle, Edit, Trash, XCircle } from 'react-feather'
 import { useHistory } from 'react-router-dom'
 
 import AdminBox from '../atoms/AdminBox'
@@ -31,8 +33,8 @@ const BASE_COLUMNS = [
     label: 'Rôle',
   },
   {
-    IconOff: XCircle,
-    IconOn: CheckCircle,
+    IconOff: MaterialPersonOffOutlined,
+    IconOn: MaterialPersonOutlined,
     key: 'isActive',
     label: 'Compte actif',
     labelOff: 'Compte inactif',
@@ -76,15 +78,8 @@ export default function UserList() {
     {
       accent: 'secondary',
       action: goToUserEditor,
-      Icon: Edit,
+      Icon: MaterialEditOutlined,
       label: 'Éditer ce·tte utilisateur·rice',
-      type: 'action',
-    },
-    {
-      accent: 'danger',
-      action: () => undefined,
-      Icon: Trash,
-      label: 'Supprimer ce·tte utilisateur·rice',
       type: 'action',
     },
   ]
