@@ -3,6 +3,9 @@
 # Exit when any command fails
 set -e
 
+echo "Backing up database..."
+sudo make backup
+
 echo "Building survey_app Docker container..."
 sudo docker-compose build app
 
