@@ -14,6 +14,7 @@
     "dev:docker": "docker-compose down && docker-compose -f ./docker-compose.dev.yml up -d db",
     "dev:migrate": "prisma migrate dev",
     "prepare": "husky install && node -r dotenv/config ./scripts/dev/setup.js",
+    "prestart": "yarn db:migrate",
     "start": "next start",
     "test": "yarn test:lint && yarn test:unit",
     "test:lint": "eslint .",
