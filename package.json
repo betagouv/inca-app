@@ -35,7 +35,7 @@
     "fs-extra": "10.0.0",
     "jose-browser-runtime": "3.17.0",
     "jsonwebtoken": "8.5.1",
-    "ky": "0.28.5",
+    "ky": "0.28.7",
     "lodash.debounce": "4.0.8",
     "mongoose": "6.0.6",
     "next": "11.1.3",
