@@ -1,4 +1,3 @@
-import axios from 'axios'
 import ß from 'bhala'
 
 import ApiError from '../libs/ApiError'
@@ -37,18 +36,6 @@ export default function handleError(error, path, res = null) {
 
     case error instanceof ApiError:
     case error instanceof Error:
-      errorString = error.message
-      break
-
-    case axios.isAxiosError(error) && error.response:
-      ß.error(`[${errorPath}] An Axios request was made and the server responded with ${error.response.status}.`, '❌')
-      ß.error(`[${errorPath}] Url: ${error.config.url}.`, '❌')
-      errorString = error.message
-      break
-
-    case axios.isAxiosError(error) && error.request:
-      ß.error(`[${errorPath}] An Axios request was made and the server didn't respond`, '❌')
-      ß.error(`[${errorPath}] Url: ${error.config.url}.`, '❌')
       errorString = error.message
       break
 
