@@ -65,7 +65,7 @@
     "husky": "7.0.2",
     "jest": "27.2.0",
     "keypair": "1.0.4",
-    "shelljs": "0.8.4"
+    "shelljs": "0.8.5"
   },
   "prettier": "@ivangabriele/prettier-config"
 }
