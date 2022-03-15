@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce'
 import * as R from 'ramda'
 import { useEffect, useRef, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { USER_ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
@@ -29,7 +29,7 @@ export default function ProjectList() {
   const [projects, setProjects] = useState([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
   const { user } = useAuth()
@@ -76,11 +76,11 @@ export default function ProjectList() {
   }
 
   const goToProjectLinker = id => {
-    history.push(`/project/linker/${id}`)
+    navigate.push(`/project/linker/${id}`)
   }
 
   const goToProjectEditor = id => {
-    history.push(`/project/${id}`)
+    navigate.push(`/project/${id}`)
   }
 
   const searchProjects = debounce(async () => {

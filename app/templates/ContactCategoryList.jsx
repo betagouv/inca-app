@@ -2,7 +2,7 @@ import { Button, Card, Table } from '@singularity/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
@@ -30,7 +30,7 @@ export default function ContactCategoryList() {
   const [contactCategories, setContactCategories] = useState([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
 
@@ -76,7 +76,7 @@ export default function ContactCategoryList() {
   }
 
   const goToContactCategoryditor = id => {
-    history.push(`/contact-category/${id}`)
+    navigate.push(`/contact-category/${id}`)
   }
 
   const columns = [

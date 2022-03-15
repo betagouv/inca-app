@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce'
 import * as R from 'ramda'
 import { useEffect, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
@@ -52,7 +52,7 @@ export default function ProspectList() {
   const [prospects, setProspects] = useState([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
 
@@ -122,7 +122,7 @@ export default function ProspectList() {
   }, 250)
 
   const goToProspectEditor = id => {
-    history.push(`/prospect/${id}`)
+    navigate.push(`/prospect/${id}`)
   }
 
   const columns = [

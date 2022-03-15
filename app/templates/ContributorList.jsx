@@ -2,7 +2,7 @@ import { Button, Card, Table, TextInput } from '@singularity/core'
 import debounce from 'lodash.debounce'
 import { useEffect, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { USER_ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
@@ -44,7 +44,7 @@ export default function ContributorList() {
   const $searchInput = useRef(null)
   const [isLoading, setIsLoading] = useState(true)
   const [contributors, setContributors] = useState([])
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
   const { user } = useAuth()
@@ -77,7 +77,7 @@ export default function ContributorList() {
   }
 
   const goToContributorEditor = id => {
-    history.push(`/contributor/${id}`)
+    navigate.push(`/contributor/${id}`)
   }
 
   const searchContributors = debounce(async () => {

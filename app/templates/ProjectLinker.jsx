@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
 import { Send, Star, UserCheck, UserX } from 'react-feather'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { PROJECT_CONTRIBUTOR_STATE } from '../../common/constants'
@@ -47,7 +47,7 @@ export default function ProjectLinker() {
   const { id } = useParams()
   const [project, setProject] = useState(null)
   const [contributorLinks, setContributorLinks] = useState(null)
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
 
@@ -84,7 +84,7 @@ export default function ProjectLinker() {
   }, [])
 
   const goToProjectEditor = () => {
-    history.push(`/project/${id}`)
+    navigate.push(`/project/${id}`)
   }
 
   const updateProjectNote = debounce(async event => {

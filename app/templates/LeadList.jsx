@@ -2,7 +2,7 @@ import { Button, Card, Table, TextInput } from '@singularity/core'
 import debounce from 'lodash.debounce'
 import { useEffect, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { USER_ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
@@ -49,7 +49,7 @@ export default function LeadList() {
   const $searchInput = useRef(null)
   const [isLoading, setIsLoading] = useState(true)
   const [leads, setLeads] = useState([])
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
   const { user } = useAuth()
@@ -82,7 +82,7 @@ export default function LeadList() {
   }
 
   const goToLeadEditor = id => {
-    history.push(`/lead/${id}`)
+    navigate.push(`/lead/${id}`)
   }
 
   const searchLeads = debounce(async () => {

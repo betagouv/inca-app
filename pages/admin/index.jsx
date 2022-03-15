@@ -1,4 +1,4 @@
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
 
 import useAuth from '../../app/hooks/useAuth'
@@ -64,67 +64,33 @@ export default function AdminSpaPage() {
 
         <Body>
           <Main>
-            <Switch>
-              <Route exact path="/">
-                <ProjectBoard />
-              </Route>
+            <Routes>
+              <Route element={<ProjectBoard />} exact path="/" />
 
-              <Route path="/contact-categories">
-                <ContactCategoryList />
-              </Route>
-              <Route path="/contact-category/:id">
-                <ContactCategoryEditor />
-              </Route>
+              <Route element={<ContactCategoryList />} path="/contact-categories" />
+              <Route element={<ContactCategoryEditor />} path="/contact-category/:id" />
 
-              <Route path="/contributors">
-                <ContributorList />
-              </Route>
-              <Route path="/contributor/:id">
-                <ContributorEditor />
-              </Route>
+              <Route element={<ContributorList />} path="/contributors" />
+              <Route element={<ContributorEditor />} path="/contributor/:id" />
 
-              <Route path="/leads">
-                <LeadList />
-              </Route>
-              <Route path="/lead/:id">
-                <LeadEditor />
-              </Route>
+              <Route element={<LeadList />} path="/leads" />
+              <Route element={<LeadEditor />} path="/lead/:id" />
 
-              <Route path="/organizations">
-                <OrganizationList />
-              </Route>
-              <Route path="/organization/:id">
-                <OrganizationEditor />
-              </Route>
+              <Route element={<OrganizationList />} path="/organizations" />
+              <Route element={<OrganizationEditor />} path="/organization/:id" />
 
-              <Route path="/projects">
-                <ProjectList />
-              </Route>
-              <Route path="/project/linker/:id">
-                <ProjectLinker />
-              </Route>
-              <Route path="/project/:id">
-                <ProjectEditor />
-              </Route>
+              <Route element={<ProjectList />} path="/projects" />
+              <Route element={<ProjectLinker />} path="/project/linker/:id" />
+              <Route element={<ProjectEditor />} path="/project/:id" />
 
-              <Route path="/prospects">
-                <ProspectList />
-              </Route>
-              <Route path="/prospect/:id">
-                <ProspectEditor />
-              </Route>
+              <Route element={<ProspectList />} path="/prospects" />
+              <Route element={<ProspectEditor />} path="/prospect/:id" />
 
-              <Route path="/users">
-                <UserList />
-              </Route>
-              <Route path="/user/:id">
-                <UserEditor />
-              </Route>
+              <Route element={<UserList />} path="/users" />
+              <Route element={<UserEditor />} path="/user/:id" />
 
-              <Route path="*">
-                <div>404</div>
-              </Route>
-            </Switch>
+              <Route element={<div>404</div>} path="*" />
+            </Routes>
           </Main>
         </Body>
       </Page>

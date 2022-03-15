@@ -3,7 +3,7 @@ import MaterialEditOutlined from '@singularity/core/icons/material/MaterialEditO
 import MaterialPersonOffOutlined from '@singularity/core/icons/material/MaterialPersonOffOutlined'
 import MaterialPersonOutlined from '@singularity/core/icons/material/MaterialPersonOutlined'
 import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
@@ -47,7 +47,7 @@ const BASE_COLUMNS = [
 export default function UserList() {
   const [isLoading, setIsLoading] = useState(true)
   const [users, setUsers] = useState([])
-  const history = useHistory()
+  const navigate = useNavigate()
   const api = useApi()
   const isMounted = useIsMounted()
 
@@ -70,7 +70,7 @@ export default function UserList() {
   }, [])
 
   const goToUserEditor = id => {
-    history.push(`/user/${id}`)
+    navigate.push(`/user/${id}`)
   }
 
   const columns = [

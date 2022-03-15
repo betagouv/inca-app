@@ -1,7 +1,7 @@
 import { Button, Tasker } from '@singularity/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { PROJECT_CONTRIBUTOR_STATE } from '../../common/constants'
@@ -26,16 +26,16 @@ const countValidatedLinks = R.pipe(R.filter(R.propEq('state', PROJECT_CONTRIBUTO
 
 export default function ProjectBoard() {
   const [projectCards, setProjectCards] = useState([[], [], [], []])
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
 
   const goToProjectEditor = id => {
-    history.push(`/project/${id}`)
+    navigate.push(`/project/${id}`)
   }
 
   const goToProjectLinker = id => {
-    history.push(`/project/linker/${id}`)
+    navigate.push(`/project/linker/${id}`)
   }
 
   // eslint-disable-next-line react/jsx-props-no-spreading

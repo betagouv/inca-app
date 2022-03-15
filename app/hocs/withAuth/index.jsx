@@ -10,8 +10,8 @@ import api from '../../libs/api'
 import Context from './Context'
 
 const getInitialState = () => {
-  const maybeRefreshToken = process.browser ? window.localStorage.getItem('refreshToken') : null
-  const maybeSessionToken = process.browser ? window.localStorage.getItem('sessionToken') : null
+  const maybeRefreshToken = typeof window !== 'undefined' ? window.localStorage.getItem('refreshToken') : null
+  const maybeSessionToken = typeof window !== 'undefined' ? window.localStorage.getItem('sessionToken') : null
 
   return {
     isAuthenticated: null,
@@ -22,7 +22,7 @@ const getInitialState = () => {
 }
 
 const getInitialUser = () => {
-  if (!process.browser) {
+  if (typeof window === 'undefined') {
     return null
   }
 

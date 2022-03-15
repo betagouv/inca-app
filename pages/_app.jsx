@@ -34,7 +34,7 @@ export default function LabAgoraApp({ Component, pageProps }) {
 
   const WrappedComponent = withAuth(withApi(Component))
 
-  if (pathname.startsWith('/admin') && !process.browser) {
+  if (pathname.startsWith('/admin') && typeof window === 'undefined') {
     return <div id="__laa" suppressHydrationWarning />
   }
 

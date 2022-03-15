@@ -2,7 +2,7 @@ import { Button, Card, Table, TextInput } from '@singularity/core'
 import debounce from 'lodash.debounce'
 import { useEffect, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { USER_ROLE } from '../../common/constants'
 import AdminBox from '../atoms/AdminBox'
@@ -24,7 +24,7 @@ export default function OrganizationList() {
   const $searchInput = useRef(null)
   const [isLoading, setIsLoading] = useState(true)
   const [organizations, setOrganizations] = useState([])
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
   const { user } = useAuth()
@@ -57,7 +57,7 @@ export default function OrganizationList() {
   }
 
   const goToOrganizationEditor = id => {
-    history.push(`/organization/${id}`)
+    navigate.push(`/organization/${id}`)
   }
 
   const searchOrganizations = debounce(async () => {

@@ -1,7 +1,7 @@
 import { Card } from '@singularity/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 
 import AdminBox from '../atoms/AdminBox'
@@ -24,7 +24,7 @@ export default function ProjectEditor() {
   const [contributorsAsOptions, setContributorsAsOptions] = useState(null)
   const [leadsAsOptions, setLeadsAsOptions] = useState(null)
   const [usersAsOptions, setUsersAsOptions] = useState(null)
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
 
@@ -159,7 +159,7 @@ export default function ProjectEditor() {
       return
     }
 
-    history.goBack()
+    navigate.goBack()
   }
 
   if (isLoading) {

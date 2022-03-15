@@ -1,7 +1,7 @@
 import { Card, Field } from '@singularity/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 
 import { USER_ROLE_LABEL } from '../../common/constants'
@@ -31,7 +31,7 @@ export default function UserEditor() {
   const { id } = useParams()
   const [isLoading, setIsLoading] = useState(true)
   const [initialValues, setInitialValues] = useState(null)
-  const history = useHistory()
+  const navigate = useNavigate()
   const isMounted = useIsMounted()
 
   const isNew = id === 'new'
@@ -84,7 +84,7 @@ export default function UserEditor() {
       return
     }
 
-    history.goBack()
+    navigate.goBack()
   }
 
   if (isLoading) {
