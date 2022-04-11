@@ -38,7 +38,7 @@
     "next": "12.1.0",
     "node-cache": "5.1.2",
     "pem-jwk": "2.0.0",
-    "prisma": "3.2.1",
+    "prisma": "3.12.0",
     "query-string": "7.0.1",
     "ramda": "0.27.1",
     "react": "17.0.2",
