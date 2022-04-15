@@ -3868,10 +3868,10 @@ jest@27.5.1:
     import-local "^3.0.2"
     jest-cli "^27.5.1"
 
-jose-browser-runtime@3.17.0:
-  version "3.17.0"
-  resolved "https://registry.yarnpkg.com/jose-browser-runtime/-/jose-browser-runtime-3.17.0.tgz#688d747f00824f9459c004b2080ed9dcbe6777bd"
-  integrity sha512-rLynjMOugT7uKTitFgIGh5JY3U+37EjgZXQOnNd8Uac9i4b/7b9CoA/xixCsNa6LnRCd9Zdt6a4drX+kHCcZWA==
+jose-browser-runtime@4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/jose-browser-runtime/-/jose-browser-runtime-4.6.1.tgz#05b33560a22e347c1c5d12ed9af5a7b4e336d225"
+  integrity sha512-3+puSAdYpNnA0NQV5Q2JUzhI9cOJpkGBVorhFtRiXp/70LGuFlMlVwUYHhUQJgLzl+jUHmU90PldoKU5KzJ1KA==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
