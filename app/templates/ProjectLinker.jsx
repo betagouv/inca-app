@@ -84,7 +84,7 @@ export default function ProjectLinker() {
   }, [])
 
   const goToProjectEditor = () => {
-    navigate.push(`/project/${id}`)
+    navigate(`/project/${id}`)
   }
 
   const updateProjectNote = debounce(async event => {

@@ -122,7 +122,7 @@ export default function ProspectList() {
   }, 250)
 
   const goToProspectEditor = id => {
-    navigate.push(`/prospect/${id}`)
+    navigate(`/prospect/${id}`)
   }
 
   const columns = [

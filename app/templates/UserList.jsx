@@ -70,7 +70,7 @@ export default function UserList() {
   }, [])
 
   const goToUserEditor = id => {
-    navigate.push(`/user/${id}`)
+    navigate(`/user/${id}`)
   }
 
   const columns = [

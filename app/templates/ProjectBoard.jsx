@@ -31,11 +31,11 @@ export default function ProjectBoard() {
   const api = useApi()
 
   const goToProjectEditor = id => {
-    navigate.push(`/project/${id}`)
+    navigate(`/project/${id}`)
   }
 
   const goToProjectLinker = id => {
-    navigate.push(`/project/linker/${id}`)
+    navigate(`/project/linker/${id}`)
   }
 
   // eslint-disable-next-line react/jsx-props-no-spreading

@@ -82,7 +82,7 @@ export default function LeadList() {
   }
 
   const goToLeadEditor = id => {
-    navigate.push(`/lead/${id}`)
+    navigate(`/lead/${id}`)
   }
 
   const searchLeads = debounce(async () => {
