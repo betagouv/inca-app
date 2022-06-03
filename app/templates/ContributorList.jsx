@@ -77,7 +77,7 @@ export default function ContributorList() {
   }
 
   const goToContributorEditor = id => {
-    navigate(`/contributor/${id}`)
+    navigate(`/contributors/${id}`)
   }
 
   const searchContributors = debounce(async () => {

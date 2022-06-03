@@ -84,7 +84,7 @@ export default function UserEditor() {
       return
     }
 
-    navigate.goBack()
+    navigate('..')
   }
 
   if (isLoading) {

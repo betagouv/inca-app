@@ -76,11 +76,11 @@ export default function ProjectList() {
   }
 
   const goToProjectLinker = id => {
-    navigate(`/project/linker/${id}`)
+    navigate(`/projects/linker/${id}`)
   }
 
   const goToProjectEditor = id => {
-    navigate(`/project/${id}`)
+    navigate(`/projects/${id}`)
   }
 
   const searchProjects = debounce(async () => {

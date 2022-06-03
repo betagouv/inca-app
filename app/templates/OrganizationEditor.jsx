@@ -69,7 +69,7 @@ export default function OrganizationEditor() {
       return
     }
 
-    navigate.goBack()
+    navigate('..')
   }
 
   if (isLoading) {

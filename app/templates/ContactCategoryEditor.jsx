@@ -69,7 +69,7 @@ export default function ContactCategoryEditor() {
       return
     }
 
-    navigate.goBack()
+    navigate('..')
   }
 
   if (isLoading) {

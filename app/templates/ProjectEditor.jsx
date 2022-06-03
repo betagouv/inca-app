@@ -1,7 +1,7 @@
 import { Card } from '@singularity/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 
 import AdminBox from '../atoms/AdminBox'
@@ -26,6 +26,7 @@ export default function ProjectEditor() {
   const [usersAsOptions, setUsersAsOptions] = useState(null)
   const navigate = useNavigate()
   const isMounted = useIsMounted()
+  const location = useLocation()
   const api = useApi()
 
   const isNew = id === 'new'
@@ -159,7 +160,13 @@ export default function ProjectEditor() {
       return
     }
 
-    navigate.goBack()
+    if (location.state?.fromLinker) {
+      navigate(`../linker/${id}`)
+    } else if (location.state?.fromProjectBoard) {
+      navigate(`/`)
+    } else {
+      navigate('..')
+    }
   }
 
   if (isLoading) {

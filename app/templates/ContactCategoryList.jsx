@@ -76,7 +76,7 @@ export default function ContactCategoryList() {
   }
 
   const goToContactCategoryditor = id => {
-    navigate(`/contact-category/${id}`)
+    navigate(`/contact-categories/${id}`)
   }
 
   const columns = [

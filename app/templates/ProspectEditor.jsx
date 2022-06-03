@@ -107,7 +107,7 @@ export default function ProspectEditor() {
       return
     }
 
-    navigate.goBack()
+    navigate('..')
   }
 
   if (isLoading) {
