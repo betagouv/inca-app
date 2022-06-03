@@ -1,8 +1,6 @@
 import { Button, Card, Table } from '@singularity/core'
-import MaterialEditOutlined from '@singularity/core/icons/material/MaterialEditOutlined'
-import MaterialPersonOffOutlined from '@singularity/core/icons/material/MaterialPersonOffOutlined'
-import MaterialPersonOutlined from '@singularity/core/icons/material/MaterialPersonOutlined'
 import { useEffect, useState } from 'react'
+import { Edit2, UserCheck, UserX } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 
 import AdminBox from '../atoms/AdminBox'
@@ -33,8 +31,8 @@ const BASE_COLUMNS = [
     label: 'Rôle',
   },
   {
-    IconOff: MaterialPersonOffOutlined,
-    IconOn: MaterialPersonOutlined,
+    IconOff: UserX,
+    IconOn: UserCheck,
     key: 'isActive',
     label: 'Compte actif',
     labelOff: 'Compte inactif',
@@ -78,7 +76,7 @@ export default function UserList() {
     {
       accent: 'secondary',
       action: goToUserEditor,
-      Icon: MaterialEditOutlined,
+      Icon: Edit2,
       label: 'Éditer ce·tte utilisateur·rice',
       type: 'action',
     },
