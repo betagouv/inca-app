@@ -25,8 +25,8 @@
 Then run:
 
 ```sh
-git clone https://github.com/betagouv/tell-me.git
-cd tell-me
+git clone https://github.com/betagouv/inca-app.git
+cd inca-app
 yarn
 yarn dev:docker
 yarn db:migrate
