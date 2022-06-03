@@ -1,6 +1,18 @@
+import Head from 'next/head'
 import styled from 'styled-components'
 
-const Title = styled.h1`
+function TitleAtom({ children }) {
+  return (
+    <>
+      <Head>
+        <title>Lab Agora | {children}</title>
+      </Head>
+      <h1>{children}</h1>
+    </>
+  )
+}
+
+const Title = styled(TitleAtom)`
   font-size: 150%;
   font-weight: 400;
 `
