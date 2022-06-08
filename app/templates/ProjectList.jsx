@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { Button, Card, Table, TextInput } from '@singularity/core'
 import debounce from 'lodash.debounce'
 import * as R from 'ramda'
@@ -19,6 +20,12 @@ const BASE_COLUMNS = [
     isSortable: true,
     key: 'name',
     label: 'Nom',
+  },
+  {
+    isSortable: true,
+    key: 'updatedAt',
+    label: 'Dernière modification',
+    transform: ({ updatedAt }) => Temporal.Instant.from(updatedAt).toLocaleString('fr-FR'),
   },
 ]
 
