@@ -65,29 +65,43 @@ export default function AdminSpaPage() {
         <Body>
           <Main>
             <Routes>
-              <Route element={<ProjectBoard />} exact path="/" />
+              <Route element={<ProjectBoard />} index />
 
-              <Route element={<ContactCategoryList />} path="/contact-categories" />
-              <Route element={<ContactCategoryEditor />} path="/contact-category/:id" />
+              <Route path="contact-categories">
+                <Route element={<ContactCategoryList />} index />
+                <Route element={<ContactCategoryEditor />} path=":id" />
+              </Route>
 
-              <Route element={<ContributorList />} path="/contributors" />
-              <Route element={<ContributorEditor />} path="/contributor/:id" />
+              <Route path="contributors">
+                <Route element={<ContributorList />} index />
+                <Route element={<ContributorEditor />} path=":id" />
+              </Route>
 
-              <Route element={<LeadList />} path="/leads" />
-              <Route element={<LeadEditor />} path="/lead/:id" />
+              <Route path="leads">
+                <Route element={<LeadList />} index />
+                <Route element={<LeadEditor />} path=":id" />
+              </Route>
 
-              <Route element={<OrganizationList />} path="/organizations" />
-              <Route element={<OrganizationEditor />} path="/organization/:id" />
+              <Route path="organizations">
+                <Route element={<OrganizationList />} index />
+                <Route element={<OrganizationEditor />} path=":id" />
+              </Route>
 
-              <Route element={<ProjectList />} path="/projects" />
-              <Route element={<ProjectLinker />} path="/project/linker/:id" />
-              <Route element={<ProjectEditor />} path="/project/:id" />
+              <Route path="projects">
+                <Route element={<ProjectList />} index />
+                <Route element={<ProjectLinker />} path="linker/:id" />
+                <Route element={<ProjectEditor />} path=":id" />
+              </Route>
 
-              <Route element={<ProspectList />} path="/prospects" />
-              <Route element={<ProspectEditor />} path="/prospect/:id" />
+              <Route path="prospects">
+                <Route element={<ProspectList />} index />
+                <Route element={<ProspectEditor />} path=":id" />
+              </Route>
 
-              <Route element={<UserList />} path="/users" />
-              <Route element={<UserEditor />} path="/user/:id" />
+              <Route path="users">
+                <Route element={<UserList />} index />
+                <Route element={<UserEditor />} path=":id" />
+              </Route>
 
               <Route element={<div>404</div>} path="*" />
             </Routes>

@@ -126,7 +126,7 @@ export default function LeadEditor() {
       return
     }
 
-    navigate.goBack()
+    navigate('..')
   }
 
   if (isLoading) {

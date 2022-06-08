@@ -101,7 +101,7 @@ export default function ContributorEditor() {
       return
     }
 
-    navigate.goBack()
+    navigate('..')
   }
 
   if (isLoading) {

@@ -2,24 +2,14 @@ import { Button, Tasker } from '@singularity/core'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
 
 import { PROJECT_CONTRIBUTOR_STATE } from '../../common/constants'
+import AdminBox from '../atoms/AdminBox'
 import AdminHeader from '../atoms/AdminHeader'
 import Title from '../atoms/Title'
 import useApi from '../hooks/useApi'
 import useIsMounted from '../hooks/useIsMounted'
 import ProjectCard from '../molecules/ProjectCard'
-
-const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 0;
-`
-
-const StyledAdminHeader = styled(AdminHeader)`
-  padding: 0 1rem;
-`
 
 const countSucessfulLinks = R.pipe(R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL)), R.length)
 const countValidatedLinks = R.pipe(R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.VALIDATED)), R.length)
@@ -31,11 +21,15 @@ export default function ProjectBoard() {
   const api = useApi()
 
   const goToProjectEditor = id => {
-    navigate(`/project/${id}`)
+    navigate(`/projects/${id}`, {
+      state: {
+        fromProjectBoard: true,
+      },
+    })
   }
 
   const goToProjectLinker = id => {
-    navigate(`/project/linker/${id}`)
+    navigate(`/projects/linker/${id}`)
   }
 
   // eslint-disable-next-line react/jsx-props-no-spreading
@@ -84,14 +78,14 @@ export default function ProjectBoard() {
   }, [])
 
   return (
-    <Box>
-      <StyledAdminHeader>
+    <AdminBox>
+      <AdminHeader>
         <Title>Suivi des projets</Title>
 
         <Button onClick={() => goToProjectEditor('new')} size="small">
           Ajouter un projet
         </Button>
-      </StyledAdminHeader>
+      </AdminHeader>
 
       <Tasker
         data={[
@@ -101,6 +95,6 @@ export default function ProjectBoard() {
           { label: 'Débloqués', tasks: projectCards[3] },
         ]}
       />
-    </Box>
+    </AdminBox>
   )
 }

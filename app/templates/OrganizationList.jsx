@@ -57,7 +57,7 @@ export default function OrganizationList() {
   }
 
   const goToOrganizationEditor = id => {
-    navigate(`/organization/${id}`)
+    navigate(`/organizations/${id}`)
   }
 
   const searchOrganizations = debounce(async () => {
