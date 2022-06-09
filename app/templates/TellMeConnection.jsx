@@ -1,3 +1,5 @@
+import { Temporal } from '@js-temporal/polyfill'
+import { Table } from '@singularity/core'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
@@ -16,9 +18,25 @@ const FormSchema = Yup.object().shape({
   // test: Yup.string(),
 })
 
+const BASE_COLUMNS = [
+  {
+    isSortable: true,
+    key: 'createdAt',
+    label: 'Date',
+    transform: ({ createdAt }) => Temporal.Instant.from(createdAt).toLocaleString('fr-FR'),
+  },
+  {
+    isSortable: true,
+    key: 'user.email',
+    label: 'Par',
+  },
+]
+
 function TellMeConnection() {
   const [isLoading, setIsLoading] = useState(true)
   const [initialValues, setInitialValues] = useState(null)
+  const [synchronizations, setSynchronizations] = useState([])
+
   const navigate = useNavigate()
   const isMounted = useIsMounted()
   const api = useApi()
@@ -27,7 +45,8 @@ function TellMeConnection() {
     const maybeBody = await api.get('tell-me')
     if (isMounted()) {
       // TODO: chelou - fix that ?
-      setInitialValues(maybeBody.data)
+      setInitialValues(maybeBody.data.parameters)
+      setSynchronizations(maybeBody.data.lastSynchronizations)
       setIsLoading(false)
     }
   }
@@ -50,7 +69,20 @@ function TellMeConnection() {
     navigate('..')
   }
 
-  const synchronize = async () => {}
+  const synchronize = async (_, { setErrors, setSubmitting }) => {
+    const maybeBody = await api.post('tell-me/synchronize')
+    if (maybeBody === null || maybeBody.hasError) {
+      setErrors({
+        firstName: 'Sorry, but something went wrong.',
+      })
+      setSubmitting(false)
+
+      return
+    }
+    await loadTellMeInfo()
+  }
+
+  const columns = [...BASE_COLUMNS]
 
   if (isLoading) {
     return 'Loading...'
@@ -64,6 +96,13 @@ function TellMeConnection() {
 
       <Card>
         <Subtitle>Synchronisation</Subtitle>
+        <Table
+          columns={columns}
+          data={synchronizations}
+          defaultSortedKey="createdAt"
+          defaultSortedKeyIsDesc
+          isLoading={isLoading}
+        />
         <Form onSubmit={synchronize}>
           <Field>
             <Form.Submit>Synchroniser</Form.Submit>

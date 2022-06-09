@@ -4,42 +4,24 @@ import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
 import { USER_ROLE } from '../../../common/constants'
 
-const ERROR_PATH = 'pages/api/tell-me/index.js'
+const ERROR_PATH = 'pages/api/tell-me/synchronize.js'
 
 async function TellMeController(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'POST') {
     handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
 
     return
   }
 
-  const lastSynchronizations = await req.db.synchronization.findMany({
-    orderBy: {
-      createdAt: 'desc',
-    },
-    select: {
-      createdAt: true,
-      id: true,
-      user: {
-        select: {
-          email: true,
-        },
-      },
-    },
-    take: 5,
-  })
+  const userId = req.me.id
 
   try {
-    res.status(200).json({
+    await req.db.synchronization.create({
       data: {
-        lastSynchronizations,
-        parameters: {
-          apiUrl: process.env.TELL_ME_URL,
-          contributorId: process.env.TELL_ME_CONTRIBUTOR_SURVEY_ID,
-          projectId: process.env.TELL_ME_PROJECT_SURVEY_ID,
-        },
+        userId,
       },
     })
+    res.status(201).json({})
   } catch (err) {
     handleError(err, ERROR_PATH, res)
   }
