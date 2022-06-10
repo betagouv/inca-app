@@ -158,6 +158,14 @@ model RefreshToken {
   userId String
 }
 
+model Synchronization {
+  id        String  @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
 model User {
   id        String   @id @default(cuid())
   role      Role     @default(MEMBER)
@@ -171,4 +179,5 @@ model User {
 
   projects      Project[]
   refreshTokens RefreshToken[]
+  synchronizations Synchronization[]
 }
