@@ -18,6 +18,7 @@ import ProjectLinker from '../../app/templates/ProjectLinker'
 import ProjectList from '../../app/templates/ProjectList'
 import ProspectEditor from '../../app/templates/ProspectEditor'
 import ProspectList from '../../app/templates/ProspectList'
+import { TellMeConnection } from '../../app/templates/TellMeConnection'
 import UserEditor from '../../app/templates/UserEditor'
 import UserList from '../../app/templates/UserList'
 
@@ -101,6 +102,10 @@ export default function AdminSpaPage() {
               <Route path="users">
                 <Route element={<UserList />} index />
                 <Route element={<UserEditor />} path=":id" />
+              </Route>
+
+              <Route path="tell-me">
+                <Route element={<TellMeConnection />} index />
               </Route>
 
               <Route element={<div>404</div>} path="*" />
