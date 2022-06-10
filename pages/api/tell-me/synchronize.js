@@ -1,3 +1,5 @@
+import { Temporal } from '@js-temporal/polyfill'
+
 import handleError from '../../../api/helpers/handleError'
 import { TellMeConnection } from '../../../api/helpers/tell-me/synchronize'
 import ApiError from '../../../api/libs/ApiError'
@@ -6,6 +8,7 @@ import withPrisma from '../../../api/middlewares/withPrisma'
 import { USER_ROLE } from '../../../common/constants'
 
 const ERROR_PATH = 'pages/api/tell-me/synchronize.js'
+const SYNCHRO_START_DATE = Temporal.Instant.from('2022-06-10T00:00:00.000Z')
 
 async function createSynchronization(req, success, info) {
   const userId = req.me.id
@@ -75,8 +78,13 @@ async function TellMeController(req, res) {
     const tellMe = new TellMeConnection()
 
     const contributorSubmissions = await tellMe.getSubmissions(process.env.TELL_ME_CONTRIBUTOR_SURVEY_ID)
+    const recentSubmissions = contributorSubmissions.filter(submission => {
+      const submissionDate = Temporal.Instant.from(submission.submittedAt)
+
+      return Temporal.Instant.compare(submissionDate, SYNCHRO_START_DATE) >= 0
+    })
     const submissionsWithSynchronizationCheck = await Promise.all(
-      contributorSubmissions.map(submission => checkContributorNotSynchronized(submission, req)),
+      recentSubmissions.map(submission => checkContributorNotSynchronized(submission, req)),
     )
 
     const notExistingSubmissions = submissionsWithSynchronizationCheck.filter(
@@ -88,7 +96,11 @@ async function TellMeController(req, res) {
         .map(async submission => createContributor(submission, req)),
     )
     await createSynchronization(req, true, {
-      contributors: `${createdContributors.length} créés`,
+      contributors: {
+        created: createdContributors.length,
+        read: contributorSubmissions.length,
+        recent: recentSubmissions.length,
+      },
     })
 
     res.status(201).json({})
