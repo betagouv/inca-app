@@ -1,6 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Table } from '@singularity/core'
 import { useState, useEffect } from 'react'
+import { CheckCircle, X } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 
@@ -29,6 +30,22 @@ const BASE_COLUMNS = [
     isSortable: true,
     key: 'user.email',
     label: 'Par',
+  },
+  {
+    isSortable: false,
+    key: 'info',
+    label: 'Informations',
+  },
+  {
+    IconOff: X,
+    IconOn: CheckCircle,
+    isSortable: true,
+    key: 'success',
+    label: 'Statut',
+    labelOff: 'Erreur',
+    labelOn: 'Succès',
+    type: 'boolean',
+    withTooltip: true,
   },
 ]
 
