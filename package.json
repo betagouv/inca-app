@@ -23,7 +23,7 @@
   "dependencies": {
     "@fontsource/poppins": "4.5.0",
     "@js-temporal/polyfill": "0.4.1",
-    "@prisma/client": "3.13.0",
+    "@prisma/client": "3.15.1",
     "@singularity/core": "4.1.0",
     "bcryptjs": "2.4.3",
     "better-prop-types": "1.0.0",
