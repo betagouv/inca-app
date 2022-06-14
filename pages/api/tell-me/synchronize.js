@@ -108,7 +108,6 @@ async function TellMeController(req, res) {
     await createSynchronization(req, false, {
       error: err,
     })
-    console.error({ err })
     handleError(err, ERROR_PATH, res)
   }
 }
