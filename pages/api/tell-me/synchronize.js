@@ -8,7 +8,26 @@ import withPrisma from '../../../api/middlewares/withPrisma'
 import { USER_ROLE } from '../../../common/constants'
 
 const ERROR_PATH = 'pages/api/tell-me/synchronize.js'
+/** @type {"NONE"|"RAW"|"CONSOLIDATED"} */
+const SUBMISSION_PARSING_MODE = 'RAW'
 const SYNCHRO_START_DATE = Temporal.Instant.from('2022-06-10T00:00:00.000Z')
+
+function formatSubmissionForNotes(submission) {
+  let notes
+  switch (SUBMISSION_PARSING_MODE) {
+    case 'RAW':
+      // eslint-disable-next-line no-irregular-whitespace
+      notes = submission.answers.map(answer => `${answer.label.trim()} ${answer.value.trim()}`)
+      break
+    case 'CONSOLIDATED': // TODO: implement
+    case 'NONE':
+    default:
+      notes = submission
+      break
+  }
+
+  return JSON.stringify(notes, null, 2)
+}
 
 async function createSynchronization(req, success, info) {
   const userId = req.me.id
@@ -28,7 +47,7 @@ async function createContributor(submission, req) {
       email: '...',
       firstName: submission.id,
       lastName: '...',
-      note: JSON.stringify(submission, null, 2),
+      note: formatSubmissionForNotes(submission),
       synchronizationId: submission.id,
     },
   })
@@ -54,7 +73,9 @@ async function checkContributorNotSynchronized(submission, req) {
 
 function extractAnswers(answers) {
   return answers.map(answer => ({
-    [answer.question.value]: answer.rawValue,
+    id: answer.question.id,
+    label: answer.question.value,
+    value: answer.rawValue,
   }))
 }
 
