@@ -20,6 +20,8 @@ async function TellMeController(req, res) {
     select: {
       createdAt: true,
       id: true,
+      info: true,
+      success: true,
       user: {
         select: {
           email: true,

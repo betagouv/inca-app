@@ -58,12 +58,14 @@ model Contributor {
   email     String
   phone     String?
   note      String?
+  synchronizationId   String? @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  contactCategory   ContactCategory?         @relation(fields: [contactCategoryId], references: [id])
-  contactCategoryId String?
-  projects          ContributorsOnProjects[]
+  contactCategory     ContactCategory?         @relation(fields: [contactCategoryId], references: [id])
+  contactCategoryId   String?
+  projects            ContributorsOnProjects[]
+  // synchronization   ContributorsOnSynchronization?
 }
 
 model ContributorsOnProjects {
@@ -78,6 +80,13 @@ model ContributorsOnProjects {
 
   @@id([contributorId, projectId])
 }
+
+// model ContributorsOnSynchronization {
+//   contributor       Contributor @relation(fields: [contributorId], references: [id])
+//   contributorId     String
+//   synchronization   Synchronization @relation(fields: [synchronizationId], references: [id])
+//   synchronizationId String
+// }
 
 model Lead {
   id        String   @id @default(cuid())
@@ -161,9 +170,12 @@ model RefreshToken {
 model Synchronization {
   id        String  @id @default(cuid())
   createdAt DateTime @default(now())
+  success   Boolean @default(false)
+  info      String?
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
+  // contributors  ContributorsOnSynchronization[]
 }
 
 model User {
