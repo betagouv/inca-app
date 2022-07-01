@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { Button, Card, Table, TextInput } from '@singularity/core'
 import debounce from 'lodash.debounce'
 import { useEffect, useRef, useState } from 'react'
@@ -37,6 +38,12 @@ const BASE_COLUMNS = [
     isSortable: true,
     key: 'contactCategory.label',
     label: 'Catégorie',
+  },
+  {
+    isSortable: true,
+    key: 'updatedAt',
+    label: 'Mise à jour',
+    transform: ({ updatedAt }) => Temporal.Instant.from(updatedAt).toLocaleString('fr-FR'),
   },
 ]
 
