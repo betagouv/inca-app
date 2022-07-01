@@ -1,4 +1,23 @@
 /**
+ * @typedef RawAnswer
+ * @property {Object} data
+ * @property {string} type
+ * @property {Object} question
+ * @property {string} question.id
+ * @property {?string} question.key
+ * @property {string} question.value
+ * @property {string} rawValue
+ */
+
+/**
+ * @typedef RawSubmission
+ * @property {string} id
+ * @property {string} openedAt - submission opening ISO date
+ * @property {string} submittedAt - submission ISO date
+ * @property {Array<RawAnswer>} answers
+ */
+
+/**
  * @typedef FormattedAnswer
  * @property {string} id - question id
  * @property {string} key - question field key
@@ -33,9 +52,9 @@ const FIELD_MAP = {
   phone: 'PHONE',
 }
 
-class TellMeContributorSubmission {
+class TellMeSubmission {
   /**
-   * @param {object} submission
+   * @param {RawSubmission} submission
    */
   constructor(submission) {
     this.rawSubmission = submission
@@ -172,4 +191,4 @@ class TellMeContributorSubmission {
   }
 }
 
-export { TellMeContributorSubmission }
+export { TellMeSubmission }
