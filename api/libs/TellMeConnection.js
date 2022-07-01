@@ -1,6 +1,6 @@
 import ky from 'ky-universal'
 
-import handleError from '../handleError'
+import handleError from '../helpers/handleError'
 
 class TellMeConnection {
   constructor() {

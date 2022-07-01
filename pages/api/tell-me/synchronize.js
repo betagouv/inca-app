@@ -1,9 +1,10 @@
 import { Temporal } from '@js-temporal/polyfill'
 
+import { checkContributorNotSynchronized } from '../../../api/helpers/checkContributorNotSynchronized'
 import handleError from '../../../api/helpers/handleError'
-import { TellMeConnection } from '../../../api/helpers/tell-me/connection'
-import { TellMeContributorSubmission } from '../../../api/helpers/tell-me/contributorParsing'
 import ApiError from '../../../api/libs/ApiError'
+import { TellMeConnection } from '../../../api/libs/TellMeConnection'
+import { TellMeContributorSubmission } from '../../../api/libs/TellMeContributorSubmission'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
 import { USER_ROLE } from '../../../common/constants'
@@ -22,31 +23,6 @@ async function createSynchronization(req, success, info) {
       userId,
     },
   })
-}
-
-/**
- * @param {import('../../../api/helpers/tell-me/contributorParsing').FormattedContributor} contributor
- * @param {*} req
- * @returns
- */
-async function createContributor(contributor, req) {
-  return req.db.contributor.create({
-    data: contributor,
-  })
-}
-
-async function checkContributorNotSynchronized(rawSubmission, req) {
-  const submission = new TellMeContributorSubmission(rawSubmission)
-  const maybeContributor = await req.db.contributor.findUnique({
-    where: {
-      synchronizationId: submission.submissionId,
-    },
-  })
-
-  return {
-    ...rawSubmission,
-    isNotSynchronized: maybeContributor === null,
-  }
 }
 
 async function TellMeController(req, res) {
@@ -76,7 +52,11 @@ async function TellMeController(req, res) {
       notExistingSubmissions
         .map(rawSubmission => new TellMeContributorSubmission(rawSubmission))
         .map(submission => submission.extractContributor())
-        .map(async contributor => createContributor(contributor, req)),
+        .map(async contributor =>
+          req.db.contributor.create({
+            data: contributor,
+          }),
+        ),
     )
     await createSynchronization(req, true, {
       contributors: {

@@ -52,12 +52,14 @@ class TellMeContributorSubmission {
     switch (CONTRIBUTOR_SUBMISSION_PARSING_MODE) {
       case 'CONSOLIDATED':
         return this.getMappedFieldValue(fieldName, submission)
+
       case 'RAW':
       case 'NONE':
       default:
         switch (fieldName) {
           case 'firstName':
             return submission.id
+
           default:
             return '...'
         }
@@ -130,15 +132,20 @@ class TellMeContributorSubmission {
     switch (CONTRIBUTOR_SUBMISSION_PARSING_MODE) {
       case 'RAW':
         notes = submission.answers.map(answer => this.formatNoteAnswer(answer))
+
         break
+
       case 'CONSOLIDATED':
         notes = submission.answers
           .filter(answer => !this.consolidatedKeys.includes(answer.key))
           .map(answer => this.formatNoteAnswer(answer))
+
         break
+
       case 'NONE':
       default:
         notes = submission
+
         break
     }
 
