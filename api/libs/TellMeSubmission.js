@@ -41,10 +41,13 @@
  * >}
  */
 
-/** @type {"NONE"|"RAW"|"CONSOLIDATED"} */
+/**
+ * @typedef ParsingMode
+ * @type {"NONE"|"RAW"|"CONSOLIDATED"}
+ */
 const CONTRIBUTOR_SUBMISSION_PARSING_MODE = 'CONSOLIDATED'
 
-const FIELD_MAP = {
+const CONTRIBUTOR_FIELD_MAP = {
   // TODO: add CONTRIBUTOR_TYPE handling
   email: 'EMAIL',
   firstName: 'FIRSTNAME',
@@ -55,11 +58,15 @@ const FIELD_MAP = {
 class TellMeSubmission {
   /**
    * @param {RawSubmission} submission
+   * @param {ParsingMode} parsingMode
+   * @param {Object} fieldMap
    */
-  constructor(submission) {
+  constructor(submission, parsingMode, fieldMap) {
     this.rawSubmission = submission
     this.submissionId = this.getSubmissionId()
     this.consolidatedKeys = []
+    this.parsingMode = parsingMode
+    this.fieldMap = fieldMap
   }
 
   /**
@@ -68,7 +75,7 @@ class TellMeSubmission {
    * @returns {string}
    */
   getFieldValue(fieldName, submission) {
-    switch (CONTRIBUTOR_SUBMISSION_PARSING_MODE) {
+    switch (this.parsingMode) {
       case 'CONSOLIDATED':
         return this.getMappedFieldValue(fieldName, submission)
 
@@ -91,7 +98,7 @@ class TellMeSubmission {
    * @returns {string}
    */
   getMappedFieldValue(fieldName, submission) {
-    const mappedKey = FIELD_MAP[fieldName]
+    const mappedKey = this.fieldMap[fieldName]
     const mappedAnswer = submission.answers.find(answer => mappedKey === answer.key)
     if (mappedAnswer === undefined) {
       return '...'
@@ -148,7 +155,7 @@ class TellMeSubmission {
    */
   formatSubmissionForNotes(submission) {
     let notes
-    switch (CONTRIBUTOR_SUBMISSION_PARSING_MODE) {
+    switch (this.parsingMode) {
       case 'RAW':
         notes = submission.answers.map(answer => this.formatNoteAnswer(answer))
 
@@ -191,4 +198,4 @@ class TellMeSubmission {
   }
 }
 
-export { TellMeSubmission }
+export { TellMeSubmission, CONTRIBUTOR_SUBMISSION_PARSING_MODE, CONTRIBUTOR_FIELD_MAP }

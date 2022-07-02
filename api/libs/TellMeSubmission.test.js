@@ -1,5 +1,5 @@
 /* eslint-disable no-irregular-whitespace */
-const { TellMeSubmission } = require('./TellMeSubmission')
+const { CONTRIBUTOR_FIELD_MAP, TellMeSubmission } = require('./TellMeSubmission')
 
 const TEST_ANSWERS = [
   {
@@ -109,23 +109,31 @@ describe('api/libs/TellMeSubmission.test.js', () => {
     test('Compute submission ID', () => {
       const submittedAt = '2020-01-03T00:00:00.000Z'
       const openedAt = '2020-01-01T00:00:00.000Z'
-      const submission = new TellMeSubmission({
-        answers: [],
-        id: '123',
-        openedAt,
-        submittedAt,
-      })
+      const submission = new TellMeSubmission(
+        {
+          answers: [],
+          id: '123',
+          openedAt,
+          submittedAt,
+        },
+        'CONSOLIDATED',
+        CONTRIBUTOR_FIELD_MAP,
+      )
 
       expect(submission.submissionId).toBe(`${openedAt}|${submittedAt}`)
     })
 
     test('Extract answers', () => {
-      const submission = new TellMeSubmission({
-        answers: TEST_ANSWERS,
-        id: '123',
-        openedAt: '2020-01-01T00:00:00.000Z',
-        submittedAt: '2020-01-03T00:00:00.000Z',
-      })
+      const submission = new TellMeSubmission(
+        {
+          answers: TEST_ANSWERS,
+          id: '123',
+          openedAt: '2020-01-01T00:00:00.000Z',
+          submittedAt: '2020-01-03T00:00:00.000Z',
+        },
+        'CONSOLIDATED',
+        CONTRIBUTOR_FIELD_MAP,
+      )
 
       expect(submission.extractAnswers()).toMatchInlineSnapshot(`
         Array [
@@ -152,12 +160,16 @@ describe('api/libs/TellMeSubmission.test.js', () => {
     })
 
     test('Extract submission', () => {
-      const submission = new TellMeSubmission({
-        answers: TEST_ANSWERS,
-        id: '123',
-        openedAt: '2020-01-01T00:00:00.000Z',
-        submittedAt: '2020-01-03T00:00:00.000Z',
-      })
+      const submission = new TellMeSubmission(
+        {
+          answers: TEST_ANSWERS,
+          id: '123',
+          openedAt: '2020-01-01T00:00:00.000Z',
+          submittedAt: '2020-01-03T00:00:00.000Z',
+        },
+        'CONSOLIDATED',
+        CONTRIBUTOR_FIELD_MAP,
+      )
 
       expect(submission.extractSubmission()).toMatchInlineSnapshot(`
         Object {
@@ -190,45 +202,45 @@ describe('api/libs/TellMeSubmission.test.js', () => {
   })
 
   describe('Internal', () => {
-    test('Format submission for note', () => {
-      const submission = new TellMeSubmission({
-        answers: CONTRIBUTOR_ANSWERS,
-        id: '123',
-        openedAt: '2020-01-01T00:00:00.000Z',
-        submittedAt: '2020-01-03T00:00:00.000Z',
-      })
-      const formattedSubmission = submission.extractSubmission()
-      expect(submission.formatSubmissionForNotes(formattedSubmission)).toMatchInlineSnapshot(`
-        "[
-          \\"Your email ? john.doe@test.com\\",
-          \\"Your first name ? John\\",
-          \\"Your last name ? Doe\\",
-          \\"Your phone number ? +33123456789\\",
-          \\"Your company ? ACME Inc.\\",
-          \\"Your availabilities ? Monday to Friday\\"
-        ]"
-      `)
+    // eslint-disable-next-line prettier/prettier
+    test.each([
+      { parsingMode: 'CONSOLIDATED' },
+      { parsingMode: 'RAW' },
+      { parsingMode: 'NONE' }
+    ])(
+      'Format submission for note',
+      ({ parsingMode }) => {
+        const submission = new TellMeSubmission(
+          {
+            answers: CONTRIBUTOR_ANSWERS,
+            id: '123',
+            openedAt: '2020-01-01T00:00:00.000Z',
+            submittedAt: '2020-01-03T00:00:00.000Z',
+          },
+          parsingMode,
+          CONTRIBUTOR_FIELD_MAP,
+        )
+        const formattedSubmission = submission.extractSubmission()
+        expect(submission.formatSubmissionForNotes(formattedSubmission)).toMatchSnapshot()
 
-      submission.getMappedFieldValue('email', formattedSubmission)
-      submission.getMappedFieldValue('firstName', formattedSubmission)
+        submission.getMappedFieldValue('email', formattedSubmission)
+        submission.getMappedFieldValue('firstName', formattedSubmission)
 
-      expect(submission.formatSubmissionForNotes(formattedSubmission)).toMatchInlineSnapshot(`
-        "[
-          \\"Your last name ? Doe\\",
-          \\"Your phone number ? +33123456789\\",
-          \\"Your company ? ACME Inc.\\",
-          \\"Your availabilities ? Monday to Friday\\"
-        ]"
-      `)
-    })
+        expect(submission.formatSubmissionForNotes(formattedSubmission)).toMatchSnapshot()
+      },
+    )
 
     test('Format note answer', () => {
-      const submission = new TellMeSubmission({
-        answers: TEST_ANSWERS,
-        id: '123',
-        openedAt: '2020-01-01T00:00:00.000Z',
-        submittedAt: '2020-01-03T00:00:00.000Z',
-      })
+      const submission = new TellMeSubmission(
+        {
+          answers: TEST_ANSWERS,
+          id: '123',
+          openedAt: '2020-01-01T00:00:00.000Z',
+          submittedAt: '2020-01-03T00:00:00.000Z',
+        },
+        'CONSOLIDATED',
+        CONTRIBUTOR_FIELD_MAP,
+      )
 
       expect(
         submission.formatNoteAnswer({
@@ -249,12 +261,16 @@ describe('api/libs/TellMeSubmission.test.js', () => {
     })
 
     test('Get mapped field value', () => {
-      const submission = new TellMeSubmission({
-        answers: CONTRIBUTOR_ANSWERS,
-        id: '123',
-        openedAt: '2020-01-01T00:00:00.000Z',
-        submittedAt: '2020-01-03T00:00:00.000Z',
-      })
+      const submission = new TellMeSubmission(
+        {
+          answers: CONTRIBUTOR_ANSWERS,
+          id: '123',
+          openedAt: '2020-01-01T00:00:00.000Z',
+          submittedAt: '2020-01-03T00:00:00.000Z',
+        },
+        'CONSOLIDATED',
+        CONTRIBUTOR_FIELD_MAP,
+      )
       const formattedSubmission = submission.extractSubmission()
 
       expect(submission.getMappedFieldValue('email', formattedSubmission)).toEqual('john.doe@test.com')
@@ -263,31 +279,61 @@ describe('api/libs/TellMeSubmission.test.js', () => {
       expect(submission.getMappedFieldValue('phone', formattedSubmission)).toEqual('+33123456789')
     })
 
-    test('Get field value', () => {
-      // TODO : implement various CONTRIBUTOR_SUBMISSION_PARSING_MODE
-      const submission = new TellMeSubmission({
-        answers: CONTRIBUTOR_ANSWERS,
-        id: '123',
-        openedAt: '2020-01-01T00:00:00.000Z',
-        submittedAt: '2020-01-03T00:00:00.000Z',
-      })
+    // eslint-disable-next-line prettier/prettier
+    test.each([
+      {
+        email: 'john.doe@test.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        parsingMode: 'CONSOLIDATED',
+        phone: '+33123456789',
+      },
+      {
+        email: '...',
+        firstName: '2020-01-01T00:00:00.000Z|2020-01-03T00:00:00.000Z',
+        lastName: '...',
+        parsingMode: 'NONE',
+        phone: '...',
+      },
+      {
+        email: '...',
+        firstName: '2020-01-01T00:00:00.000Z|2020-01-03T00:00:00.000Z',
+        lastName: '...',
+        parsingMode: 'RAW',
+        phone: '...',
+      },
+    ])('Get field value', ({ email, firstName, lastName, parsingMode, phone }) => {
+      const submission = new TellMeSubmission(
+        {
+          answers: CONTRIBUTOR_ANSWERS,
+          id: '123',
+          openedAt: '2020-01-01T00:00:00.000Z',
+          submittedAt: '2020-01-03T00:00:00.000Z',
+        },
+        parsingMode,
+        CONTRIBUTOR_FIELD_MAP,
+      )
       const formattedSubmission = submission.extractSubmission()
 
-      expect(submission.getFieldValue('email', formattedSubmission)).toEqual('john.doe@test.com')
-      expect(submission.getFieldValue('firstName', formattedSubmission)).toEqual('John')
-      expect(submission.getFieldValue('lastName', formattedSubmission)).toEqual('Doe')
-      expect(submission.getFieldValue('phone', formattedSubmission)).toEqual('+33123456789')
+      expect(submission.getFieldValue('email', formattedSubmission)).toEqual(email)
+      expect(submission.getFieldValue('firstName', formattedSubmission)).toEqual(firstName)
+      expect(submission.getFieldValue('lastName', formattedSubmission)).toEqual(lastName)
+      expect(submission.getFieldValue('phone', formattedSubmission)).toEqual(phone)
     })
   })
 
   describe('Contributors', () => {
     test('Extract contributor', () => {
-      const submission = new TellMeSubmission({
-        answers: CONTRIBUTOR_ANSWERS,
-        id: '123',
-        openedAt: '2020-01-01T00:00:00.000Z',
-        submittedAt: '2020-01-03T00:00:00.000Z',
-      })
+      const submission = new TellMeSubmission(
+        {
+          answers: CONTRIBUTOR_ANSWERS,
+          id: '123',
+          openedAt: '2020-01-01T00:00:00.000Z',
+          submittedAt: '2020-01-03T00:00:00.000Z',
+        },
+        'CONSOLIDATED',
+        CONTRIBUTOR_FIELD_MAP,
+      )
 
       expect(submission.extractContributor()).toMatchInlineSnapshot(`
         Object {

@@ -4,7 +4,11 @@ import { checkContributorNotSynchronized } from '../../../api/helpers/checkContr
 import handleError from '../../../api/helpers/handleError'
 import ApiError from '../../../api/libs/ApiError'
 import { TellMeConnection } from '../../../api/libs/TellMeConnection'
-import { TellMeSubmission } from '../../../api/libs/TellMeSubmission'
+import {
+  CONTRIBUTOR_FIELD_MAP,
+  CONTRIBUTOR_SUBMISSION_PARSING_MODE,
+  TellMeSubmission,
+} from '../../../api/libs/TellMeSubmission'
 import withAuthentication from '../../../api/middlewares/withAuthentication'
 import withPrisma from '../../../api/middlewares/withPrisma'
 import { USER_ROLE } from '../../../common/constants'
@@ -31,7 +35,10 @@ async function synchronizeContributors(tellMe, req) {
   )
   const createdContributors = await Promise.all(
     notExistingSubmissions
-      .map(rawSubmission => new TellMeSubmission(rawSubmission))
+      .map(
+        rawSubmission =>
+          new TellMeSubmission(rawSubmission, CONTRIBUTOR_SUBMISSION_PARSING_MODE, CONTRIBUTOR_FIELD_MAP),
+      )
       .map(submission => submission.extractContributor())
       .map(async contributor =>
         req.db.contributor.create({
