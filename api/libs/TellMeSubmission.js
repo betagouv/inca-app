@@ -42,8 +42,20 @@
  */
 
 /**
+ * @typedef FormattedProject
+ * @type {Omit<
+ *  import("@prisma/client").Project,
+ * 'createdAt' | 'updatedAt' | 'id' | 'need' | 'description' | 'hasStarted' | 'hasEnded' | 'isUnlocked' | 'leadId' | 'organizationId' | 'userId'
+ * >}
+ */
+
+/**
  * @typedef ParsingMode
  * @type {"NONE"|"RAW"|"CONSOLIDATED"}
+ */
+
+/**
+ * @type { ParsingMode }
  */
 const CONTRIBUTOR_SUBMISSION_PARSING_MODE = 'CONSOLIDATED'
 
@@ -53,6 +65,20 @@ const CONTRIBUTOR_FIELD_MAP = {
   firstName: 'FIRSTNAME',
   lastName: 'LASTNAME',
   phone: 'PHONE',
+}
+
+/**
+ * @type { ParsingMode }
+ */
+const PROJECT_SUBMISSION_PARSING_MODE = 'NONE'
+
+const PROJECT_FIELD_MAP = {
+  // 'LEAD_TYPE'
+  name: 'PROJECT_NAME',
+  // 'LEAD_EMAIL'
+  // 'LEAD_LASTNAME'
+  // 'LEAD_FIRSTNAME'
+  // 'LEAD_PHONE'
 }
 
 class TellMeSubmission {
@@ -196,6 +222,31 @@ class TellMeSubmission {
       synchronizationId: this.submissionId,
     }
   }
+
+  /**
+   * @returns {FormattedProject}
+   */
+  extractProject() {
+    const formattedSubmission = this.extractSubmission()
+    const project = {
+      name: this.getFieldValue('name', formattedSubmission),
+      // lead:
+      // organization:
+      // user:
+    }
+
+    return {
+      ...project,
+      note: this.formatSubmissionForNotes(formattedSubmission),
+      synchronizationId: this.submissionId,
+    }
+  }
 }
 
-export { TellMeSubmission, CONTRIBUTOR_SUBMISSION_PARSING_MODE, CONTRIBUTOR_FIELD_MAP }
+export {
+  TellMeSubmission,
+  CONTRIBUTOR_SUBMISSION_PARSING_MODE,
+  CONTRIBUTOR_FIELD_MAP,
+  PROJECT_SUBMISSION_PARSING_MODE,
+  PROJECT_FIELD_MAP,
+}

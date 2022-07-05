@@ -127,6 +127,7 @@ model Project {
   hasStarted  Boolean  @default(false)
   hasEnded    Boolean  @default(false)
   isUnlocked  Boolean  @default(false)
+  synchronizationId   String? @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
