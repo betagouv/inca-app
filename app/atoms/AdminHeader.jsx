@@ -1,6 +1,16 @@
+import { ToastContainer } from 'react-toastify'
 import styled from 'styled-components'
 
-const AdminHeader = styled.div`
+function AdminHeaderAtom({ children }) {
+  return (
+    <>
+      {children}
+      <ToastContainer />
+    </>
+  )
+}
+
+const AdminHeader = styled(AdminHeaderAtom)`
   align-items: center;
   display: flex;
   justify-content: space-between;

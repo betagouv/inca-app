@@ -3,6 +3,7 @@ import { Table } from '@singularity/core'
 import { useState, useEffect } from 'react'
 import { CheckCircle, X } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import * as Yup from 'yup'
 
 import AdminBox from '../atoms/AdminBox'
@@ -93,9 +94,11 @@ function TellMeConnection() {
         firstName: 'Sorry, but something went wrong.',
       })
       setSubmitting(false)
+      toast.error(`La synchronisation a échouée : ${maybeBody.message}`)
 
       return
     }
+    toast.success(`Synchronisation terminée !`)
     await loadTellMeInfo()
   }
 
