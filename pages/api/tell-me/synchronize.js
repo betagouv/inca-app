@@ -110,10 +110,10 @@ async function TellMeController(req, res) {
     const tellMe = new TellMeConnection()
 
     const contributorsLog = await synchronizeContributors(tellMe, req)
-    // const projectsLog = await synchronizeProjects(tellMe, req)
+    const projectsLog = await synchronizeProjects(tellMe, req)
     await createSynchronization(req, true, {
       contributors: contributorsLog,
-      // projects: projectsLog,
+      projects: projectsLog,
     })
 
     res.status(201).json({})

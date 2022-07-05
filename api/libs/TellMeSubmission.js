@@ -70,15 +70,15 @@ const CONTRIBUTOR_FIELD_MAP = {
 /**
  * @type { ParsingMode }
  */
-const PROJECT_SUBMISSION_PARSING_MODE = 'NONE'
+const PROJECT_SUBMISSION_PARSING_MODE = 'CONSOLIDATED'
 
 const PROJECT_FIELD_MAP = {
-  // 'LEAD_TYPE'
+  // TODO: add LEAD_TYPE handling
+  leadEmail: 'LEAD_EMAIL',
+  leadFirstName: 'LEAD_FIRSTNAME',
+  leadLastName: 'LEAD_LASTNAME',
+  leadPhone: 'LEAD_PHONE',
   name: 'PROJECT_NAME',
-  // 'LEAD_EMAIL'
-  // 'LEAD_LASTNAME'
-  // 'LEAD_FIRSTNAME'
-  // 'LEAD_PHONE'
 }
 
 class TellMeSubmission {
@@ -223,20 +223,51 @@ class TellMeSubmission {
     }
   }
 
-  /**
-   * @returns {FormattedProject}
-   */
   extractProject() {
     const formattedSubmission = this.extractSubmission()
     const project = {
       name: this.getFieldValue('name', formattedSubmission),
-      // lead:
-      // organization:
-      // user:
+      organization: {
+        connect: {
+          id: process.env.TELL_ME_SYNCHRO_DEFAULT_ORGANIZATION_ID,
+        },
+      },
+      user: {
+        connect: {
+          id: process.env.TELL_ME_SYNCHRO_DEFAULT_USER_ID,
+        },
+      },
+    }
+    const lead = {
+      email: this.getFieldValue('leadEmail', formattedSubmission),
+      firstName: this.getFieldValue('leadFirstName', formattedSubmission),
+      lastName: this.getFieldValue('leadLastName', formattedSubmission),
+      organization: {
+        connect: {
+          id: process.env.TELL_ME_SYNCHRO_DEFAULT_ORGANIZATION_ID,
+        },
+      },
+      phone: this.getFieldValue('leadPhone', formattedSubmission),
     }
 
     return {
       ...project,
+      lead: {
+        /* TODO: use connectOrCreate to avoid lead duplicates ?
+        connectOrCreate: {
+          where: {
+            email: 'viola@prisma.io',
+          },
+          create: {
+            email: 'viola@prisma.io',
+            name: 'Viola',
+          },
+        },
+         */
+        create: {
+          ...lead,
+        },
+      },
       note: this.formatSubmissionForNotes(formattedSubmission),
       synchronizationId: this.submissionId,
     }
