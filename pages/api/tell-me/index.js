@@ -37,8 +37,10 @@ async function TellMeController(req, res) {
         lastSynchronizations,
         parameters: {
           apiUrl: process.env.TELL_ME_URL,
-          contributorId: process.env.TELL_ME_CONTRIBUTOR_SURVEY_ID,
-          projectId: process.env.TELL_ME_PROJECT_SURVEY_ID,
+          contributorSurveyId: process.env.TELL_ME_CONTRIBUTOR_SURVEY_ID,
+          defaultOrganizationId: process.env.TELL_ME_SYNCHRO_DEFAULT_ORGANIZATION_ID,
+          defaultUserId: process.env.TELL_ME_SYNCHRO_DEFAULT_USER_ID,
+          projectSurveyId: process.env.TELL_ME_PROJECT_SURVEY_ID,
         },
       },
     })
