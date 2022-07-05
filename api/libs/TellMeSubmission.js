@@ -252,6 +252,7 @@ class TellMeSubmission {
 
     return {
       ...project,
+      description: this.formatSubmissionForNotes(formattedSubmission),
       lead: {
         /* TODO: use connectOrCreate to avoid lead duplicates ?
         connectOrCreate: {
@@ -268,7 +269,6 @@ class TellMeSubmission {
           ...lead,
         },
       },
-      note: this.formatSubmissionForNotes(formattedSubmission),
       synchronizationId: this.submissionId,
     }
   }
