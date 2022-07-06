@@ -134,13 +134,19 @@ function TellMeConnection() {
         <Subtitle>Paramètres</Subtitle>
         <Form initialValues={initialValues} onSubmit={updateTellMeSettingsAndGoBack} validationSchema={FormSchema}>
           <Field>
-            <Form.Input isDisabled label="URL de l'API" name="apiUrl" />
+            <Form.Input isDisabled label="URL de l'API TellMe" name="apiUrl" />
           </Field>
           <Field>
-            <Form.Input isDisabled label="Formulaire contributeur" name="contributorId" />
+            <Form.Input isDisabled label="ID TellMe du formulaire contributeur" name="contributorSurveyId" />
           </Field>
           <Field>
-            <Form.Input isDisabled label="Formulaire projet" name="projectId" />
+            <Form.Input isDisabled label="ID TellMe du formulaire projet" name="projectSurveyId" />
+          </Field>
+          <Field>
+            <Form.Input isDisabled label="Organisation LabAgora attribuée par défault" name="defaultOrganizationId" />
+          </Field>
+          <Field>
+            <Form.Input isDisabled label="Utilisateur LabAgora attribué par défault" name="defaultUserId" />
           </Field>
           <Field>
             <Form.Submit>Enregistrer</Form.Submit>

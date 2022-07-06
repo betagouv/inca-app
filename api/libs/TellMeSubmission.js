@@ -1,4 +1,23 @@
 /**
+ * @typedef RawAnswer
+ * @property {Object} data
+ * @property {string} type
+ * @property {Object} question
+ * @property {string} question.id
+ * @property {?string} question.key
+ * @property {string} question.value
+ * @property {string} rawValue
+ */
+
+/**
+ * @typedef RawSubmission
+ * @property {string} id
+ * @property {string} openedAt - submission opening ISO date
+ * @property {string} submittedAt - submission ISO date
+ * @property {Array<RawAnswer>} answers
+ */
+
+/**
  * @typedef FormattedAnswer
  * @property {string} id - question id
  * @property {string} key - question field key
@@ -22,10 +41,25 @@
  * >}
  */
 
-/** @type {"NONE"|"RAW"|"CONSOLIDATED"} */
+/**
+ * @typedef FormattedProject
+ * @type {Omit<
+ *  import("@prisma/client").Project,
+ * 'createdAt' | 'updatedAt' | 'id' | 'need' | 'description' | 'hasStarted' | 'hasEnded' | 'isUnlocked' | 'leadId' | 'organizationId' | 'userId'
+ * >}
+ */
+
+/**
+ * @typedef ParsingMode
+ * @type {"NONE"|"RAW"|"CONSOLIDATED"}
+ */
+
+/**
+ * @type { ParsingMode }
+ */
 const CONTRIBUTOR_SUBMISSION_PARSING_MODE = 'CONSOLIDATED'
 
-const FIELD_MAP = {
+const CONTRIBUTOR_FIELD_MAP = {
   // TODO: add CONTRIBUTOR_TYPE handling
   email: 'EMAIL',
   firstName: 'FIRSTNAME',
@@ -33,14 +67,32 @@ const FIELD_MAP = {
   phone: 'PHONE',
 }
 
-class TellMeContributorSubmission {
+/**
+ * @type { ParsingMode }
+ */
+const PROJECT_SUBMISSION_PARSING_MODE = 'CONSOLIDATED'
+
+const PROJECT_FIELD_MAP = {
+  // TODO: add LEAD_TYPE handling
+  leadEmail: 'LEAD_EMAIL',
+  leadFirstName: 'LEAD_FIRSTNAME',
+  leadLastName: 'LEAD_LASTNAME',
+  leadPhone: 'LEAD_PHONE',
+  name: 'PROJECT_NAME',
+}
+
+class TellMeSubmission {
   /**
-   * @param {object} submission
+   * @param {RawSubmission} submission
+   * @param {ParsingMode} parsingMode
+   * @param {Object} fieldMap
    */
-  constructor(submission) {
+  constructor(submission, parsingMode, fieldMap) {
     this.rawSubmission = submission
     this.submissionId = this.getSubmissionId()
     this.consolidatedKeys = []
+    this.parsingMode = parsingMode
+    this.fieldMap = fieldMap
   }
 
   /**
@@ -49,7 +101,7 @@ class TellMeContributorSubmission {
    * @returns {string}
    */
   getFieldValue(fieldName, submission) {
-    switch (CONTRIBUTOR_SUBMISSION_PARSING_MODE) {
+    switch (this.parsingMode) {
       case 'CONSOLIDATED':
         return this.getMappedFieldValue(fieldName, submission)
 
@@ -72,7 +124,7 @@ class TellMeContributorSubmission {
    * @returns {string}
    */
   getMappedFieldValue(fieldName, submission) {
-    const mappedKey = FIELD_MAP[fieldName]
+    const mappedKey = this.fieldMap[fieldName]
     const mappedAnswer = submission.answers.find(answer => mappedKey === answer.key)
     if (mappedAnswer === undefined) {
       return '...'
@@ -129,7 +181,7 @@ class TellMeContributorSubmission {
    */
   formatSubmissionForNotes(submission) {
     let notes
-    switch (CONTRIBUTOR_SUBMISSION_PARSING_MODE) {
+    switch (this.parsingMode) {
       case 'RAW':
         notes = submission.answers.map(answer => this.formatNoteAnswer(answer))
 
@@ -170,6 +222,62 @@ class TellMeContributorSubmission {
       synchronizationId: this.submissionId,
     }
   }
+
+  extractProject() {
+    const formattedSubmission = this.extractSubmission()
+    const project = {
+      name: this.getFieldValue('name', formattedSubmission),
+      organization: {
+        connect: {
+          id: process.env.TELL_ME_SYNCHRO_DEFAULT_ORGANIZATION_ID,
+        },
+      },
+      user: {
+        connect: {
+          id: process.env.TELL_ME_SYNCHRO_DEFAULT_USER_ID,
+        },
+      },
+    }
+    const lead = {
+      email: this.getFieldValue('leadEmail', formattedSubmission),
+      firstName: this.getFieldValue('leadFirstName', formattedSubmission),
+      lastName: this.getFieldValue('leadLastName', formattedSubmission),
+      organization: {
+        connect: {
+          id: process.env.TELL_ME_SYNCHRO_DEFAULT_ORGANIZATION_ID,
+        },
+      },
+      phone: this.getFieldValue('leadPhone', formattedSubmission),
+    }
+
+    return {
+      ...project,
+      description: this.formatSubmissionForNotes(formattedSubmission),
+      lead: {
+        /* TODO: use connectOrCreate to avoid lead duplicates ?
+        connectOrCreate: {
+          where: {
+            email: 'viola@prisma.io',
+          },
+          create: {
+            email: 'viola@prisma.io',
+            name: 'Viola',
+          },
+        },
+         */
+        create: {
+          ...lead,
+        },
+      },
+      synchronizationId: this.submissionId,
+    }
+  }
 }
 
-export { TellMeContributorSubmission }
+export {
+  TellMeSubmission,
+  CONTRIBUTOR_SUBMISSION_PARSING_MODE,
+  CONTRIBUTOR_FIELD_MAP,
+  PROJECT_SUBMISSION_PARSING_MODE,
+  PROJECT_FIELD_MAP,
+}
