@@ -18,7 +18,7 @@ import { USER_ROLE } from '../../../common/constants'
 
 const ERROR_PATH = 'pages/api/tell-me/synchronize.js'
 
-const SYNCHRO_START_DATE = Temporal.Instant.from('2022-06-16T00:00:00.000Z')
+const SYNCHRO_START_DATE = Temporal.Instant.from(process.env.TELL_ME_SYNCHRO_START_DATE)
 
 function filterOlderSubmission(rawSubmission) {
   const submissionDate = Temporal.Instant.from(rawSubmission.submittedAt)
