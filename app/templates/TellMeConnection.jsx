@@ -137,6 +137,9 @@ function TellMeConnection() {
             <Form.Input isDisabled label="URL de l'API TellMe" name="apiUrl" />
           </Field>
           <Field>
+            <Form.Input isDisabled label="Date de filtrage des synchro" name="startDate" />
+          </Field>
+          <Field>
             <Form.Input isDisabled label="ID TellMe du formulaire contributeur" name="contributorSurveyId" />
           </Field>
           <Field>
