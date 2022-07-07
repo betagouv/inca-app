@@ -70,6 +70,7 @@ export default function Menu() {
           <Link to="/contact-categories">Catégories de contact</Link>
 
           {user.role === USER_ROLE.ADMINISTRATOR && <Link to="/users">Utilisateur·rices</Link>}
+          {user.role === USER_ROLE.ADMINISTRATOR && <Link to="/tell-me">Tell-Me</Link>}
         </List>
       </div>
     </Container>

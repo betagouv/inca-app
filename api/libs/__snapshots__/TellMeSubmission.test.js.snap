@@ -1,0 +1,135 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`api/libs/TellMeSubmission.test.js Internal Format submission for note 1`] = `
+"[
+  \\"Your email ? john.doe@test.com\\",
+  \\"Your first name ? John\\",
+  \\"Your last name ? Doe\\",
+  \\"Your phone number ? +33123456789\\",
+  \\"Your company ? ACME Inc.\\",
+  \\"Your availabilities ? Monday to Friday\\"
+]"
+`;
+
+exports[`api/libs/TellMeSubmission.test.js Internal Format submission for note 2`] = `
+"[
+  \\"Your last name ? Doe\\",
+  \\"Your phone number ? +33123456789\\",
+  \\"Your company ? ACME Inc.\\",
+  \\"Your availabilities ? Monday to Friday\\"
+]"
+`;
+
+exports[`api/libs/TellMeSubmission.test.js Internal Format submission for note 3`] = `
+"[
+  \\"Your email ? john.doe@test.com\\",
+  \\"Your first name ? John\\",
+  \\"Your last name ? Doe\\",
+  \\"Your phone number ? +33123456789\\",
+  \\"Your company ? ACME Inc.\\",
+  \\"Your availabilities ? Monday to Friday\\"
+]"
+`;
+
+exports[`api/libs/TellMeSubmission.test.js Internal Format submission for note 4`] = `
+"[
+  \\"Your email ? john.doe@test.com\\",
+  \\"Your first name ? John\\",
+  \\"Your last name ? Doe\\",
+  \\"Your phone number ? +33123456789\\",
+  \\"Your company ? ACME Inc.\\",
+  \\"Your availabilities ? Monday to Friday\\"
+]"
+`;
+
+exports[`api/libs/TellMeSubmission.test.js Internal Format submission for note 5`] = `
+"{
+  \\"answers\\": [
+    {
+      \\"id\\": \\"q001\\",
+      \\"key\\": \\"EMAIL\\",
+      \\"label\\": \\"Your email ?\\",
+      \\"value\\": \\"john.doe@test.com\\"
+    },
+    {
+      \\"id\\": \\"q002\\",
+      \\"key\\": \\"FIRSTNAME\\",
+      \\"label\\": \\"Your first name ?\\",
+      \\"value\\": \\"John\\"
+    },
+    {
+      \\"id\\": \\"q003\\",
+      \\"key\\": \\"LASTNAME\\",
+      \\"label\\": \\"Your last name ?\\",
+      \\"value\\": \\"Doe\\"
+    },
+    {
+      \\"id\\": \\"q004\\",
+      \\"key\\": \\"PHONE\\",
+      \\"label\\": \\"Your phone number ?\\",
+      \\"value\\": \\"+33123456789\\"
+    },
+    {
+      \\"id\\": \\"q005\\",
+      \\"key\\": \\"COMPANY\\",
+      \\"label\\": \\"Your company ?\\",
+      \\"value\\": \\"ACME Inc.\\"
+    },
+    {
+      \\"id\\": \\"q006\\",
+      \\"key\\": null,
+      \\"label\\": \\"Your availabilities ?\\",
+      \\"value\\": \\"Monday to Friday\\"
+    }
+  ],
+  \\"id\\": \\"2020-01-01T00:00:00.000Z|2020-01-03T00:00:00.000Z\\",
+  \\"openedAt\\": \\"2020-01-01T00:00:00.000Z\\",
+  \\"submittedAt\\": \\"2020-01-03T00:00:00.000Z\\"
+}"
+`;
+
+exports[`api/libs/TellMeSubmission.test.js Internal Format submission for note 6`] = `
+"{
+  \\"answers\\": [
+    {
+      \\"id\\": \\"q001\\",
+      \\"key\\": \\"EMAIL\\",
+      \\"label\\": \\"Your email ?\\",
+      \\"value\\": \\"john.doe@test.com\\"
+    },
+    {
+      \\"id\\": \\"q002\\",
+      \\"key\\": \\"FIRSTNAME\\",
+      \\"label\\": \\"Your first name ?\\",
+      \\"value\\": \\"John\\"
+    },
+    {
+      \\"id\\": \\"q003\\",
+      \\"key\\": \\"LASTNAME\\",
+      \\"label\\": \\"Your last name ?\\",
+      \\"value\\": \\"Doe\\"
+    },
+    {
+      \\"id\\": \\"q004\\",
+      \\"key\\": \\"PHONE\\",
+      \\"label\\": \\"Your phone number ?\\",
+      \\"value\\": \\"+33123456789\\"
+    },
+    {
+      \\"id\\": \\"q005\\",
+      \\"key\\": \\"COMPANY\\",
+      \\"label\\": \\"Your company ?\\",
+      \\"value\\": \\"ACME Inc.\\"
+    },
+    {
+      \\"id\\": \\"q006\\",
+      \\"key\\": null,
+      \\"label\\": \\"Your availabilities ?\\",
+      \\"value\\": \\"Monday to Friday\\"
+    }
+  ],
+  \\"id\\": \\"2020-01-01T00:00:00.000Z|2020-01-03T00:00:00.000Z\\",
+  \\"openedAt\\": \\"2020-01-01T00:00:00.000Z\\",
+  \\"submittedAt\\": \\"2020-01-03T00:00:00.000Z\\"
+}"
+`;
