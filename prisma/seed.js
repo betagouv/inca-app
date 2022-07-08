@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client')
-const ß = require('bhala')
+import { PrismaClient } from '@prisma/client'
+import { B } from 'bhala'
 
-const seedContactCategories = require('./seeds/seedContactCategories')
-const seedUsers = require('./seeds/seedUsers')
+import seedContactCategories from './seeds/seedContactCategories'
+import seedUsers from './seeds/seedUsers'
 
 const prisma = new PrismaClient()
 
@@ -11,7 +11,7 @@ async function seed() {
     await seedUsers(prisma)
     await seedContactCategories(prisma)
   } catch (err) {
-    ß.error(`[prisma/seed()] ${err}`, '❌')
+    B.error(`[prisma/seed()] ${err}`, '❌')
   } finally {
     await prisma.$disconnect()
   }

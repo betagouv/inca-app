@@ -1,9 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
-const bcrypt = require('bcryptjs')
-const { promises: fs } = require('fs')
-const glob = require('glob')
-const shell = require('shelljs')
-const { promisify } = require('util')
+import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
+import { promises as fs } from 'fs'
+import glob from 'glob'
+import shell from 'shelljs'
+import { promisify } from 'util'
 
 const globAsync = promisify(glob)
 

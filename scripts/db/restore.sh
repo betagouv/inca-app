@@ -4,7 +4,9 @@
 set -e
 
 # Load .env file
-export $(egrep -v '^(#|RSA_PRIVATE_KEY|NEXT_PUBLIC_RSA_PUBLIC_KEY)' ./.env | xargs)
+if [ -f "./.env" ]; then
+  export $(egrep -v '^(#|EDDSA_PRIVATE_KEY|NEXT_PUBLIC_EDDSA_PUBLIC_KEY)' ./.env | xargs) > /dev/null
+fi
 
 DOCKER_COMPOSE_SERVICE_NAME="db"
 DOCKER_CONTAINER_NAME="app_db"

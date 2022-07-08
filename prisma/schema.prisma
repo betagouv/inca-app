@@ -50,21 +50,21 @@ model ContactCategory {
 }
 
 model Contributor {
-  id        String   @id @default(cuid())
-  firstName String
-  lastName  String
-  category  String?
-  position  String?
-  email     String
-  phone     String?
-  note      String?
-  synchronizationId   String? @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String   @id @default(cuid())
+  firstName         String
+  lastName          String
+  category          String?
+  position          String?
+  email             String
+  phone             String?
+  note              String?
+  synchronizationId String?  @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  contactCategory     ContactCategory?         @relation(fields: [contactCategoryId], references: [id])
-  contactCategoryId   String?
-  projects            ContributorsOnProjects[]
+  contactCategory   ContactCategory?         @relation(fields: [contactCategoryId], references: [id])
+  contactCategoryId String?
+  projects          ContributorsOnProjects[]
   // synchronization   ContributorsOnSynchronization?
 }
 
@@ -119,17 +119,17 @@ model Organization {
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  name        String
-  need        String?
-  description String?
-  note        String?
-  hasStarted  Boolean  @default(false)
-  hasEnded    Boolean  @default(false)
-  isUnlocked  Boolean  @default(false)
-  synchronizationId   String? @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                String   @id @default(cuid())
+  name              String
+  need              String?
+  description       String?
+  note              String?
+  hasStarted        Boolean  @default(false)
+  hasEnded          Boolean  @default(false)
+  isUnlocked        Boolean  @default(false)
+  synchronizationId String?  @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   contributors   ContributorsOnProjects[]
   lead           Lead                     @relation(fields: [leadId], references: [id])
@@ -159,6 +159,7 @@ model Prospect {
 
 model RefreshToken {
   id        String   @id @default(cuid())
+  familyId  String?
   ip        String
   value     String   @unique
   createdAt DateTime @default(now())
@@ -169,9 +170,9 @@ model RefreshToken {
 }
 
 model Synchronization {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  success   Boolean @default(false)
+  success   Boolean  @default(false)
   info      String?
 
   user   User   @relation(fields: [userId], references: [id])
@@ -190,7 +191,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  projects      Project[]
-  refreshTokens RefreshToken[]
+  projects         Project[]
+  refreshTokens    RefreshToken[]
   synchronizations Synchronization[]
 }

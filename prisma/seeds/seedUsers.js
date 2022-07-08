@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs')
+import bcrypt from 'bcryptjs'
 
 const { FIRST_ADMIN_EMAIL, FIRST_ADMIN_PASSWORD } = process.env
 const BCRYPT_SALT_WORK_FACTOR = 10
@@ -6,7 +6,14 @@ const BCRYPT_SALT_WORK_FACTOR = 10
 /**
  * @param {import('@prisma/client').PrismaClient} prisma
  */
-module.exports = async function seedUsers(prisma) {
+export default async function seedUsers(prisma) {
+  if (!FIRST_ADMIN_EMAIL) {
+    throw new Error('FIRST_ADMIN_EMAIL is not set')
+  }
+  if (!FIRST_ADMIN_PASSWORD) {
+    throw new Error('FIRST_ADMIN_PASSWORD is not set')
+  }
+
   const userCount = await prisma.user.count()
 
   if (userCount > 0) {
