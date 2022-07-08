@@ -1,91 +1,35 @@
 {
-  "extends": "@ivangabriele/eslint-config-react",
+  "extends": "@ivangabriele/eslint-config-typescript-next",
   "parserOptions": {
-    "ecmaVersion": 2021
+    "ecmaVersion": 2022,
+    "extraFileExtensions": [".cjs", ".jsx"],
+    "project": "./tsconfig.dev.json"
   },
+  "ignorePatterns": ["next-env.d.ts"],
   "rules": {
+    "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-shadow": "off",
 
+    "import/no-default-export": "off",
+
     "react/function-component-definition": "off",
-    "react/no-unstable-nested-components": "off",
-    "react/prop-types": [
-      "error",
-      {
-        "ignore": [
-          "children",
-          "className",
-          "Component",
-          "contentEditable",
-          "dangerouslySetInnerHTML",
-          "pageProps",
-          "ref"
-        ]
-      }
-    ],
-    "react/react-in-jsx-scope": "off",
-    "import/prefer-default-export": "off"
+    "react/jsx-props-no-spreading": "off",
+    "react/no-unstable-nested-components": "off"
   },
   "overrides": [
     {
-      "files": ["./api/**/*.js", "./pages/api/**/*.js"],
+      "files": ["./config/**/*.js", "./config/**/*.ts", "./prisma/seeds/**/*.js", "./scripts/**/*.js", "**/*.test.ts"],
       "env": {
         "browser": false,
-        "node": true
-      }
-    },
-    {
-      "files": ["./app/**/*.js", "./app/**/*.jsx"],
-      "env": {
-        "browser": true,
-        "node": false
-      },
-      "globals": {
-        "process": true
-      }
-    },
-    {
-      "files": ["./pages/**/*.jsx"],
-      "env": {
-        "browser": true,
         "node": true
       },
       "rules": {
-        "react/prop-types": "off"
-      }
-    },
-    {
-      "files": ["./pages/**/*.js"],
-      "env": {
-        "browser": false,
-        "node": true
-      }
-    },
-    {
-      "files": ["**/*.test.js", "./e2e/**/*.js"],
-      "plugins": ["jest"],
-      "env": {
-        "browser": false,
-        "jest/globals": true,
-        "node": true
-      },
-      "rules": {
-        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+        "no-await-in-loop": "off",
+        "no-continue": "off",
+        "no-restricted-syntax": "off",
 
-        "jest/no-disabled-tests": "error",
-        "jest/no-focused-tests": "error",
-        "jest/no-identical-title": "error",
-        "jest/prefer-to-have-length": "error",
-        "jest/valid-expect": "error"
-      }
-    },
-    {
-      "files": ["./scripts/**/*.js"],
-      "plugins": ["jest"],
-      "env": {
-        "browser": false,
-        "node": true
-      },
-      "rules": {
+        "import/extensions": ["off"],
+        "import/no-default-export": ["off"],
         "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
       }
     }

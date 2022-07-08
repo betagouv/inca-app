@@ -1,11 +1,11 @@
-const R = require('ramda')
+import * as R from 'ramda'
 
 const toRawCategories = R.map(R.prop('category'))
 
 /**
  * @param {import('@prisma/client').PrismaClient} prisma
  */
-module.exports = async function seedContactCategories(prisma) {
+export default async function seedContactCategories(prisma) {
   const contactCategoryCount = await prisma.contactCategory.count()
 
   if (contactCategoryCount > 0) {
