@@ -18,6 +18,7 @@
     "dev:db:restore": "node -r dotenv/config ./scripts/dev/restoreFromProdBackup.js",
     "dev:docker": "docker compose -f ./docker-compose.dev.yml down && docker compose -f ./docker-compose.dev.yml up -d db",
     "dev:migrate": "prisma migrate dev",
+    "dev:setup": "sh ./scripts/dev/setup.sh",
     "prepare": "husky install",
     "prestart": "yarn db:migrate",
     "start": "next start",
