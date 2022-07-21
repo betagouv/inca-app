@@ -2,7 +2,8 @@
 
 - [Get Started](#get-started)
   - [Requirements](#requirements)
-  - [Installation](#installation)
+  - [Development Setup](#development-setup)
+  - [Development Runs](#development-runs)
 - [Deployment](#deployment)
 - [Best practice](#best-practice)
   - [Conventional Commits](#conventional-commits)
@@ -17,7 +18,7 @@
 - [Yarn](https://yarnpkg.com/getting-started/install)
 - [Docker](https://www.docker.com/get-started)
 
-### Installation
+### Development Setup
 
 > ⚠️ **Important**  
 > If you're under **Windows**, please run all the CLI commands within a Linux shell-like terminal (i.e.: Git Bash).
@@ -28,6 +29,7 @@ Then run:
 git clone https://github.com/betagouv/inca-app.git
 cd inca-app
 yarn
+yarn dev:setup
 yarn dev:docker
 yarn db:migrate
 yarn db:seed
@@ -45,6 +47,15 @@ It will also watch for file changes and automatically re-hydrate the webapp on t
 >
 > - Copy `.env.example` file to a `.env` one.
 > - Generate a RSA Key Pair (required in order to generate and verify [JWTs](https://jwt.io))
+
+### Development Runs
+
+Once your local repository has been setup, you can subsequently run the development environment with:
+
+```sh
+yarn dev:docker
+yarn dev
+```
 
 ## Deployment
 
