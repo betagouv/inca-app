@@ -34,7 +34,7 @@
     "@prisma/client": "4.1.0",
     "@singularity/core": "4.2.0",
     "bcryptjs": "2.4.3",
-    "better-prop-types": "1.0.0",
+    "better-prop-types": "1.1.1",
     "bhala": "3.0.4",
     "dayjs": "1.10.7",
     "dotenv": "10.0.0",
