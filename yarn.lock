@@ -1079,10 +1079,10 @@
   resolved "https://registry.yarnpkg.com/@ivangabriele/eslint-config-typescript-next/-/eslint-config-typescript-next-4.1.1.tgz#41b78cae01e10137f2443db0abf79e4b31e1d1f8"
   integrity sha512-OxkFa9epm/PtxIe21pFPrY3m5nV2KHAl9KoL81CHK06dUR7eTBPdVtXYUbsRNJQvvTow6pDpsgcIyz2n2q6E8Q==
 
-"@ivangabriele/prettier-config@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@ivangabriele/prettier-config/-/prettier-config-3.0.2.tgz#27cc7be7b9787248936cc2744ab0750f033320a6"
-  integrity sha512-IlkhHdhDvj6me23zhB4xjXUdFLJGGeE1Od3gof04BzgLL+439bMHFQA1ZuA//+F+ENtDxNvY9dg14aOLzaAU1Q==
+"@ivangabriele/prettier-config@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@ivangabriele/prettier-config/-/prettier-config-3.1.0.tgz#8b04da8c8b93ace2e6b6d95b3cf2eb83903d46f7"
+  integrity sha512-Pf7z7UDFa9P+otKGgUXokeWO8AgqLDs5O2vOejx+wVvX5nF096GJfYIhbYCXbkLUV4+fo8qsw6rTtXo7utadsw==
 
 "@ivangabriele/tsconfig-next@1.2.2":
   version "1.2.2"
