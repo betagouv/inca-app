@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { B } from 'bhala'
 
-import seedContactCategories from './seeds/seedContactCategories'
-import seedUsers from './seeds/seedUsers'
+import seedContactCategories from './seeds/seedContactCategories.js'
+import seedUsers from './seeds/seedUsers.js'
 
 const prisma = new PrismaClient()
 
