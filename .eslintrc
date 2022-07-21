@@ -18,7 +18,7 @@
   },
   "overrides": [
     {
-      "files": ["./config/**/*.js", "./config/**/*.ts", "./prisma/seeds/**/*.js", "./scripts/**/*.js", "**/*.test.ts"],
+      "files": ["./config/**/*.js", "./config/**/*.ts", "./prisma/**/*.js", "./scripts/**/*.js", "**/*.test.ts"],
       "env": {
         "browser": false,
         "node": true
@@ -28,9 +28,18 @@
         "no-continue": "off",
         "no-restricted-syntax": "off",
 
-        "import/extensions": ["off"],
         "import/no-default-export": ["off"],
         "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+      }
+    },
+    {
+      "files": ["./config/**/*.js", "./prisma/**/*.js", "./scripts/**/*.js"],
+      "env": {
+        "browser": false,
+        "node": true
+      },
+      "rules": {
+        "import/extensions": ["error", "always"]
       }
     }
   ]
