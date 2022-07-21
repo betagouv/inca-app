@@ -67,7 +67,7 @@
     "@ivangabriele/prettier-config": "3.0.2",
     "@ivangabriele/tsconfig-next": "1.2.2",
     "@jest/globals": "28.1.2",
-    "@swc/core": "1.2.210",
+    "@swc/core": "1.2.218",
     "@swc/jest": "0.2.21",
     "@types/jest": "28.1.4",
     "@types/node": "18.0.3",
