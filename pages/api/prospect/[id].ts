@@ -44,7 +44,7 @@ async function ProspectController(req, res) {
 
     case 'POST':
       try {
-        const newProspectData = R.pick(
+        const newProspectData: any = R.pick(
           ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'organization', 'phone', 'position'],
           req.body,
         )

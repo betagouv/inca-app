@@ -1,32 +1,32 @@
+import AdminBox from '@app/atoms/AdminBox'
+import AdminHeader from '@app/atoms/AdminHeader'
+import Field from '@app/atoms/Field'
+import Title from '@app/atoms/Title'
+import { useApi } from '@app/hooks/useApi'
+import useIsMounted from '@app/hooks/useIsMounted'
+import Form from '@app/molecules/Form'
+import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card } from '@singularity/core'
+import { useRouter } from 'next/router'
 import * as R from 'ramda'
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useCallback, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 
-import AdminBox from '../atoms/AdminBox'
-import AdminHeader from '../atoms/AdminHeader'
-import Field from '../atoms/Field'
-import Title from '../atoms/Title'
-import { useApi } from '../hooks/useApi'
-import useIsMounted from '../hooks/useIsMounted'
-import Form from '../molecules/Form'
-
 const FormSchema = Yup.object().shape({
-  name: Yup.string().required(`La dénomination est obligatoire.`),
+  name: Yup.string().trim().required(`La dénomination est obligatoire.`),
 })
 
-export default function OrganizationEditor() {
+export default function AdminOrganizationEditorPage() {
   const api = useApi()
-  const { id } = useParams()
   const [isLoading, setIsLoading] = useState(true)
-  const [initialValues, setInitialValues] = useState<any>(null)
-  const navigate = useNavigate()
+  const [initialValues, setInitialValues] = useState({})
+  const router = useRouter()
   const isMounted = useIsMounted()
 
+  const id = getIdFromRequest(router)
   const isNew = id === 'new'
 
-  const loadOrganization = async () => {
+  const load = useCallback(async () => {
     const maybeBody = await api.get(`organization/${id}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
@@ -39,17 +39,16 @@ export default function OrganizationEditor() {
       setInitialValues(organizationEditableData)
       setIsLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (isNew) {
-      setInitialValues({})
       setIsLoading(false)
 
       return
     }
 
-    loadOrganization()
+    load()
   }, [])
 
   const updateOrganizationAndGoBack = async (values, { setErrors, setSubmitting }) => {
@@ -60,18 +59,14 @@ export default function OrganizationEditor() {
       : await api.patch(`organization/${id}`, organizationData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
-        firstName: 'Sorry, but something went wrong.',
+        firstName: 'Une erreur serveur est survenue.',
       })
       setSubmitting(false)
 
       return
     }
 
-    navigate('..')
-  }
-
-  if (isLoading) {
-    return <>Loading...</>
+    router.back()
   }
 
   return (
@@ -81,17 +76,22 @@ export default function OrganizationEditor() {
       </AdminHeader>
 
       <Card>
-        <Form initialValues={initialValues} onSubmit={updateOrganizationAndGoBack} validationSchema={FormSchema}>
+        <Form
+          key={JSON.stringify(initialValues)}
+          initialValues={initialValues}
+          onSubmit={updateOrganizationAndGoBack}
+          validationSchema={FormSchema}
+        >
           <Field>
-            <Form.Input label="Dénomination" name="name" />
+            <Form.Input disabled={isLoading} label="Dénomination" name="name" />
           </Field>
 
           <Field>
-            <Form.Textarea label="Notes" name="note" />
+            <Form.Textarea isDisabled={isLoading} label="Notes" name="note" />
           </Field>
 
           <Field>
-            <Form.Submit>{isNew ? 'Créer' : 'Enregistrer'}</Form.Submit>
+            <Form.Submit>{isNew ? 'Créer' : 'Mettre à jour'}</Form.Submit>
           </Field>
         </Form>
       </Card>

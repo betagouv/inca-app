@@ -1,35 +1,37 @@
+import AdminBox from '@app/atoms/AdminBox'
+import AdminHeader from '@app/atoms/AdminHeader'
+import Field from '@app/atoms/Field'
+import Title from '@app/atoms/Title'
+import { useApi } from '@app/hooks/useApi'
+import useIsMounted from '@app/hooks/useIsMounted'
+import Form from '@app/molecules/Form'
+import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card } from '@singularity/core'
+import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
-
-import AdminBox from '../atoms/AdminBox'
-import AdminHeader from '../atoms/AdminHeader'
-import Field from '../atoms/Field'
-import Title from '../atoms/Title'
-import { useApi } from '../hooks/useApi'
-import useIsMounted from '../hooks/useIsMounted'
-import Form from '../molecules/Form'
 
 const FormSchema = Yup.object().shape({
   contactCategoryAsOption: Yup.object().required(`Associer une catégorie de contact est obligatoire.`),
   email: Yup.string()
+    .trim()
     .required(`L’adresse email est obligatoire.`)
     .email(`Cette addresse email ne semble pas correctement formatté.`),
-  firstName: Yup.string().required(`Le prénom est obligatoire.`),
-  lastName: Yup.string().required(`Le nom de famille est obligatoire.`),
+  firstName: Yup.string().trim().required(`Le prénom est obligatoire.`),
+  lastName: Yup.string().trim().required(`Le nom de famille est obligatoire.`),
 })
 
-export default function ProspectEditor() {
-  const [contactCategoriesAsOptions, setContactCategoriesAsOptions] = useState(null)
-  const [initialValues, setInitialValues] = useState<any>(null)
-  const { id } = useParams()
-  const navigate = useNavigate()
+export default function AdminProspectEditorPage() {
+  const [contactCategoriesAsOptions, setContactCategoriesAsOptions] = useState([])
+  const [initialValues, setInitialValues] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
   const api = useApi()
   const isMounted = useIsMounted()
 
-  const isLoading = initialValues === null || contactCategoriesAsOptions === null
+  const id = getIdFromRequest(router)
+  const isReady = !isLoading && contactCategoriesAsOptions.length
   const isNew = id === 'new'
 
   const loadProspect = async () => {
@@ -39,7 +41,7 @@ export default function ProspectEditor() {
     }
 
     const prospectData = maybeBody.data
-    const prospectEditableData = R.pick([
+    const prospectEditableData: any = R.pick([
       'email',
       'firstName',
       'lastName',
@@ -55,6 +57,7 @@ export default function ProspectEditor() {
 
     if (isMounted()) {
       setInitialValues(prospectEditableData)
+      setIsLoading(false)
     }
   }
 
@@ -64,9 +67,9 @@ export default function ProspectEditor() {
       return
     }
 
-    const newContactCategoriesAsOptions = R.pipe(
+    const newContactCategoriesAsOptions: any = R.pipe(
       R.sortBy(R.prop('label')),
-      R.map(({ id: _id, label }) => ({
+      R.map(({ id: _id, label }: any) => ({
         label,
         value: _id,
       })),
@@ -77,20 +80,10 @@ export default function ProspectEditor() {
     }
   }
 
-  useEffect(() => {
-    loadContactCategoriesAsOptions()
-
-    if (isNew) {
-      setInitialValues({})
-
-      return
-    }
-
-    loadProspect()
-  }, [])
-
   const updateProspectAndGoBack = async (values, { setErrors, setSubmitting }) => {
-    const prospectData = R.pick(['email', 'firstName', 'lastName', 'note', 'organization', 'phone', 'position'])(values)
+    const prospectData: any = R.pick(['email', 'firstName', 'lastName', 'note', 'organization', 'phone', 'position'])(
+      values,
+    )
     prospectData.contactCategoryId = values.contactCategoryAsOption.value
 
     const maybeBody = isNew
@@ -98,19 +91,27 @@ export default function ProspectEditor() {
       : await api.patch(`prospect/${id}`, prospectData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
-        email: 'Sorry, but something went wrong.',
+        email: 'Une erreur serveur est survenue.',
       })
       setSubmitting(false)
 
       return
     }
 
-    navigate('..')
+    router.back()
   }
 
-  if (isLoading) {
-    return <>Loading...</>
-  }
+  useEffect(() => {
+    loadContactCategoriesAsOptions()
+
+    if (isNew) {
+      setIsLoading(false)
+
+      return
+    }
+
+    loadProspect()
+  }, [])
 
   return (
     <AdminBox>
@@ -119,9 +120,15 @@ export default function ProspectEditor() {
       </AdminHeader>
 
       <Card>
-        <Form initialValues={initialValues} onSubmit={updateProspectAndGoBack} validationSchema={FormSchema}>
+        <Form
+          key={JSON.stringify(initialValues)}
+          initialValues={initialValues}
+          onSubmit={updateProspectAndGoBack}
+          validationSchema={FormSchema}
+        >
           <Field>
             <Form.Select
+              isDisabled={!isReady}
               label="Catégorie de contact"
               name="contactCategoryAsOption"
               options={contactCategoriesAsOptions}
@@ -129,35 +136,35 @@ export default function ProspectEditor() {
           </Field>
 
           <Field>
-            <Form.Input label="Prénom" name="firstName" />
+            <Form.Input disabled={!isReady} label="Prénom" name="firstName" />
           </Field>
 
           <Field>
-            <Form.Input label="Nom" name="lastName" />
+            <Form.Input disabled={!isReady} label="Nom" name="lastName" />
           </Field>
 
           <Field>
-            <Form.Input label="Email" name="email" type="email" />
+            <Form.Input disabled={!isReady} label="Email" name="email" type="email" />
           </Field>
 
           <Field>
-            <Form.Input label="Téléphone" name="phone" type="tel" />
+            <Form.Input disabled={!isReady} label="Téléphone" name="phone" type="tel" />
           </Field>
 
           <Field>
-            <Form.Input label="Organisation" name="organization" />
+            <Form.Input disabled={!isReady} label="Organisation" name="organization" />
           </Field>
 
           <Field>
-            <Form.Input label="Poste" name="position" />
+            <Form.Input disabled={!isReady} label="Poste" name="position" />
           </Field>
 
           <Field>
-            <Form.Textarea label="Notes" name="note" />
+            <Form.Textarea isDisabled={!isReady} label="Notes" name="note" />
           </Field>
 
           <Field>
-            <Form.Submit>{isNew ? 'Créer' : 'Enregistrer'}</Form.Submit>
+            <Form.Submit>{isNew ? 'Créer' : 'Mettre à jour'}</Form.Submit>
           </Field>
         </Form>
       </Card>

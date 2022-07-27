@@ -47,7 +47,7 @@ async function ContributorController(req, res) {
 
     case 'POST':
       try {
-        const newContributorData = R.pick(
+        const newContributorData: any = R.pick(
           ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'phone'],
           req.body,
         )

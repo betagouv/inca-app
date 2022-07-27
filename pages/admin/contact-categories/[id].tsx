@@ -1,29 +1,29 @@
+import AdminBox from '@app/atoms/AdminBox'
+import AdminHeader from '@app/atoms/AdminHeader'
+import Field from '@app/atoms/Field'
+import Title from '@app/atoms/Title'
+import { useApi } from '@app/hooks/useApi'
+import useIsMounted from '@app/hooks/useIsMounted'
+import Form from '@app/molecules/Form'
+import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card } from '@singularity/core'
+import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 
-import AdminBox from '../atoms/AdminBox'
-import AdminHeader from '../atoms/AdminHeader'
-import Field from '../atoms/Field'
-import Title from '../atoms/Title'
-import { useApi } from '../hooks/useApi'
-import useIsMounted from '../hooks/useIsMounted'
-import Form from '../molecules/Form'
-
 const FormSchema = Yup.object().shape({
-  label: Yup.string().required(`L'étiquette est obligatoire.`),
+  label: Yup.string().trim().required(`L'étiquette est obligatoire.`),
 })
 
 export default function ContactCategoryEditor() {
   const api = useApi()
-  const { id } = useParams()
   const [isLoading, setIsLoading] = useState(true)
-  const [initialValues, setInitialValues] = useState<any>(null)
-  const navigate = useNavigate()
+  const [initialValues, setInitialValues] = useState({})
+  const router = useRouter()
   const isMounted = useIsMounted()
 
+  const id = getIdFromRequest(router)
   const isNew = id === 'new'
 
   const loadContactCategory = async () => {
@@ -41,9 +41,26 @@ export default function ContactCategoryEditor() {
     }
   }
 
+  const updateAndGoBack = async (values, { setErrors, setSubmitting }) => {
+    const contactCategoryData = R.pick(['description', 'label'])(values)
+
+    const maybeBody = isNew
+      ? await api.post(`contact-category/${id}`, contactCategoryData)
+      : await api.patch(`contact-category/${id}`, contactCategoryData)
+    if (maybeBody === null || maybeBody.hasError) {
+      setErrors({
+        firstName: 'Une erreur serveur est survenue.',
+      })
+      setSubmitting(false)
+
+      return
+    }
+
+    router.back()
+  }
+
   useEffect(() => {
     if (isNew) {
-      setInitialValues({})
       setIsLoading(false)
 
       return
@@ -52,28 +69,6 @@ export default function ContactCategoryEditor() {
     loadContactCategory()
   }, [])
 
-  const updateContactCategoryAndGoBack = async (values, { setErrors, setSubmitting }) => {
-    const contactCategoryData = R.pick(['description', 'label'])(values)
-
-    const maybeBody = isNew
-      ? await api.post(`contact-category/${id}`, contactCategoryData)
-      : await api.patch(`contact-category/${id}`, contactCategoryData)
-    if (maybeBody === null || maybeBody.hasError) {
-      setErrors({
-        firstName: 'Sorry, but something went wrong.',
-      })
-      setSubmitting(false)
-
-      return
-    }
-
-    navigate('..')
-  }
-
-  if (isLoading) {
-    return <>Loading...</>
-  }
-
   return (
     <AdminBox>
       <AdminHeader>
@@ -81,17 +76,22 @@ export default function ContactCategoryEditor() {
       </AdminHeader>
 
       <Card>
-        <Form initialValues={initialValues} onSubmit={updateContactCategoryAndGoBack} validationSchema={FormSchema}>
+        <Form
+          key={JSON.stringify(initialValues)}
+          initialValues={initialValues}
+          onSubmit={updateAndGoBack}
+          validationSchema={FormSchema}
+        >
           <Field>
-            <Form.Input label="Étiquette" name="label" />
+            <Form.Input disabled={isLoading} label="Étiquette" name="label" />
           </Field>
 
           <Field>
-            <Form.Textarea label="Description" name="description" />
+            <Form.Textarea isDisabled={isLoading} label="Description" name="description" />
           </Field>
 
           <Field>
-            <Form.Submit>{isNew ? 'Créer' : 'Enregistrer'}</Form.Submit>
+            <Form.Submit>{isNew ? 'Créer' : 'Mettre à jour'}</Form.Submit>
           </Field>
         </Form>
       </Card>

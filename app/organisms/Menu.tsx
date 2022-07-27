@@ -1,6 +1,6 @@
 import { Role } from '@prisma/client'
 import { useAuth } from 'nexauth/client'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import styled from 'styled-components'
 
 import type { User } from '@prisma/client'
@@ -61,17 +61,17 @@ export default function Menu() {
         <Brand>Lab Agora</Brand>
 
         <List>
-          <Link to="/">Suivi des projets</Link>
+          <Link href="/admin">Suivi des projets</Link>
 
-          <Link to="/projects">Projets</Link>
-          <Link to="/organizations">Organisations</Link>
-          <Link to="/leads">Porteur·ses</Link>
-          <Link to="/contributors">Contributeur·rices</Link>
-          <Link to="/prospects">Prospect·es</Link>
-          <Link to="/contact-categories">Catégories de contact</Link>
+          <Link href="/admin/projects">Projets</Link>
+          <Link href="/admin/organizations">Organisations</Link>
+          <Link href="/admin/leads">Porteur·ses</Link>
+          <Link href="/admin/contributors">Contributeur·rices</Link>
+          <Link href="/admin/prospects">Prospect·es</Link>
+          <Link href="/admin/contact-categories">Catégories de contact</Link>
 
-          {user && user.role === Role.ADMINISTRATOR && <Link to="/users">Utilisateur·rices</Link>}
-          {user && user.role === Role.ADMINISTRATOR && <Link to="/tell-me">Tell-Me</Link>}
+          {user && user.role === Role.ADMINISTRATOR && <Link href="/admin/users">Utilisateur·rices</Link>}
+          {user && user.role === Role.ADMINISTRATOR && <Link href="/admin/synchronization">Synchronisation</Link>}
         </List>
       </div>
     </Container>

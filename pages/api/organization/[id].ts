@@ -39,7 +39,7 @@ async function OrganizationController(req, res) {
 
     case 'POST':
       try {
-        const newOrganizationdData = R.pick(['name', 'note'], req.body)
+        const newOrganizationdData: any = R.pick(['name', 'note'], req.body)
 
         await prisma.organization.create({
           data: newOrganizationdData,
