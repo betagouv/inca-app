@@ -35,18 +35,18 @@ jobs:
       - name: Run
         run: yarn test:type
 
-  test_unit:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          cache: yarn
-          node-version: 16
-      - run: yarn
-      - run: yarn test:unit --coverage
-      - run: npx codecov
+  # test_unit:
+  #   name: Unit Tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         cache: yarn
+  #         node-version: 16
+  #     - run: yarn
+  #     - run: yarn test:unit --coverage
+  #     - run: npx codecov
 
   build:
     name: Build

@@ -33,7 +33,12 @@ export default function ContactCategoryEditor() {
     }
 
     const contactCategoryData = maybeBody.data
-    const contactCategoryEditableData = R.pick(['description', 'label'])(contactCategoryData)
+    const contactCategoryEditableData = R.pick([
+      'contributorSurveyAnswerValue',
+      'description',
+      'label',
+      'leadSurveyAnswerValue',
+    ])(contactCategoryData)
 
     if (isMounted()) {
       setInitialValues(contactCategoryEditableData)
@@ -42,7 +47,12 @@ export default function ContactCategoryEditor() {
   }
 
   const updateAndGoBack = async (values, { setErrors, setSubmitting }) => {
-    const contactCategoryData = R.pick(['description', 'label'])(values)
+    const contactCategoryData = R.pick([
+      'contributorSurveyAnswerValue',
+      'description',
+      'label',
+      'leadSurveyAnswerValue',
+    ])(values)
 
     const maybeBody = isNew
       ? await api.post(`contact-category/${id}`, contactCategoryData)
@@ -88,6 +98,18 @@ export default function ContactCategoryEditor() {
 
           <Field>
             <Form.Textarea isDisabled={isLoading} label="Description" name="description" />
+          </Field>
+
+          <Field>
+            <Form.Input
+              disabled={isLoading}
+              label="Réponse Tell Me (Contributeur·rices)"
+              name="contributorSurveyAnswerValue"
+            />
+          </Field>
+
+          <Field>
+            <Form.Input disabled={isLoading} label="Réponse Tell Me (Porteur·ses)" name="leadSurveyAnswerValue" />
           </Field>
 
           <Field>

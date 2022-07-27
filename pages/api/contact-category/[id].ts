@@ -39,7 +39,10 @@ async function ContactCategoryController(req, res) {
 
     case 'POST':
       try {
-        const newContactCategoryData: any = R.pick(['description', 'label'], req.body)
+        const newContactCategoryData: any = R.pick(
+          ['contributorSurveyAnswerValue', 'description', 'label', 'leadSurveyAnswerValue'],
+          req.body,
+        )
 
         await prisma.contactCategory.create({
           data: newContactCategoryData,
@@ -63,7 +66,10 @@ async function ContactCategoryController(req, res) {
           handleError(new ApiError('Not found.', 404, true), ERROR_PATH, res)
         }
 
-        const updatedContactCategoryData = R.pick(['description', 'label'], req.body)
+        const updatedContactCategoryData = R.pick(
+          ['contributorSurveyAnswerValue', 'description', 'label', 'leadSurveyAnswerValue'],
+          req.body,
+        )
         await prisma.contactCategory.update({
           data: updatedContactCategoryData,
           where: {
