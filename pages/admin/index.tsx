@@ -1,121 +1,119 @@
-import { useAuth } from 'nexauth/client'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import styled from 'styled-components'
+import AdminBox from '@app/atoms/AdminBox'
+import AdminHeader from '@app/atoms/AdminHeader'
+import Title from '@app/atoms/Title'
+import { useApi } from '@app/hooks/useApi'
+import useIsMounted from '@app/hooks/useIsMounted'
+import ProjectCard from '@app/molecules/ProjectCard'
+import { PROJECT_CONTRIBUTOR_STATE } from '@common/constants'
+import { Button, Tasker } from '@singularity/core'
+import { useRouter } from 'next/router'
+import * as R from 'ramda'
+import { useEffect, useState } from 'react'
 
-import LoginModal from '../../app/organisms/LoginModal'
-import Menu from '../../app/organisms/Menu'
-import ContactCategoryEditor from '../../app/templates/ContactCategoryEditor'
-import ContactCategoryList from '../../app/templates/ContactCategoryList'
-import ContributorEditor from '../../app/templates/ContributorEditor'
-import ContributorList from '../../app/templates/ContributorList'
-import LeadEditor from '../../app/templates/LeadEditor'
-import LeadList from '../../app/templates/LeadList'
-import OrganizationEditor from '../../app/templates/OrganizationEditor'
-import OrganizationList from '../../app/templates/OrganizationList'
-import ProjectBoard from '../../app/templates/ProjectBoard'
-import ProjectEditor from '../../app/templates/ProjectEditor'
-import ProjectLinker from '../../app/templates/ProjectLinker'
-import ProjectList from '../../app/templates/ProjectList'
-import ProspectEditor from '../../app/templates/ProspectEditor'
-import ProspectList from '../../app/templates/ProspectList'
-import { TellMeConnection } from '../../app/templates/TellMeConnection'
-import UserEditor from '../../app/templates/UserEditor'
-import UserList from '../../app/templates/UserList'
+const countSucessfulLinks: any = R.pipe(
+  R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL)) as any,
+  R.length,
+)
+const countValidatedLinks: any = R.pipe(
+  R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.VALIDATED)) as any,
+  R.length,
+)
 
-const Page = styled.div`
-  display: flex;
-  flex-grow: 1;
-`
+export default function AdminProjectBoardPage() {
+  const [projectCards, setProjectCards] = useState([[], [], [], []])
+  const router = useRouter()
+  const isMounted = useIsMounted()
+  const api = useApi()
 
-const Body = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`
-
-const Main = styled.main`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`
-
-/**
- * Lab Agora Back-Office
- *
- * @description
- * This is the main application served as a SPA while generated surveys are served as SSR to optimize their rendering.
- *
- * @see https://colinhacks.com/essays/building-a-spa-with-nextjs
- */
-export default function AdminSpaPage() {
-  const { state: authState, user } = useAuth()
-
-  if (authState.isLoading) {
-    return <h2>Loading...</h2>
+  const goToProjectEditor = id => {
+    router.push(`/admin/projects/${id}`)
   }
 
-  if (!authState.isAuthenticated || user === null) {
-    return <LoginModal />
+  const goToProjectLinker = id => {
+    router.push(`/admin/projects/${id}/linker`)
   }
+
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  const getProjectCard = project => () => <ProjectCard onClick={() => goToProjectLinker(project.id)} {...project} />
+
+  const loadProjects = async () => {
+    const maybeBody = await api.get('projects')
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    const newProjectCards = maybeBody.data.reduce(
+      (projectCardsStack, project) => {
+        const { contributors, isUnlocked } = project
+        const Project = getProjectCard(project)
+
+        if (isUnlocked) {
+          return [
+            [...projectCardsStack[0]],
+            [...projectCardsStack[1]],
+            [...projectCardsStack[2]],
+            [...projectCardsStack[3], Project],
+          ]
+        }
+
+        const linksCount = R.length(contributors)
+        const validatedOrSuccessfulLinksCount = countValidatedLinks(contributors) + countSucessfulLinks(contributors)
+
+        if (validatedOrSuccessfulLinksCount > 0) {
+          return [
+            [...projectCardsStack[0]],
+            [...projectCardsStack[1]],
+            [...projectCardsStack[2], Project],
+            [...projectCardsStack[3]],
+          ]
+        }
+
+        if (linksCount > 0) {
+          return [
+            [...projectCardsStack[0]],
+            [...projectCardsStack[1], Project],
+            [...projectCardsStack[2]],
+            [...projectCardsStack[3]],
+          ]
+        }
+
+        return [
+          [...projectCardsStack[0], Project],
+          [...projectCardsStack[1]],
+          [...projectCardsStack[2]],
+          [...projectCardsStack[3]],
+        ]
+      },
+      [[], [], [], []],
+    )
+
+    if (isMounted()) {
+      setProjectCards(newProjectCards)
+    }
+  }
+
+  useEffect(() => {
+    loadProjects()
+  }, [])
 
   return (
-    <BrowserRouter basename="/admin">
-      <Page>
-        <Menu />
+    <AdminBox>
+      <AdminHeader>
+        <Title>Suivi des projets</Title>
 
-        <Body>
-          <Main>
-            <Routes>
-              <Route element={<ProjectBoard />} index />
+        <Button onClick={() => goToProjectEditor('new')} size="small">
+          Ajouter un projet
+        </Button>
+      </AdminHeader>
 
-              <Route path="contact-categories">
-                <Route element={<ContactCategoryList />} index />
-                <Route element={<ContactCategoryEditor />} path=":id" />
-              </Route>
-
-              <Route path="contributors">
-                <Route element={<ContributorList />} index />
-                <Route element={<ContributorEditor />} path=":id" />
-              </Route>
-
-              <Route path="leads">
-                <Route element={<LeadList />} index />
-                <Route element={<LeadEditor />} path=":id" />
-              </Route>
-
-              <Route path="organizations">
-                <Route element={<OrganizationList />} index />
-                <Route element={<OrganizationEditor />} path=":id" />
-              </Route>
-
-              <Route path="projects">
-                <Route element={<ProjectList />} index />
-                <Route element={<ProjectLinker />} path="linker/:id" />
-                <Route element={<ProjectEditor />} path=":id" />
-              </Route>
-
-              <Route path="prospects">
-                <Route element={<ProspectList />} index />
-                <Route element={<ProspectEditor />} path=":id" />
-              </Route>
-
-              <Route path="users">
-                <Route element={<UserList />} index />
-                <Route element={<UserEditor />} path=":id" />
-              </Route>
-
-              <Route path="tell-me">
-                <Route element={<TellMeConnection />} index />
-              </Route>
-
-              <Route element={<div>404</div>} path="*" />
-            </Routes>
-          </Main>
-        </Body>
-      </Page>
-
-      <ToastContainer />
-    </BrowserRouter>
+      <Tasker
+        data={[
+          { label: 'Nouveaux', tasks: projectCards[0] },
+          { label: 'Contributions proposées', tasks: projectCards[1] },
+          { label: 'Mis en relation', tasks: projectCards[2] },
+          { label: 'Débloqués', tasks: projectCards[3] },
+        ]}
+      />
+    </AdminBox>
   )
 }

@@ -1,30 +1,24 @@
+import handleError from '@api/helpers/handleError'
+import ApiError from '@api/libs/ApiError'
 import { prisma } from '@api/libs/prisma'
-import bcrypt from 'bcryptjs'
+import withAuthentication from '@api/middlewares/withAuthentication'
+import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import * as R from 'ramda'
 
-import handleError from '../../../api/helpers/handleError'
-import ApiError from '../../../api/libs/ApiError'
-import withAuthentication from '../../../api/middlewares/withAuthentication'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-const BCRYPT_SALT_WORK_FACTOR = 10
 const ERROR_PATH = 'pages/api/user/[id].js'
 
 const withoutPassword = R.omit(['password'])
 
-async function UserController(req, res) {
-  if (!['GET', 'PATCH', 'POST'].includes(req.method)) {
-    handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
-
-    return
-  }
-
-  // eslint-disable-next-line default-case
+async function UserController(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
       try {
+        const id = getIdFromRequest(req)
         const maybeUser = await prisma.user.findUnique({
           where: {
-            id: req.query.id,
+            id,
           },
         })
         if (maybeUser === null) {
@@ -45,27 +39,12 @@ async function UserController(req, res) {
 
       return
 
-    case 'POST':
-      try {
-        const newUserData = R.pick(['email', 'firstName', 'isActive', 'lastName', 'role'], req.body)
-        newUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
-
-        await prisma.user.create({
-          data: newUserData,
-        })
-
-        res.status(201).json({})
-      } catch (err) {
-        handleError(err, ERROR_PATH, res)
-      }
-
-      return
-
     case 'PATCH':
       try {
+        const id = getIdFromRequest(req)
         const maybeUser = await prisma.user.findUnique({
           where: {
-            id: req.query.id,
+            id,
           },
         })
         if (maybeUser === null) {
@@ -73,13 +52,10 @@ async function UserController(req, res) {
         }
 
         const updatedUserData = R.pick(['email', 'firstName', 'isActive', 'lastName', 'role'], req.body)
-        if (req.body.password !== undefined) {
-          updatedUserData.password = await bcrypt.hash(req.body.password, BCRYPT_SALT_WORK_FACTOR)
-        }
         await prisma.user.update({
           data: updatedUserData,
           where: {
-            id: req.query.id,
+            id,
           },
         })
 
@@ -87,6 +63,11 @@ async function UserController(req, res) {
       } catch (err) {
         handleError(err, ERROR_PATH, res)
       }
+
+      return
+
+    default:
+      handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
   }
 }
 

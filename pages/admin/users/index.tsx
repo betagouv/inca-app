@@ -1,13 +1,11 @@
+import AdminBox from '@app/atoms/AdminBox'
+import AdminHeader from '@app/atoms/AdminHeader'
+import Title from '@app/atoms/Title'
+import { useApi } from '@app/hooks/useApi'
 import { Button, Card, Table } from '@singularity/core'
-import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useCallback, useEffect, useState } from 'react'
 import { Edit2, UserCheck, UserX } from 'react-feather'
-import { useNavigate } from 'react-router-dom'
-
-import AdminBox from '../atoms/AdminBox'
-import AdminHeader from '../atoms/AdminHeader'
-import Title from '../atoms/Title'
-import { useApi } from '../hooks/useApi'
-import useIsMounted from '../hooks/useIsMounted'
 
 import type { TableColumnProps } from '@singularity/core'
 
@@ -44,40 +42,37 @@ const BASE_COLUMNS: TableColumnProps[] = [
   },
 ]
 
-export default function UserList() {
+export default function UserListPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [users, setUsers] = useState([])
-  const navigate = useNavigate()
   const api = useApi()
-  const isMounted = useIsMounted()
+  const router = useRouter()
 
-  const loadUsers = async () => {
+  const goToEditor = useCallback(id => {
+    router.push(`/admin/users/${id}`)
+  }, [])
+
+  const load = useCallback(async () => {
     const maybeBody = await api.get('users')
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
-    if (isMounted()) {
-      setUsers(maybeBody.data)
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadUsers()
+    setUsers(maybeBody.data)
+    setIsLoading(false)
   }, [])
 
-  const goToUserEditor = id => {
-    navigate(`/users/${id}`)
-  }
+  useEffect(() => {
+    load()
+  }, [])
 
   const columns = [
     ...BASE_COLUMNS,
     {
       accent: 'secondary',
-      action: goToUserEditor as any,
+      action: goToEditor as any,
       Icon: Edit2,
-      key: 'goToUserEditor',
+      key: 'goToEditor',
       label: 'Éditer ce·tte utilisateur·rice',
       type: 'action',
     },
@@ -88,7 +83,7 @@ export default function UserList() {
       <AdminHeader>
         <Title>Utilisateur·rices</Title>
 
-        <Button onClick={() => goToUserEditor('new')} size="small">
+        <Button onClick={() => goToEditor('new')} size="small">
           Ajouter un utilisateur
         </Button>
       </AdminHeader>

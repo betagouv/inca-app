@@ -39,7 +39,7 @@ async function ContactCategoryController(req, res) {
 
     case 'POST':
       try {
-        const newContactCategoryData = R.pick(['description', 'label'], req.body)
+        const newContactCategoryData: any = R.pick(['description', 'label'], req.body)
 
         await prisma.contactCategory.create({
           data: newContactCategoryData,

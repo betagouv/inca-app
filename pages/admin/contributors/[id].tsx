@@ -1,35 +1,37 @@
+import AdminBox from '@app/atoms/AdminBox'
+import AdminHeader from '@app/atoms/AdminHeader'
+import Field from '@app/atoms/Field'
+import Title from '@app/atoms/Title'
+import { useApi } from '@app/hooks/useApi'
+import useIsMounted from '@app/hooks/useIsMounted'
+import Form from '@app/molecules/Form'
+import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card } from '@singularity/core'
+import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
-
-import AdminBox from '../atoms/AdminBox'
-import AdminHeader from '../atoms/AdminHeader'
-import Field from '../atoms/Field'
-import Title from '../atoms/Title'
-import { useApi } from '../hooks/useApi'
-import useIsMounted from '../hooks/useIsMounted'
-import Form from '../molecules/Form'
 
 const FormSchema = Yup.object().shape({
   contactCategoryAsOption: Yup.object().required(`Associer une catégorie de contact est obligatoire.`),
   email: Yup.string()
+    .trim()
     .required(`L’adresse email est obligatoire.`)
     .email(`Cette addresse email ne semble pas correctement formatté.`),
-  firstName: Yup.string().required(`Le prénom est obligatoire.`),
-  lastName: Yup.string().required(`Le nom de famille est obligatoire.`),
+  firstName: Yup.string().trim().required(`Le prénom est obligatoire.`),
+  lastName: Yup.string().trim().required(`Le nom de famille est obligatoire.`),
 })
 
-export default function ContributorEditor() {
-  const [contactCategoriesAsOptions, setContactCategoriesAsOptions] = useState(null)
-  const [initialValues, setInitialValues] = useState<any>(null)
-  const { id } = useParams()
-  const navigate = useNavigate()
+export default function AdminContributorEditorPage() {
+  const [contactCategoriesAsOptions, setContactCategoriesAsOptions] = useState([])
+  const [initialValues, setInitialValues] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
   const api = useApi()
   const isMounted = useIsMounted()
 
-  const isLoading = initialValues === null || contactCategoriesAsOptions === null
+  const id = getIdFromRequest(router)
+  const isReady = !isLoading && contactCategoriesAsOptions.length
   const isNew = id === 'new'
 
   const loadContributor = async () => {
@@ -39,7 +41,7 @@ export default function ContributorEditor() {
     }
 
     const contributorData = maybeBody.data
-    const contributorEditableData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(contributorData)
+    const contributorEditableData: any = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(contributorData)
     if (contributorData.contactCategoryId !== null) {
       contributorEditableData.contactCategoryAsOption = {
         label: contributorData.contactCategory.label,
@@ -49,6 +51,7 @@ export default function ContributorEditor() {
 
     if (isMounted()) {
       setInitialValues(contributorEditableData)
+      setIsLoading(false)
     }
   }
 
@@ -58,9 +61,9 @@ export default function ContributorEditor() {
       return
     }
 
-    const newContactCategoriesAsOptions = R.pipe(
+    const newContactCategoriesAsOptions: any = R.pipe(
       R.sortBy(R.prop('label')),
-      R.map(({ id: _id, label }) => ({
+      R.map(({ id: _id, label }: any) => ({
         label,
         value: _id,
       })),
@@ -71,20 +74,8 @@ export default function ContributorEditor() {
     }
   }
 
-  useEffect(() => {
-    loadContactCategoriesAsOptions()
-
-    if (isNew) {
-      setInitialValues({})
-
-      return
-    }
-
-    loadContributor()
-  }, [])
-
-  const updateContributorAndGoBack = async (values, { setErrors, setSubmitting }) => {
-    const contributorData = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
+  const updateAndGoBack = async (values, { setErrors, setSubmitting }) => {
+    const contributorData: any = R.pick(['email', 'firstName', 'lastName', 'note', 'phone'])(values)
     contributorData.contactCategoryId = values.contactCategoryAsOption.value
 
     const maybeBody = isNew
@@ -92,19 +83,27 @@ export default function ContributorEditor() {
       : await api.patch(`contributor/${id}`, contributorData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
-        firstName: 'Sorry, but something went wrong.',
+        firstName: 'Une erreur serveur est survenue.',
       })
       setSubmitting(false)
 
       return
     }
 
-    navigate('..')
+    router.back()
   }
 
-  if (isLoading) {
-    return <>Loading...</>
-  }
+  useEffect(() => {
+    loadContactCategoriesAsOptions()
+
+    if (isNew) {
+      setIsLoading(false)
+
+      return
+    }
+
+    loadContributor()
+  }, [])
 
   return (
     <AdminBox>
@@ -113,9 +112,15 @@ export default function ContributorEditor() {
       </AdminHeader>
 
       <Card>
-        <Form initialValues={initialValues} onSubmit={updateContributorAndGoBack} validationSchema={FormSchema}>
+        <Form
+          key={JSON.stringify(initialValues)}
+          initialValues={initialValues}
+          onSubmit={updateAndGoBack}
+          validationSchema={FormSchema}
+        >
           <Field>
             <Form.Select
+              isDisabled={!isReady}
               label="Catégorie de contact"
               name="contactCategoryAsOption"
               options={contactCategoriesAsOptions}
@@ -123,27 +128,27 @@ export default function ContributorEditor() {
           </Field>
 
           <Field>
-            <Form.Input label="Prénom" name="firstName" />
+            <Form.Input disabled={!isReady} label="Prénom" name="firstName" />
           </Field>
 
           <Field>
-            <Form.Input label="Nom" name="lastName" />
+            <Form.Input disabled={!isReady} label="Nom" name="lastName" />
           </Field>
 
           <Field>
-            <Form.Input label="Email" name="email" type="email" />
+            <Form.Input disabled={!isReady} label="Email" name="email" type="email" />
           </Field>
 
           <Field>
-            <Form.Input label="Téléphone" name="phone" type="tel" />
+            <Form.Input disabled={!isReady} label="Téléphone" name="phone" type="tel" />
           </Field>
 
           <Field>
-            <Form.Textarea label="Notes" name="note" />
+            <Form.Textarea isDisabled={!isReady} label="Notes" name="note" />
           </Field>
 
           <Field>
-            <Form.Submit>{isNew ? 'Créer' : 'Enregistrer'}</Form.Submit>
+            <Form.Submit>{isNew ? 'Créer' : 'Mettre à jour'}</Form.Submit>
           </Field>
         </Form>
       </Card>

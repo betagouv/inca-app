@@ -52,7 +52,7 @@ async function ProjectController(req, res) {
 
     case 'POST':
       try {
-        const newProjectData = R.pick(
+        const newProjectData: any = R.pick(
           ['description', 'isUnlocked', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
           req.body,
         )
@@ -102,7 +102,7 @@ async function ProjectController(req, res) {
 
         if (req.body.contributorIds !== undefined) {
           const contributorIdsToDelete = R.pipe(
-            R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.ASSIGNED)),
+            R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.ASSIGNED)) as any,
             R.map(R.prop('contributorId')),
             R.without(req.body.contributorIds),
           )(maybeProject.contributors)
@@ -119,7 +119,7 @@ async function ProjectController(req, res) {
                   },
                 })),
                 deleteMany: {
-                  OR: contributorIdsToDelete.map(contributorId => ({ contributorId })),
+                  OR: contributorIdsToDelete.map(contributorId => ({ contributorId })) as any,
                 },
               },
             },

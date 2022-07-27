@@ -28,6 +28,17 @@ enum ProjectContributorState {
   VALIDATED
 }
 
+enum SettingKey {
+  // Tell Me App URL
+  TELL_ME_CONTRIBUTOR_SURVEY_ID
+  // Tell Me App URL
+  TELL_ME_LEAD_SURVEY_ID
+  // Tell Me Personal Access Token
+  TELL_ME_PAT
+  // Tell Me App URL
+  TELL_ME_URL
+}
+
 enum Role {
   ADMINISTRATOR
   MANAGER
@@ -178,6 +189,13 @@ model Synchronization {
   user   User   @relation(fields: [userId], references: [id])
   userId String
   // contributors  ContributorsOnSynchronization[]
+}
+
+model Setting {
+  id          String     @id @default(cuid())
+  key         SettingKey @unique
+  description String?
+  value       String
 }
 
 model User {

@@ -7,7 +7,7 @@ import { Context } from './Context'
 import type { ApiContext } from './types'
 import type { User } from '@prisma/client'
 import type { AppProps } from 'next/app'
-import type { JsonObject } from 'type-fest'
+import type { JsonArray, JsonObject } from 'type-fest'
 
 const API_BASE_URL = '/api'
 
@@ -43,7 +43,7 @@ export function withApi(Component: AppProps['Component']) {
         }
       }
 
-      async function post<T = any>(path: string, data: JsonObject): Promise<Api.ResponseBody<T> | null> {
+      async function post<T = any>(path: string, data: JsonArray | JsonObject): Promise<Api.ResponseBody<T> | null> {
         try {
           const options = {
             json: data,
@@ -66,7 +66,7 @@ export function withApi(Component: AppProps['Component']) {
         }
       }
 
-      async function patch<T = any>(path: string, data: JsonObject): Promise<Api.ResponseBody<T> | null> {
+      async function patch<T = any>(path: string, data: JsonArray | JsonObject): Promise<Api.ResponseBody<T> | null> {
         try {
           const options = {
             json: data,

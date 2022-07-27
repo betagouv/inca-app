@@ -44,7 +44,7 @@ async function LeadController(req, res) {
 
     case 'POST':
       try {
-        const newLeadData = R.pick(
+        const newLeadData: any = R.pick(
           ['contactCategoryId', 'email', 'firstName', 'lastName', 'note', 'organizationId', 'phone', 'position'],
           req.body,
         )

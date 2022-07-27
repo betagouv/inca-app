@@ -1,22 +1,27 @@
+import { prisma } from '@api/libs/prisma'
+import AdminBox from '@app/atoms/AdminBox'
+import AdminHeader from '@app/atoms/AdminHeader'
+import Card from '@app/atoms/Card'
+import Subtitle from '@app/atoms/Subtitle'
+import Title from '@app/atoms/Title'
+import { getContributorLinksFromProject } from '@app/helpers/getContributorLinksFromProject'
+import getRandomKey from '@app/helpers/getRandomKey'
+import { useApi } from '@app/hooks/useApi'
+import useIsMounted from '@app/hooks/useIsMounted'
+import { PROJECT_CONTRIBUTOR_STATE } from '@common/constants'
+import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Button, Table, Textarea } from '@singularity/core'
 import debounce from 'lodash.debounce'
+import { useRouter } from 'next/router'
 import * as R from 'ramda'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Send, Star, UserCheck, UserX } from 'react-feather'
-import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import superjson from 'superjson'
 
-import { PROJECT_CONTRIBUTOR_STATE } from '../../common/constants'
-import AdminBox from '../atoms/AdminBox'
-import AdminHeader from '../atoms/AdminHeader'
-import Card from '../atoms/Card'
-import Subtitle from '../atoms/Subtitle'
-import Title from '../atoms/Title'
-import getRandomKey from '../helpers/getRandomKey'
-import { useApi } from '../hooks/useApi'
-import useIsMounted from '../hooks/useIsMounted'
-
+import type { FullProject } from '@common/types'
 import type { TableColumnProps } from '@singularity/core'
+import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 
 const BASE_COLUMNS: TableColumnProps[] = [
   {
@@ -45,50 +50,34 @@ const NoteTextarea = styled(Textarea)`
   }
 `
 
-export default function ProjectLinker() {
-  const { id } = useParams()
-  const [project, setProject] = useState<any>(null)
-  const [contributorLinks, setContributorLinks] = useState<any>(null)
-  const navigate = useNavigate()
+type AdminProjectLinkerPageProps = {
+  projectAsSuperJson: string
+}
+export default function AdminProjectLinkerPage({ projectAsSuperJson }: AdminProjectLinkerPageProps) {
+  const project = superjson.parse<FullProject>(projectAsSuperJson)
+
+  const [contributorLinks, setContributorLinks] = useState(getContributorLinksFromProject(project))
+  const router = useRouter()
   const isMounted = useIsMounted()
   const api = useApi()
 
-  const isLoading = project === null || contributorLinks === null
+  const id = getIdFromRequest(router)
 
-  const loadProject = async () => {
+  const load = async () => {
     const maybeBody = await api.get(`project/${id}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
-    const newContributorLinks = R.pipe(
-      R.map(({ contributor, state }) => ({
-        ...contributor,
-        isContacted: state === PROJECT_CONTRIBUTOR_STATE.CONTACTED,
-        isRefused: state === PROJECT_CONTRIBUTOR_STATE.REFUSED,
-        isSuccessful: state === PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL,
-        isValidated: state === PROJECT_CONTRIBUTOR_STATE.VALIDATED,
-        state,
-      })),
-      R.sortBy(R.prop('lastName')),
-    )(maybeBody.data.contributors)
+    const newContributorLinks = getContributorLinksFromProject(maybeBody.data)
 
     if (isMounted()) {
-      setProject({ ...maybeBody.data })
       setContributorLinks([...newContributorLinks])
     }
   }
 
-  useEffect(() => {
-    loadProject()
-  }, [])
-
-  const goToProjectEditor = () => {
-    navigate(`/projects/${id}`, {
-      state: {
-        fromLinker: true,
-      },
-    })
+  const goToEditor = () => {
+    router.push(`/admin/projects/${id}`)
   }
 
   const updateProjectNote = debounce(async event => {
@@ -96,14 +85,14 @@ export default function ProjectLinker() {
   }, 250)
 
   const updateProjectContributorState = async (contributorId, state) => {
-    const contributorLink = R.find(R.propEq('id', contributorId))(contributorLinks)
+    const contributorLink: any = R.find(R.propEq('id', contributorId))(contributorLinks)
     const newState = state !== contributorLink.state ? state : PROJECT_CONTRIBUTOR_STATE.ASSIGNED
 
     await api.patch(`project/${id}/${contributorId}`, {
       state: newState,
     })
 
-    await loadProject()
+    await load()
   }
 
   const columns = [
@@ -154,16 +143,12 @@ export default function ProjectLinker() {
     },
   ]
 
-  if (isLoading) {
-    return <>Loading...</>
-  }
-
   return (
     <AdminBox>
       <AdminHeader>
         <Title>{project.name}</Title>
 
-        <Button onClick={goToProjectEditor}>Éditer le projet</Button>
+        <Button onClick={goToEditor}>Éditer le projet</Button>
       </AdminHeader>
 
       <Card>
@@ -175,8 +160,46 @@ export default function ProjectLinker() {
       <Card>
         <Subtitle>Notes</Subtitle>
 
-        <NoteTextarea defaultValue={project.note} name="note" onChange={updateProjectNote} />
+        <NoteTextarea defaultValue={project.note || ''} name="note" onChange={updateProjectNote} />
       </Card>
     </AdminBox>
   )
+}
+
+export async function getServerSideProps({
+  query,
+}: GetServerSidePropsContext): Promise<GetServerSidePropsResult<AdminProjectLinkerPageProps>> {
+  const { id } = query
+  if (typeof id !== 'string') {
+    return {
+      notFound: true,
+    }
+  }
+
+  const project = await prisma.project.findUnique({
+    include: {
+      contributors: {
+        include: {
+          contributor: true,
+        },
+      },
+      lead: true,
+      organization: true,
+      user: true,
+    },
+    where: {
+      id,
+    },
+  })
+  if (!project) {
+    return {
+      notFound: true,
+    }
+  }
+
+  return {
+    props: {
+      projectAsSuperJson: superjson.stringify(project),
+    },
+  }
 }

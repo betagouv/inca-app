@@ -1,40 +1,43 @@
+import handleError from '@api/helpers/handleError'
+import ApiError from '@api/libs/ApiError'
 import { prisma } from '@api/libs/prisma'
+import withAuthentication from '@api/middlewares/withAuthentication'
 import { Role } from '@prisma/client'
 import * as R from 'ramda'
 
-import handleError from '../../api/helpers/handleError'
-import ApiError from '../../api/libs/ApiError'
-import withAuthentication from '../../api/middlewares/withAuthentication'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 const ERROR_PATH = 'pages/api/users.js'
 
 const withoutPassword = R.map(R.omit(['password']))
 
-async function UsersController(req, res) {
-  if (req.method !== 'GET') {
-    handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
+async function UsersController(req: NextApiRequest, res: NextApiResponse) {
+  switch (req.method) {
+    case 'GET':
+      try {
+        const filterOrderBy: any = {
+          lastName: 'asc',
+        }
 
-    return
-  }
+        const users = await prisma.user.findMany({
+          orderBy: filterOrderBy,
+        })
+        // TODO Replace programatically user password exclusion in API by a Prisma mechanism as soon as available.
+        // Prisma field exclusion is still a feature request in progress:
+        // https://github.com/prisma/prisma/issues/7380
+        const usersWithoutPassword = withoutPassword(users)
 
-  try {
-    const filterOrderBy: any = {
-      lastName: 'asc',
-    }
+        res.status(200).json({
+          data: usersWithoutPassword,
+        })
+      } catch (err) {
+        handleError(err, ERROR_PATH, res)
+      }
 
-    const users = await prisma.user.findMany({
-      orderBy: filterOrderBy,
-    })
-    // TODO Replace programatically user password exclusion in API by a Prisma mechanism as soon as available.
-    // Prisma field exclusion is still a feature request in progress:
-    // https://github.com/prisma/prisma/issues/7380
-    const usersWithoutPassword = withoutPassword(users)
+      return
 
-    res.status(200).json({
-      data: usersWithoutPassword,
-    })
-  } catch (err) {
-    handleError(err, ERROR_PATH, res)
+    default:
+      handleError(new ApiError('Method not allowed.', 405, true), ERROR_PATH, res)
   }
 }
 
