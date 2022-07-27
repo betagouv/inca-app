@@ -15,14 +15,22 @@ import type { TableColumnProps } from '@singularity/core'
 
 const BASE_COLUMNS: TableColumnProps[] = [
   {
+    grow: 0.3,
     isSortable: true,
     key: 'label',
     label: 'Étiquette',
   },
   {
+    grow: 0.3,
     isSortable: false,
-    key: 'description',
-    label: 'Description',
+    key: 'contributorSurveyAnswerValue',
+    label: 'Réponse Tell Me (Contributeur·rices)',
+  },
+  {
+    grow: 0.3,
+    isSortable: false,
+    key: 'leadSurveyAnswerValue',
+    label: 'Réponse Tell Me (Porteur·ses)',
   },
 ]
 

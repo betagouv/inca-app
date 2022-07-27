@@ -4,17 +4,20 @@ import Card from '@app/atoms/Card'
 import Field from '@app/atoms/Field'
 import Subtitle from '@app/atoms/Subtitle'
 import Title from '@app/atoms/Title'
+import { capitalizeFirstLetter } from '@app/helpers/capitalizeFirstLetter'
 import { useApi } from '@app/hooks/useApi'
 import Form from '@app/molecules/Form'
-import { Temporal } from '@js-temporal/polyfill'
-import { Setting, SettingKey } from '@prisma/client'
-import { Table } from '@singularity/core'
+import DeletionModal from '@app/organisms/DeletionModal'
+import { dayjs } from '@common/libs/dayjs'
+import { SettingKey } from '@prisma/client'
+import { Button, Table } from '@singularity/core'
 import * as R from 'ramda'
-import { useState, useEffect, useCallback } from 'react'
-import { CheckCircle, X } from 'react-feather'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { Trash } from 'react-feather'
 import { toast } from 'react-toastify'
 import * as Yup from 'yup'
 
+import type { Setting, Synchronization } from '@prisma/client'
 import type { TableColumnProps } from '@singularity/core'
 
 const FormSchema = Yup.object().shape({})
@@ -24,40 +27,72 @@ const BASE_COLUMNS: TableColumnProps[] = [
     isSortable: true,
     key: 'createdAt',
     label: 'Date',
-    transform: ({ createdAt }) => Temporal.Instant.from(createdAt).toLocaleString('fr-FR'),
+    transform: ({ createdAt }) => capitalizeFirstLetter(dayjs().to(createdAt)),
   },
   {
     isSortable: true,
     key: 'user.email',
     label: 'Par',
   },
-  {
-    isSortable: false,
-    key: 'info',
-    label: 'Informations',
-  },
-  {
-    IconOff: X,
-    IconOn: CheckCircle,
-    key: 'success',
-    label: 'Statut',
-    labelOff: 'Erreur',
-    labelOn: 'Succès',
-    type: 'boolean',
-    withTooltip: true,
-  },
 ]
 
 export default function AdminSynchronizationPage() {
+  const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoadingSettings, setIsLoadingSettings] = useState(true)
   const [isLoadingSyncronizations, setIsLoadingSyncronizations] = useState(true)
   const [initialSettingsAsValues, setInitialSettingsAsValues] = useState<any>({})
-  const [synchronizations, setSynchronizations] = useState([])
+  const [selectedId, setSelectedId] = useState('')
+  const [selectedEntity, setSelectedEntity] = useState('')
+  const [synchronizations, setSynchronizations] = useState<Synchronization[]>([])
   const api = useApi()
 
-  const isLoading = isLoadingSettings || isLoadingSyncronizations
+  const closeDeletionModal = useCallback(() => {
+    setHasDeletionModal(false)
+  }, [])
+
+  const createSynchronization = async () => {
+    setIsLoadingSyncronizations(true)
+
+    const maybeBody = await api.post('synchronizations', {})
+    if (maybeBody !== null && maybeBody.hasError) {
+      console.error(maybeBody.message)
+
+      return
+    }
+
+    await loadSynchronizations()
+    toast.success(`Synchronisation terminée !`)
+  }
+
+  const confirmSynchronizationDeletion = useCallback(
+    async id => {
+      const synchronization = R.find<Synchronization>(R.propEq('id', id))(synchronizations)
+      if (!synchronization) {
+        return
+      }
+
+      setSelectedId(id)
+      setSelectedEntity(`la synchronisation du ${dayjs(synchronization.createdAt).format('LL à LT')}`)
+      setHasDeletionModal(true)
+    },
+    [synchronizations],
+  )
+
+  // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
+  const deleteSynchronization = useCallback(async () => {
+    setHasDeletionModal(false)
+
+    const maybeBody = await api.delete(`synchronizations/${selectedId}`)
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    await loadSynchronizations()
+  }, [selectedId])
 
   const loadSettings = useCallback(async () => {
+    setIsLoadingSettings(true)
+
     const maybeBody = await api.get<Setting[]>('settings')
     if (maybeBody === null || maybeBody.hasError) {
       return
@@ -69,10 +104,13 @@ export default function AdminSynchronizationPage() {
     setIsLoadingSettings(false)
   }, [])
 
-  const loadTellMeInfo = useCallback(async () => {
-    const maybeBody: any = await api.get('tell-me')
+  const loadSynchronizations = useCallback(async () => {
+    const maybeBody = await api.get<Synchronization[]>('synchronizations')
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
 
-    setSynchronizations(maybeBody.data.lastSynchronizations)
+    setSynchronizations(maybeBody.data)
     setIsLoadingSyncronizations(false)
   }, [])
 
@@ -95,38 +133,38 @@ export default function AdminSynchronizationPage() {
       })
     }
 
+    loadSettings()
+
     setSubmitting(false)
   }, [])
 
   useEffect(() => {
     loadSettings()
-    loadTellMeInfo()
+    loadSynchronizations()
   }, [])
 
-  const synchronize = async (_, { setErrors, setSubmitting }) => {
-    const maybeBody = await api.post('tell-me/synchronize', {})
-    if (maybeBody === null || maybeBody.hasError) {
-      setErrors({
-        firstName: 'Une erreur serveur est survenue.',
-      })
-      setSubmitting(false)
-
-      if (maybeBody !== null) {
-        toast.error(`La synchronisation a échouée : ${maybeBody.message}`)
-      }
-
-      return
-    }
-    toast.success(`Synchronisation terminée !`)
-    await loadTellMeInfo()
-  }
-
-  const columns = [...BASE_COLUMNS]
+  const columns = useMemo(
+    () =>
+      [
+        ...BASE_COLUMNS,
+        {
+          accent: 'danger',
+          action: confirmSynchronizationDeletion,
+          Icon: Trash,
+          key: 'confirmSynchronizationDeletion',
+          label: 'Supprimer cette catégorie de contact',
+          type: 'action',
+        },
+      ] as TableColumnProps[],
+    [confirmSynchronizationDeletion],
+  )
 
   return (
     <AdminBox>
       <AdminHeader>
         <Title>Synchronisation</Title>
+
+        <Button onClick={createSynchronization}>Synchroniser</Button>
       </AdminHeader>
 
       <Card>
@@ -136,13 +174,8 @@ export default function AdminSynchronizationPage() {
           data={synchronizations}
           defaultSortedKey="createdAt"
           defaultSortedKeyIsDesc
-          isLoading={isLoading}
+          isLoading={isLoadingSyncronizations}
         />
-        <Form onSubmit={synchronize} validationSchema={FormSchema}>
-          <Field>
-            <Form.Submit>Synchroniser</Form.Submit>
-          </Field>
-        </Form>
       </Card>
 
       <Card>
@@ -188,6 +221,10 @@ export default function AdminSynchronizationPage() {
           </Field>
         </Form>
       </Card>
+
+      {hasDeletionModal && (
+        <DeletionModal entity={selectedEntity} onCancel={closeDeletionModal} onConfirm={deleteSynchronization} />
+      )}
     </AdminBox>
   )
 }
