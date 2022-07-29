@@ -7,14 +7,7 @@ type CustomTextInputProps = TextInputProps & {
   name: string
   noLabel?: boolean
 }
-export default function Input({
-  disabled,
-  label,
-  name,
-  noLabel = false,
-  type = 'text',
-  ...rest
-}: CustomTextInputProps) {
+export function Input({ disabled, label, name, noLabel = false, type = 'text', ...rest }: CustomTextInputProps) {
   const { errors, handleChange, isSubmitting, submitCount, touched, values } = useFormikContext()
 
   const hasError = (touched[name] !== undefined || submitCount > 0) && Boolean(errors[name])

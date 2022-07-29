@@ -6,7 +6,7 @@ import { Role } from '@prisma/client'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const ERROR_PATH = 'pages/api/settings.js'
+const ERROR_PATH = 'pages/api/settings/index.js'
 
 async function SettingListEndpoint(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {

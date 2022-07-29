@@ -5,6 +5,7 @@ import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
 import Form from '@app/molecules/Form'
 import { USER_ROLE_LABEL } from '@common/constants'
+import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card, Field } from '@singularity/core'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
@@ -93,15 +94,10 @@ export default function AdminUserEditorPage({ userData }) {
   )
 }
 
-export async function getServerSideProps({
-  query,
-}: GetServerSidePropsContext): Promise<GetServerSidePropsResult<AdminUserEditorPageProps>> {
-  const { id } = query
-  if (typeof id !== 'string') {
-    return {
-      notFound: true,
-    }
-  }
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<AdminUserEditorPageProps>> {
+  const id = getIdFromRequest(context)
 
   const userData = await prisma.user.findUnique({
     select: {

@@ -35,7 +35,7 @@ export default function AdminProspectEditorPage() {
   const isNew = id === 'new'
 
   const loadProspect = async () => {
-    const maybeBody = await api.get(`prospect/${id}`)
+    const maybeBody = await api.get(`prospects/${id}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
@@ -87,8 +87,8 @@ export default function AdminProspectEditorPage() {
     prospectData.contactCategoryId = values.contactCategoryAsOption.value
 
     const maybeBody = isNew
-      ? await api.post(`prospect/${id}`, prospectData)
-      : await api.patch(`prospect/${id}`, prospectData)
+      ? await api.post('prospects', prospectData)
+      : await api.patch(`prospects/${id}`, prospectData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
         email: 'Une erreur serveur est survenue.',
@@ -160,7 +160,7 @@ export default function AdminProspectEditorPage() {
           </Field>
 
           <Field>
-            <Form.Textarea isDisabled={!isReady} label="Notes" name="note" />
+            <Form.Textarea disabled={!isReady} label="Notes" name="note" />
           </Field>
 
           <Field>

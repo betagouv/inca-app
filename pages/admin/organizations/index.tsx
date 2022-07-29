@@ -73,7 +73,7 @@ export default function AdminOrganizationListPage() {
   const _delete = useCallback(async () => {
     setHasDeletionModal(false)
 
-    const maybeBody = await api.delete(`organization/${selectedId}`)
+    const maybeBody = await api.delete(`organizations/${selectedId}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }

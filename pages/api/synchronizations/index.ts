@@ -39,6 +39,7 @@ async function SynchronizationListEndpoint(req: NextApiRequest, res: NextApiResp
 
         res.status(200).json({
           data: synchronizations,
+          hasError: false,
         })
       } catch (err) {
         handleError(err, ERROR_PATH, res)
@@ -78,6 +79,13 @@ async function SynchronizationListEndpoint(req: NextApiRequest, res: NextApiResp
             ERROR_PATH,
             res,
           )
+
+          return
+        }
+
+        const me = await getUser(req)
+        if (!me) {
+          handleError(new ApiError('`me` is undefined. This should never happen.', 400, true), ERROR_PATH, res)
 
           return
         }
@@ -144,7 +152,12 @@ async function SynchronizationListEndpoint(req: NextApiRequest, res: NextApiResp
             data: newLeadData,
           })
 
-          const newProjectData = getProjectDataFromSurveyEntry(newLeadSurveyEntry, newLead.id, newOrganization.id)
+          const newProjectData = getProjectDataFromSurveyEntry(
+            newLeadSurveyEntry,
+            newLead.id,
+            newOrganization.id,
+            me.id,
+          )
           await prisma.project.create({
             data: newProjectData,
           })

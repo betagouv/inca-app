@@ -1,7 +1,7 @@
 import { Checkbox as SingularityCheckbox } from '@singularity/core'
 import { useFormikContext } from 'formik'
 
-export default function Checkbox({ isDisabled, label, name }) {
+export function Checkbox({ isDisabled, label, name }) {
   const { setFieldValue, values } = useFormikContext()
 
   const isChecked = Boolean((values as any)[name])

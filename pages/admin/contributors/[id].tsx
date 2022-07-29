@@ -3,7 +3,6 @@ import AdminHeader from '@app/atoms/AdminHeader'
 import Field from '@app/atoms/Field'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import Form from '@app/molecules/Form'
 import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card } from '@singularity/core'
@@ -28,14 +27,13 @@ export default function AdminContributorEditorPage() {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const api = useApi()
-  const isMounted = useIsMounted()
 
   const id = getIdFromRequest(router)
   const isReady = !isLoading && contactCategoriesAsOptions.length
   const isNew = id === 'new'
 
   const loadContributor = async () => {
-    const maybeBody = await api.get(`contributor/${id}`)
+    const maybeBody = await api.get(`contributors/${id}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
@@ -49,10 +47,8 @@ export default function AdminContributorEditorPage() {
       }
     }
 
-    if (isMounted()) {
-      setInitialValues(contributorEditableData)
-      setIsLoading(false)
-    }
+    setInitialValues(contributorEditableData)
+    setIsLoading(false)
   }
 
   const loadContactCategoriesAsOptions = async () => {
@@ -69,9 +65,7 @@ export default function AdminContributorEditorPage() {
       })),
     )(maybeBody.data)
 
-    if (isMounted()) {
-      setContactCategoriesAsOptions(newContactCategoriesAsOptions)
-    }
+    setContactCategoriesAsOptions(newContactCategoriesAsOptions)
   }
 
   const updateAndGoBack = async (values, { setErrors, setSubmitting }) => {
@@ -79,8 +73,8 @@ export default function AdminContributorEditorPage() {
     contributorData.contactCategoryId = values.contactCategoryAsOption.value
 
     const maybeBody = isNew
-      ? await api.post(`contributor/${id}`, contributorData)
-      : await api.patch(`contributor/${id}`, contributorData)
+      ? await api.post(`contributors`, contributorData)
+      : await api.patch(`contributors/${id}`, contributorData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
         firstName: 'Une erreur serveur est survenue.',
@@ -144,7 +138,7 @@ export default function AdminContributorEditorPage() {
           </Field>
 
           <Field>
-            <Form.Textarea isDisabled={!isReady} label="Notes" name="note" />
+            <Form.Textarea disabled={!isReady} label="Notes" name="note" />
           </Field>
 
           <Field>

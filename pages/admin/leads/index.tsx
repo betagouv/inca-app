@@ -82,7 +82,7 @@ export default function AdminLeadListPage() {
   const _delete = useCallback(async () => {
     setHasDeletionModal(false)
 
-    const maybeBody = await api.delete(`lead/${selectedId}`)
+    const maybeBody = await api.delete(`leads/${selectedId}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }

@@ -48,9 +48,9 @@ export function withApi(Component: AppProps['Component']) {
           const options = {
             json: data,
           }
-          const body = await kyIntance.post(path, options).json<Api.ResponseBodySuccess<T>>()
+          const body = await kyIntance.post(path, options).json<Api.ResponseBodySuccess<T> | string>()
 
-          return body
+          return typeof body === 'string' ? null : body
         } catch (err) {
           if (err instanceof HTTPError) {
             try {

@@ -1,12 +1,12 @@
 import { Button } from '@singularity/core'
 import { useFormikContext } from 'formik'
 
-export default function Submit({ children }) {
+import type { ButtonProps } from '@singularity/core'
+
+export function Submit({ disabled, ...rest }: ButtonProps) {
   const { isSubmitting } = useFormikContext()
 
-  return (
-    <Button disabled={isSubmitting} type="submit">
-      {children}
-    </Button>
-  )
+  const controlledDisabled = disabled || isSubmitting
+
+  return <Button disabled={controlledDisabled} type="submit" {...rest} />
 }

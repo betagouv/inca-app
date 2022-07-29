@@ -71,7 +71,7 @@ export default function Menu() {
           <Link href="/admin/contact-categories">Catégories de contact</Link>
 
           {user && user.role === Role.ADMINISTRATOR && <Link href="/admin/users">Utilisateur·rices</Link>}
-          {user && user.role === Role.ADMINISTRATOR && <Link href="/admin/synchronization">Synchronisation</Link>}
+          {user && user.role === Role.ADMINISTRATOR && <Link href="/admin/synchronizations">Synchronisations</Link>}
         </List>
       </div>
     </Container>

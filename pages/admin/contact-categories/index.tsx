@@ -1,17 +1,20 @@
+import { prisma } from '@api/libs/prisma'
 import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import DeletionModal from '@app/organisms/DeletionModal'
 import { Button, Card, Table } from '@singularity/core'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
+import { toast } from 'react-toastify'
+import superjson from 'superjson'
 
 import type { ContactCategory } from '@prisma/client'
 import type { TableColumnProps } from '@singularity/core'
+import type { GetServerSidePropsResult } from 'next'
 
 const BASE_COLUMNS: TableColumnProps[] = [
   {
@@ -34,14 +37,22 @@ const BASE_COLUMNS: TableColumnProps[] = [
   },
 ]
 
-export default function AdminContactCategoryListPage() {
+type AdminContactCategoryListPageProps = {
+  SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY: string
+  initialContactCategoriesAsSuperJson: string
+}
+export default function AdminContactCategoryListPage({
+  initialContactCategoriesAsSuperJson,
+  SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY,
+}: AdminContactCategoryListPageProps) {
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [contactCategories, setContactCategories] = useState<ContactCategory[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [contactCategories, setContactCategories] = useState<ContactCategory[]>(
+    superjson.parse(initialContactCategoriesAsSuperJson),
+  )
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
   const router = useRouter()
-  const isMounted = useIsMounted()
   const api = useApi()
 
   const closeDeletionModal = useCallback(() => {
@@ -52,6 +63,15 @@ export default function AdminContactCategoryListPage() {
     async id => {
       const contactCategory = R.find<ContactCategory>(R.propEq('id', id))(contactCategories)
       if (!contactCategory) {
+        return
+      }
+
+      if (contactCategory.label === SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY) {
+        toast.warn(
+          `La catégorie de contact "${SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY}" est protégée.` +
+            'Vous ne pouvez pas la supprimer.',
+        )
+
         return
       }
 
@@ -66,7 +86,7 @@ export default function AdminContactCategoryListPage() {
   const _delete = useCallback(async () => {
     setHasDeletionModal(false)
 
-    const maybeBody = await api.delete(`contact-category/${selectedId}`)
+    const maybeBody = await api.delete(`contact-categories/${selectedId}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
@@ -79,20 +99,16 @@ export default function AdminContactCategoryListPage() {
   }, [])
 
   const load = async () => {
+    setIsLoading(true)
+
     const maybeBody = await api.get('contact-categories')
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
-    if (isMounted()) {
-      setContactCategories(maybeBody.data)
-      setIsLoading(false)
-    }
+    setContactCategories(maybeBody.data)
+    setIsLoading(false)
   }
-
-  useEffect(() => {
-    load()
-  }, [])
 
   const columns = useMemo(
     () => [
@@ -134,4 +150,26 @@ export default function AdminContactCategoryListPage() {
       {hasDeletionModal && <DeletionModal entity={selectedEntity} onCancel={closeDeletionModal} onConfirm={_delete} />}
     </AdminBox>
   )
+}
+
+export async function getServerSideProps(): Promise<GetServerSidePropsResult<AdminContactCategoryListPageProps>> {
+  const { SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY } = process.env
+  if (!SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY) {
+    console.error('Fatal: `SYNCHRONIZATION_START_DATE` env is undefined.')
+    process.exit(1)
+  }
+
+  const contactCategories = await prisma.contactCategory.findMany({
+    orderBy: {
+      label: 'desc',
+    },
+  })
+  const initialContactCategoriesAsSuperJson = superjson.stringify(contactCategories)
+
+  return {
+    props: {
+      initialContactCategoriesAsSuperJson,
+      SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY,
+    },
+  }
 }
