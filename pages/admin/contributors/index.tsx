@@ -86,7 +86,7 @@ export default function AdminContributorListPage() {
   const _delete = useCallback(async () => {
     setHasDeletionModal(false)
 
-    const maybeBody = await api.delete(`contributor/${selectedId}`)
+    const maybeBody = await api.delete(`contributors/${selectedId}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }

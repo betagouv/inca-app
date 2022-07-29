@@ -21,6 +21,12 @@
   },
   "overrides": [
     {
+      "files": ["./app/slices/**/*.ts"],
+      "rules": {
+        "no-param-reassign": "off"
+      }
+    },
+    {
       "files": ["./config/**/*.js", "./config/**/*.ts", "./prisma/**/*.js", "./scripts/**/*.js", "**/*.test.ts"],
       "env": {
         "browser": false,

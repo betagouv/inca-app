@@ -1,27 +1,26 @@
-import { Textarea as SingularityTextarea } from '@singularity/core'
+import { Textarea as SingularityTextarea, TextareaProps as SingularityTextareaProps } from '@singularity/core'
 import { useFormikContext } from 'formik'
 
-export default function Textarea({ helper, isDisabled, label, name }) {
-  const { errors, handleChange, submitCount, touched, values } = useFormikContext()
+type TextareaProps = SingularityTextareaProps & {
+  name: string
+}
+export function Textarea({ disabled, name, ...rest }: TextareaProps) {
+  const { errors, handleChange, isSubmitting, submitCount, touched, values } =
+    useFormikContext<Record<string, string | number>>()
 
+  const controlledDisabled = disabled || isSubmitting
+  const defaultValue = values[name]
   const hasError = (touched[name] !== undefined || submitCount > 0) && Boolean(errors[name])
-  const maybeError = hasError ? errors[name] : undefined
+  const maybeError = hasError ? String(errors[name]) : undefined
 
   return (
     <SingularityTextarea
-      defaultValue={(values as any)[name]}
-      disabled={isDisabled}
+      defaultValue={defaultValue}
+      disabled={controlledDisabled}
       error={maybeError}
-      helper={helper}
-      label={label}
       name={name}
       onChange={handleChange}
+      {...rest}
     />
   )
-}
-
-Textarea.defaultProps = {
-  helper: ' ',
-  isDisabled: false,
-  type: 'text',
 }

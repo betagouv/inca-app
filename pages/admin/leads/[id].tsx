@@ -3,7 +3,6 @@ import AdminHeader from '@app/atoms/AdminHeader'
 import Field from '@app/atoms/Field'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import Form from '@app/molecules/Form'
 import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card } from '@singularity/core'
@@ -30,14 +29,13 @@ export default function AdminLeadEditorPage() {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const api = useApi()
-  const isMounted = useIsMounted()
 
   const id = getIdFromRequest(router)
   const isReady = !isLoading && contactCategoriesAsOptions.length && organizationsAsOptions.length
   const isNew = id === 'new'
 
   const loadLead = async () => {
-    const maybeBody = await api.get(`lead/${id}`)
+    const maybeBody = await api.get(`leads/${id}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
@@ -55,9 +53,8 @@ export default function AdminLeadEditorPage() {
       value: leadData.organizationId,
     }
 
-    if (isMounted()) {
-      setInitialValues(leadEditableData)
-    }
+    setInitialValues(leadEditableData)
+    setIsLoading(false)
   }
 
   const loadContactCategoriesAsOptions = async () => {
@@ -74,9 +71,7 @@ export default function AdminLeadEditorPage() {
       })),
     )(maybeBody.data)
 
-    if (isMounted()) {
-      setContactCategoriesAsOptions(newContactCategoriesAsOptions)
-    }
+    setContactCategoriesAsOptions(newContactCategoriesAsOptions)
   }
 
   const loadOrganizationsAsOptions = async () => {
@@ -93,9 +88,7 @@ export default function AdminLeadEditorPage() {
       })),
     )(maybeBody.data)
 
-    if (isMounted()) {
-      setOrganizationsAsOptions(newOrganizationsAsOptions)
-    }
+    setOrganizationsAsOptions(newOrganizationsAsOptions)
   }
 
   const updateAndGoBack = async (values, { setErrors, setSubmitting }) => {
@@ -103,7 +96,7 @@ export default function AdminLeadEditorPage() {
     leadData.contactCategoryId = values.contactCategoryAsOption.value
     leadData.organizationId = values.organizationAsOption.value
 
-    const maybeBody = isNew ? await api.post(`lead/${id}`, leadData) : await api.patch(`lead/${id}`, leadData)
+    const maybeBody = isNew ? await api.post(`leads`, leadData) : await api.patch(`leads/${id}`, leadData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
         firstName: 'Une erreur serveur est survenue.',
@@ -181,7 +174,7 @@ export default function AdminLeadEditorPage() {
           </Field>
 
           <Field>
-            <Form.Textarea isDisabled={!isReady} label="Notes" name="note" />
+            <Form.Textarea disabled={!isReady} label="Notes" name="note" />
           </Field>
 
           <Field>

@@ -1,7 +1,7 @@
 import { Select as SingularitySelect } from '@singularity/core'
 import { useFormikContext } from 'formik'
 
-export default function Select({ helper, isAsync, isDisabled, isMulti, label, name, noLabel, options }) {
+export function Select({ helper, isAsync, isDisabled, isMulti, label, name, noLabel, options }) {
   const { errors, setFieldValue, submitCount, touched, values } = useFormikContext()
 
   const hasError = (touched[name] !== undefined || submitCount > 0) && Boolean(errors[name])

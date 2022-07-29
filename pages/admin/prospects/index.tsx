@@ -80,7 +80,7 @@ export default function AdminProspectListPage() {
   const _delete = useCallback(async () => {
     setHasDeletionModal(false)
 
-    const maybeBody = await api.delete(`prospect/${selectedId}`)
+    const maybeBody = await api.delete(`prospects/${selectedId}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }

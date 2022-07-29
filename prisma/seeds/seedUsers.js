@@ -8,10 +8,12 @@ const BCRYPT_SALT_WORK_FACTOR = 10
  */
 export default async function seedUsers(prisma) {
   if (!FIRST_ADMIN_EMAIL) {
-    throw new Error('FIRST_ADMIN_EMAIL is not set')
+    console.error('Fatal: `FIRST_ADMIN_EMAIL` env is undefined.')
+    process.exit(1)
   }
   if (!FIRST_ADMIN_PASSWORD) {
-    throw new Error('FIRST_ADMIN_PASSWORD is not set')
+    console.error('Fatal: `FIRST_ADMIN_EMAIL` env is undefined.')
+    process.exit(1)
   }
 
   const userCount = await prisma.user.count()

@@ -1,10 +1,9 @@
+import handleError from '@api/helpers/handleError'
+import ApiError from '@api/libs/ApiError'
 import { prisma } from '@api/libs/prisma'
+import withAuthentication from '@api/middlewares/withAuthentication'
 import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Role } from '@prisma/client'
-
-import handleError from '../../../api/helpers/handleError'
-import ApiError from '../../../api/libs/ApiError'
-import withAuthentication from '../../../api/middlewares/withAuthentication'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -15,6 +14,7 @@ async function SynchronizationEndpoint(req: NextApiRequest, res: NextApiResponse
     case 'DELETE':
       try {
         const id = getIdFromRequest(req)
+
         const maybeSynchronization = await prisma.synchronization.findUnique({
           where: {
             id,

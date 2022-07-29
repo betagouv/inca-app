@@ -8,3 +8,8 @@ export type FullProject = Project & {
   organization: Organization
   user: User
 }
+
+export type Option = {
+  label: string
+  value: string
+}

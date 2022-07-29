@@ -2,7 +2,7 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import { Button, Card, Table } from '@singularity/core'
+import { Card, Table } from '@singularity/core'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { Edit2, UserCheck, UserX } from 'react-feather'
@@ -82,10 +82,6 @@ export default function UserListPage() {
     <AdminBox>
       <AdminHeader>
         <Title>Utilisateur·rices</Title>
-
-        <Button onClick={() => goToEditor('new')} size="small">
-          Ajouter un utilisateur
-        </Button>
       </AdminHeader>
 
       <Card>

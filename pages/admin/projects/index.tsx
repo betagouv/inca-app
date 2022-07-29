@@ -2,8 +2,8 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import DeletionModal from '@app/organisms/DeletionModal'
+// import { updatePageIndex } from '@app/slices/adminProjectListSlice'
 import { Temporal } from '@js-temporal/polyfill'
 import { Project, Role } from '@prisma/client'
 import { Button, Card, Table, TextInput } from '@singularity/core'
@@ -13,7 +13,9 @@ import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
+// import { useDispatch, useSelector } from 'react-redux'
 
+// import type { RootState } from '@app/store'
 import type { User } from '@prisma/client'
 
 /** @type {import('@singularity/core').TableColumnProps[]} */
@@ -39,10 +41,11 @@ export default function AdminProjectListPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
-  const router = useRouter()
-  const isMounted = useIsMounted()
   const api = useApi()
   const { user } = useAuth<User>()
+  // const dispatch = useDispatch()
+  const router = useRouter()
+  // const pageIndex = useSelector(({ adminProjectList }: RootState) => adminProjectList.pageIndex)
 
   const closeProjectDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -66,13 +69,20 @@ export default function AdminProjectListPage() {
   const _delete = useCallback(async () => {
     setHasDeletionModal(false)
 
-    const maybeBody = await api.delete(`project/${selectedId}`)
+    const maybeBody = await api.delete(`projects/${selectedId}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
     await load()
   }, [selectedId])
+
+  // const handleOnPageChange = useCallback(
+  //   (newPageIndex: number) => {
+  //     dispatch(updatePageIndex(newPageIndex))
+  //   },
+  //   [dispatch],
+  // )
 
   const goToEditor = useCallback(id => {
     router.push(`/admin/projects/${id}`)
@@ -88,10 +98,8 @@ export default function AdminProjectListPage() {
       return
     }
 
-    if (isMounted()) {
-      setProjects(maybeBody.data)
-      setIsLoading(false)
-    }
+    setProjects(maybeBody.data)
+    setIsLoading(false)
   }, [])
 
   const search = useCallback(
@@ -110,23 +118,19 @@ export default function AdminProjectListPage() {
 
       const maybeBody = await api.get(path)
       if (maybeBody === null || maybeBody.hasError) {
-        if (isMounted()) {
-          setIsLoading(false)
-        }
+        setIsLoading(false)
 
         return
       }
 
-      if (isMounted()) {
-        setProjects(maybeBody.data)
-        setIsLoading(false)
-      }
+      setProjects(maybeBody.data)
+      setIsLoading(false)
     }, 250),
     [],
   )
 
   const updateLockState = useCallback(async (id, isUnlocked) => {
-    await api.patch(`project/${id}`, { isUnlocked })
+    await api.patch(`projects/${id}`, { isUnlocked })
 
     await load()
   }, [])

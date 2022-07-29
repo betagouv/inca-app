@@ -7,6 +7,7 @@ export function getProjectDataFromSurveyEntry(
   surveyEntry: TellMe.DataEntry,
   leadId: string,
   organizationId: string,
+  userId: string,
 ): Prisma.ProjectCreateArgs['data'] {
   const name = getTellMeAnswerValueFromQuestionKey(surveyEntry, 'PROJECT')
 
@@ -14,6 +15,7 @@ export function getProjectDataFromSurveyEntry(
     leadId,
     name,
     organizationId,
+    userId,
   }
 
   return projectData

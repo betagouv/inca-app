@@ -64,7 +64,7 @@ export default function AdminProjectLinkerPage({ projectAsSuperJson }: AdminProj
   const id = getIdFromRequest(router)
 
   const load = async () => {
-    const maybeBody = await api.get(`project/${id}`)
+    const maybeBody = await api.get(`projects/${id}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
@@ -81,14 +81,14 @@ export default function AdminProjectLinkerPage({ projectAsSuperJson }: AdminProj
   }
 
   const updateProjectNote = debounce(async event => {
-    await api.patch(`project/${id}`, { note: event.target.value })
+    await api.patch(`projects/${id}`, { note: event.target.value })
   }, 250)
 
   const updateProjectContributorState = async (contributorId, state) => {
     const contributorLink: any = R.find(R.propEq('id', contributorId))(contributorLinks)
     const newState = state !== contributorLink.state ? state : PROJECT_CONTRIBUTOR_STATE.ASSIGNED
 
-    await api.patch(`project/${id}/${contributorId}`, {
+    await api.patch(`projects/${id}/${contributorId}`, {
       state: newState,
     })
 

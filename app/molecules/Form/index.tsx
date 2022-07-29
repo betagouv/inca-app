@@ -3,11 +3,11 @@ import { Formik, Form as FormikForm } from 'formik'
 import styled from 'styled-components'
 import * as Yup from 'yup'
 
-import Checkbox from './Checkbox'
-import Input from './Input'
-import Select from './Select'
-import Submit from './Submit'
-import Textarea from './Textarea'
+import { Checkbox } from './Checkbox'
+import { Input } from './Input'
+import { Select } from './Select'
+import { Submit } from './Submit'
+import { Textarea } from './Textarea'
 
 const StyledForm = styled(FormikForm)`
   display: flex;

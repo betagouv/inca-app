@@ -27,7 +27,7 @@ export default function AdminOrganizationEditorPage() {
   const isNew = id === 'new'
 
   const load = useCallback(async () => {
-    const maybeBody = await api.get(`organization/${id}`)
+    const maybeBody = await api.get(`organizations/${id}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
@@ -55,8 +55,8 @@ export default function AdminOrganizationEditorPage() {
     const organizationData = R.pick(['name', 'note'])(values)
 
     const maybeBody = isNew
-      ? await api.post(`organization/${id}`, organizationData)
-      : await api.patch(`organization/${id}`, organizationData)
+      ? await api.post(`organizations`, organizationData)
+      : await api.patch(`organizations/${id}`, organizationData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
         firstName: 'Une erreur serveur est survenue.',
@@ -87,7 +87,7 @@ export default function AdminOrganizationEditorPage() {
           </Field>
 
           <Field>
-            <Form.Textarea isDisabled={isLoading} label="Notes" name="note" />
+            <Form.Textarea disabled={isLoading} label="Notes" name="note" />
           </Field>
 
           <Field>
