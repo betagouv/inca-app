@@ -5,7 +5,7 @@ const { SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY } = process.env
  */
 export default async function seedContactCategories(prisma) {
   if (!SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY) {
-    console.error('Fatal: `SYNCHRONIZATION_START_DATE` env is undefined.')
+    console.error('Fatal: `SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY` env is undefined.')
     process.exit(1)
   }
 
