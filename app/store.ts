@@ -1,9 +1,17 @@
+import { adminContributorListReducer } from '@app/slices/adminContributorListSlice'
+import { adminLeadListReducer } from '@app/slices/adminLeadListSlice'
+import { adminOrganizationListReducer } from '@app/slices/adminOrganizationListSlice'
 import { adminProjectListReducer } from '@app/slices/adminProjectListSlice'
+import { adminProspectListReducer } from '@app/slices/adminProspectListSlice'
 import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({
   reducer: {
+    adminContributorList: adminContributorListReducer,
+    adminLeadList: adminLeadListReducer,
+    adminOrganizationList: adminOrganizationListReducer,
     adminProjectList: adminProjectListReducer,
+    adminProspectList: adminProspectListReducer,
   },
 })
 

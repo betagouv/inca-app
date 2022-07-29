@@ -2,18 +2,21 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { Prospect } from '@prisma/client'
+import { updatePageIndex } from '@app/slices/adminProspectListSlice'
 import { Button, Card, Table, TextInput } from '@singularity/core'
 import debounce from 'lodash.debounce'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
+import { useDispatch, useSelector } from 'react-redux'
 
-/** @type {import('@singularity/core').TableColumnProps[]} */
-const BASE_COLUMNS = [
+import type { RootState } from '@app/store'
+import type { Prospect } from '@prisma/client'
+import type { TableColumnProps } from '@singularity/core'
+
+const BASE_COLUMNS: TableColumnProps[] = [
   {
     isSortable: true,
     key: 'firstName',
@@ -54,9 +57,10 @@ export default function AdminProspectListPage() {
   const [prospects, setProspects] = useState<Prospect[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
-  const router = useRouter()
-  const isMounted = useIsMounted()
   const api = useApi()
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const pageIndex = useSelector(({ adminProspectList }: RootState) => adminProspectList.pageIndex)
 
   const closeProspectDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -92,16 +96,21 @@ export default function AdminProspectListPage() {
     router.push(`/admin/prospects/${id}`)
   }, [])
 
+  const handlePageChange = useCallback(
+    (newPageIndex: number) => {
+      dispatch(updatePageIndex(newPageIndex))
+    },
+    [dispatch],
+  )
+
   const load = useCallback(async () => {
     const maybeBody = await api.get('prospects')
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
-    if (isMounted()) {
-      setProspects(maybeBody.data)
-      setIsLoading(false)
-    }
+    setProspects(maybeBody.data)
+    setIsLoading(false)
   }, [])
 
   const search = useCallback(
@@ -120,17 +129,13 @@ export default function AdminProspectListPage() {
 
       const maybeBody = await api.get(path)
       if (maybeBody === null || maybeBody.hasError) {
-        if (isMounted()) {
-          setIsLoading(false)
-        }
+        setIsLoading(false)
 
         return
       }
 
-      if (isMounted()) {
-        setProspects(maybeBody.data)
-        setIsLoading(false)
-      }
+      setProspects(maybeBody.data)
+      setIsLoading(false)
     }, 250),
     [],
   )
@@ -175,7 +180,15 @@ export default function AdminProspectListPage() {
       <Card>
         <TextInput ref={$searchInput} onInput={search} placeholder="Rechercher un·e prospect·e" />
 
-        <Table columns={columns as any} data={prospects} defaultSortedKey="lastName" isLoading={isLoading} />
+        <Table
+          key={String(pageIndex)}
+          columns={columns as any}
+          data={prospects}
+          defaultSortedKey="lastName"
+          isLoading={isLoading}
+          onPageChange={handlePageChange}
+          pageIndex={pageIndex}
+        />
       </Card>
 
       {hasDeletionModal && (

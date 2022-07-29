@@ -2,8 +2,8 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import DeletionModal from '@app/organisms/DeletionModal'
+import { updatePageIndex } from '@app/slices/adminContributorListSlice'
 import { Temporal } from '@js-temporal/polyfill'
 import { Role } from '@prisma/client'
 import { Button, Card, Table, TextInput } from '@singularity/core'
@@ -13,11 +13,13 @@ import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
+import { useDispatch, useSelector } from 'react-redux'
 
+import type { RootState } from '@app/store'
 import type { Contributor, User } from '@prisma/client'
+import type { TableColumnProps } from '@singularity/core'
 
-/** @type {import('@singularity/core').TableColumnProps[]} */
-const BASE_COLUMNS = [
+const BASE_COLUMNS: TableColumnProps[] = [
   {
     isSortable: true,
     key: 'firstName',
@@ -59,10 +61,11 @@ export default function AdminContributorListPage() {
   const [contributors, setContributors] = useState<Contributor[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
-  const router = useRouter()
-  const isMounted = useIsMounted()
   const api = useApi()
   const { user } = useAuth<User>()
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const pageIndex = useSelector(({ adminContributorList }: RootState) => adminContributorList.pageIndex)
 
   const closeDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -98,16 +101,21 @@ export default function AdminContributorListPage() {
     router.push(`/admin/contributors/${id}`)
   }, [])
 
+  const handlePageChange = useCallback(
+    (newPageIndex: number) => {
+      dispatch(updatePageIndex(newPageIndex))
+    },
+    [dispatch],
+  )
+
   const load = useCallback(async () => {
     const maybeBody = await api.get('contributors')
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
-    if (isMounted()) {
-      setContributors(maybeBody.data)
-      setIsLoading(false)
-    }
+    setContributors(maybeBody.data)
+    setIsLoading(false)
   }, [])
 
   const search = useCallback(
@@ -126,17 +134,13 @@ export default function AdminContributorListPage() {
 
       const maybeBody = await api.get(path)
       if (maybeBody === null || maybeBody.hasError) {
-        if (isMounted()) {
-          setIsLoading(false)
-        }
+        setIsLoading(false)
 
         return
       }
 
-      if (isMounted()) {
-        setContributors(maybeBody.data)
-        setIsLoading(false)
-      }
+      setContributors(maybeBody.data)
+      setIsLoading(false)
     }, 250),
     [],
   )
@@ -185,7 +189,15 @@ export default function AdminContributorListPage() {
       <Card>
         <TextInput ref={$searchInput} onInput={search} placeholder="Rechercher un·e contributeur·rice" />
 
-        <Table columns={columns as any} data={contributors} defaultSortedKey="lastName" isLoading={isLoading} />
+        <Table
+          key={String(pageIndex)}
+          columns={columns as any}
+          data={contributors}
+          defaultSortedKey="lastName"
+          isLoading={isLoading}
+          onPageChange={handlePageChange}
+          pageIndex={pageIndex}
+        />
       </Card>
 
       {hasDeletionModal && <DeletionModal entity={selectedEntity} onCancel={closeDeletionModal} onConfirm={_delete} />}
