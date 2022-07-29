@@ -2,9 +2,9 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { Organization, Role, User } from '@prisma/client'
+import { updatePageIndex } from '@app/slices/adminOrganizationListSlice'
+import { Role } from '@prisma/client'
 import { Button, Card, Table, TextInput } from '@singularity/core'
 import debounce from 'lodash.debounce'
 import { useAuth } from 'nexauth/client'
@@ -12,9 +12,13 @@ import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
+import { useDispatch, useSelector } from 'react-redux'
 
-/** @type {import('@singularity/core').TableColumnProps[]} */
-const BASE_COLUMNS = [
+import type { RootState } from '@app/store'
+import type { Organization, User } from '@prisma/client'
+import type { TableColumnProps } from '@singularity/core'
+
+const BASE_COLUMNS: TableColumnProps[] = [
   {
     isSortable: true,
     key: 'name',
@@ -30,10 +34,11 @@ export default function AdminOrganizationListPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
-  const router = useRouter()
-  const isMounted = useIsMounted()
   const api = useApi()
   const { user } = useAuth<User>()
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const pageIndex = useSelector(({ adminOrganizationList }: RootState) => adminOrganizationList.pageIndex)
 
   const load = async () => {
     const maybeBody = await api.get('organizations')
@@ -41,10 +46,8 @@ export default function AdminOrganizationListPage() {
       return
     }
 
-    if (isMounted()) {
-      setOrganizations(maybeBody.data)
-      setIsLoading(false)
-    }
+    setOrganizations(maybeBody.data)
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -85,6 +88,13 @@ export default function AdminOrganizationListPage() {
     router.push(`/admin/organizations/${id}`)
   }, [])
 
+  const handlePageChange = useCallback(
+    (newPageIndex: number) => {
+      dispatch(updatePageIndex(newPageIndex))
+    },
+    [dispatch],
+  )
+
   const search = useCallback(
     debounce(async () => {
       if ($searchInput.current === null) {
@@ -101,17 +111,13 @@ export default function AdminOrganizationListPage() {
 
       const maybeBody = await api.get(path)
       if (maybeBody === null || maybeBody.hasError) {
-        if (isMounted()) {
-          setIsLoading(false)
-        }
+        setIsLoading(false)
 
         return
       }
 
-      if (isMounted()) {
-        setOrganizations(maybeBody.data)
-        setIsLoading(false)
-      }
+      setOrganizations(maybeBody.data)
+      setIsLoading(false)
     }, 250),
     [],
   )
@@ -156,7 +162,15 @@ export default function AdminOrganizationListPage() {
       <Card>
         <TextInput ref={$searchInput} onInput={search} placeholder="Rechercher une organisation" />
 
-        <Table columns={columns as any} data={organizations} defaultSortedKey="name" isLoading={isLoading} />
+        <Table
+          key={String(pageIndex)}
+          columns={columns as any}
+          data={organizations}
+          defaultSortedKey="name"
+          isLoading={isLoading}
+          onPageChange={handlePageChange}
+          pageIndex={pageIndex}
+        />
       </Card>
 
       {hasDeletionModal && <DeletionModal entity={selectedEntity} onCancel={closeDeletionModal} onConfirm={_delete} />}

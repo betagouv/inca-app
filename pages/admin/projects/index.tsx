@@ -3,7 +3,7 @@ import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
 import DeletionModal from '@app/organisms/DeletionModal'
-// import { updatePageIndex } from '@app/slices/adminProjectListSlice'
+import { updatePageIndex } from '@app/slices/adminProjectListSlice'
 import { Temporal } from '@js-temporal/polyfill'
 import { Project, Role } from '@prisma/client'
 import { Button, Card, Table, TextInput } from '@singularity/core'
@@ -13,13 +13,13 @@ import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
-// import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-// import type { RootState } from '@app/store'
+import type { RootState } from '@app/store'
 import type { User } from '@prisma/client'
+import type { TableColumnProps } from '@singularity/core'
 
-/** @type {import('@singularity/core').TableColumnProps[]} */
-const BASE_COLUMNS = [
+const BASE_COLUMNS: TableColumnProps[] = [
   {
     isSortable: true,
     key: 'name',
@@ -43,9 +43,9 @@ export default function AdminProjectListPage() {
   const [selectedEntity, setSelectedEntity] = useState('')
   const api = useApi()
   const { user } = useAuth<User>()
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const router = useRouter()
-  // const pageIndex = useSelector(({ adminProjectList }: RootState) => adminProjectList.pageIndex)
+  const pageIndex = useSelector(({ adminProjectList }: RootState) => adminProjectList.pageIndex)
 
   const closeProjectDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -77,13 +77,6 @@ export default function AdminProjectListPage() {
     await load()
   }, [selectedId])
 
-  // const handleOnPageChange = useCallback(
-  //   (newPageIndex: number) => {
-  //     dispatch(updatePageIndex(newPageIndex))
-  //   },
-  //   [dispatch],
-  // )
-
   const goToEditor = useCallback(id => {
     router.push(`/admin/projects/${id}`)
   }, [])
@@ -91,6 +84,13 @@ export default function AdminProjectListPage() {
   const goToLinker = useCallback(id => {
     router.push(`/admin/projects/${id}/linker`)
   }, [])
+
+  const handlePageChange = useCallback(
+    (newPageIndex: number) => {
+      dispatch(updatePageIndex(newPageIndex))
+    },
+    [dispatch],
+  )
 
   const load = useCallback(async () => {
     const maybeBody = await api.get('projects')
@@ -198,7 +198,15 @@ export default function AdminProjectListPage() {
       <Card>
         <TextInput ref={$searchInput} onInput={search} placeholder="Rechercher un projet" />
 
-        <Table columns={columns as any} data={projects} defaultSortedKey="name" isLoading={isLoading} />
+        <Table
+          key={String(pageIndex)}
+          columns={columns as any}
+          data={projects}
+          defaultSortedKey="name"
+          isLoading={isLoading}
+          onPageChange={handlePageChange}
+          pageIndex={pageIndex}
+        />
       </Card>
 
       {hasDeletionModal && (

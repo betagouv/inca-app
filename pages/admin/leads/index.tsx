@@ -2,9 +2,9 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { Lead, Role } from '@prisma/client'
+import { updatePageIndex } from '@app/slices/adminLeadListSlice'
+import { Role } from '@prisma/client'
 import { Button, Card, Table, TextInput } from '@singularity/core'
 import debounce from 'lodash.debounce'
 import { useAuth } from 'nexauth/client'
@@ -12,9 +12,13 @@ import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
+import { useDispatch, useSelector } from 'react-redux'
 
-/** @type {import('@singularity/core').TableColumnProps[]} */
-const BASE_COLUMNS = [
+import type { RootState } from '@app/store'
+import type { Lead, User } from '@prisma/client'
+import type { TableColumnProps } from '@singularity/core'
+
+const BASE_COLUMNS: TableColumnProps[] = [
   {
     isSortable: true,
     key: 'firstName',
@@ -55,10 +59,11 @@ export default function AdminLeadListPage() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
-  const router = useRouter()
-  const isMounted = useIsMounted()
   const api = useApi()
-  const { user } = useAuth()
+  const { user } = useAuth<User>()
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const pageIndex = useSelector(({ adminLeadList }: RootState) => adminLeadList.pageIndex)
 
   const closeDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -94,6 +99,23 @@ export default function AdminLeadListPage() {
     router.push(`/admin/leads/${id}`)
   }, [])
 
+  const handlePageChange = useCallback(
+    (newPageIndex: number) => {
+      dispatch(updatePageIndex(newPageIndex))
+    },
+    [dispatch],
+  )
+
+  const load = useCallback(async () => {
+    const maybeBody = await api.get('leads')
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    setLeads(maybeBody.data)
+    setIsLoading(false)
+  }, [])
+
   const search = useCallback(
     debounce(async () => {
       if ($searchInput.current === null) {
@@ -110,32 +132,16 @@ export default function AdminLeadListPage() {
 
       const maybeBody = await api.get(path)
       if (maybeBody === null || maybeBody.hasError) {
-        if (isMounted()) {
-          setIsLoading(false)
-        }
+        setIsLoading(false)
 
         return
       }
 
-      if (isMounted()) {
-        setLeads(maybeBody.data)
-        setIsLoading(false)
-      }
+      setLeads(maybeBody.data)
+      setIsLoading(false)
     }, 250),
     [],
   )
-
-  const load = useCallback(async () => {
-    const maybeBody = await api.get('leads')
-    if (maybeBody === null || maybeBody.hasError) {
-      return
-    }
-
-    if (isMounted()) {
-      setLeads(maybeBody.data)
-      setIsLoading(false)
-    }
-  }, [])
 
   useEffect(() => {
     load()
@@ -181,7 +187,15 @@ export default function AdminLeadListPage() {
       <Card>
         <TextInput ref={$searchInput} onInput={search} placeholder="Rechercher un·e porteur·se" />
 
-        <Table columns={columns as any} data={leads} defaultSortedKey="lastName" isLoading={isLoading} />
+        <Table
+          key={String(pageIndex)}
+          columns={columns as any}
+          data={leads}
+          defaultSortedKey="lastName"
+          isLoading={isLoading}
+          onPageChange={handlePageChange}
+          pageIndex={pageIndex}
+        />
       </Card>
 
       {hasDeletionModal && <DeletionModal entity={selectedEntity} onCancel={closeDeletionModal} onConfirm={_delete} />}
