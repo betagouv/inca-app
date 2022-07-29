@@ -123,10 +123,12 @@ export default function AdminProjectListPage() {
         return
       }
 
+      dispatch(updatePageIndex(0))
+
       setProjects(maybeBody.data)
       setIsLoading(false)
     }, 250),
-    [],
+    [dispatch],
   )
 
   const updateLockState = useCallback(async (id, isUnlocked) => {

@@ -137,10 +137,12 @@ export default function AdminLeadListPage() {
         return
       }
 
+      dispatch(updatePageIndex(0))
+
       setLeads(maybeBody.data)
       setIsLoading(false)
     }, 250),
-    [],
+    [dispatch],
   )
 
   useEffect(() => {

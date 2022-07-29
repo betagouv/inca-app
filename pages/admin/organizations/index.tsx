@@ -116,10 +116,12 @@ export default function AdminOrganizationListPage() {
         return
       }
 
+      dispatch(updatePageIndex(0))
+
       setOrganizations(maybeBody.data)
       setIsLoading(false)
     }, 250),
-    [],
+    [dispatch],
   )
 
   const columns = useMemo(() => {

@@ -180,7 +180,7 @@ export async function getServerSideProps(
   }
   const projectOrganizationAsOption = {
     label: project.organization.name,
-    value: project.userId,
+    value: project.organizationId,
   }
   const projectUserAsOption = {
     label: `${project.user.firstName} ${project.user.lastName}`,
