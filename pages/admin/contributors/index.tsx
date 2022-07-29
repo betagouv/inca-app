@@ -139,10 +139,12 @@ export default function AdminContributorListPage() {
         return
       }
 
+      dispatch(updatePageIndex(0))
+
       setContributors(maybeBody.data)
       setIsLoading(false)
     }, 250),
-    [],
+    [dispatch],
   )
 
   useEffect(() => {

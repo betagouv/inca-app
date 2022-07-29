@@ -134,10 +134,12 @@ export default function AdminProspectListPage() {
         return
       }
 
+      dispatch(updatePageIndex(0))
+
       setProspects(maybeBody.data)
       setIsLoading(false)
     }, 250),
-    [],
+    [dispatch],
   )
 
   useEffect(() => {
