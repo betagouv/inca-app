@@ -120,6 +120,8 @@ export default function AdminLeadEditorPage() {
     }
 
     loadLead()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

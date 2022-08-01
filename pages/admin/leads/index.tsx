@@ -2,19 +2,19 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
+import { useAppDispatch } from '@app/hooks/useAppDisptach'
+import { useAppSelector } from '@app/hooks/useAppSelector'
+import { Querier } from '@app/molecules/Querier'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { updatePageIndex } from '@app/slices/adminLeadListSlice'
+import { setPageIndex, setQuery } from '@app/slices/adminLeadListSlice'
 import { Role } from '@prisma/client'
-import { Button, Card, Table, TextInput } from '@singularity/core'
-import debounce from 'lodash.debounce'
+import { Button, Card, Table } from '@singularity/core'
 import { useAuth } from 'nexauth/client'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
-import { useDispatch, useSelector } from 'react-redux'
 
-import type { RootState } from '@app/store'
 import type { Lead, User } from '@prisma/client'
 import type { TableColumnProps } from '@singularity/core'
 
@@ -52,8 +52,6 @@ const BASE_COLUMNS: TableColumnProps[] = [
 ]
 
 export default function AdminLeadListPage() {
-  /** @type {React.MutableRefObject<HTMLInputElement | null>} */
-  const $searchInput = useRef(null)
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [leads, setLeads] = useState<Lead[]>([])
@@ -61,9 +59,20 @@ export default function AdminLeadListPage() {
   const [selectedEntity, setSelectedEntity] = useState('')
   const api = useApi()
   const { user } = useAuth<User>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
-  const pageIndex = useSelector(({ adminLeadList }: RootState) => adminLeadList.pageIndex)
+  const pageIndex = useAppSelector(({ adminLeadList }) => adminLeadList.pageIndex)
+  const query = useAppSelector(({ adminLeadList }) => adminLeadList.query)
+
+  const load = useCallback(async () => {
+    const maybeBody = await api.get('leads', { query })
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    setLeads(maybeBody.data)
+    setIsLoading(false)
+  }, [api, query])
 
   const closeDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -93,61 +102,33 @@ export default function AdminLeadListPage() {
     }
 
     await load()
-  }, [selectedId])
+  }, [api, load, selectedId])
 
-  const goToEditor = useCallback(id => {
-    router.push(`/admin/leads/${id}`)
-  }, [])
+  const goToEditor = useCallback(
+    id => {
+      router.push(`/admin/leads/${id}`)
+    },
+    [router],
+  )
 
   const handlePageChange = useCallback(
     (newPageIndex: number) => {
-      dispatch(updatePageIndex(newPageIndex))
+      dispatch(setPageIndex(newPageIndex))
     },
     [dispatch],
   )
 
-  const load = useCallback(async () => {
-    const maybeBody = await api.get('leads')
-    if (maybeBody === null || maybeBody.hasError) {
-      return
-    }
-
-    setLeads(maybeBody.data)
-    setIsLoading(false)
-  }, [])
-
-  const search = useCallback(
-    debounce(async () => {
-      if ($searchInput.current === null) {
-        return
-      }
-
-      setIsLoading(true)
-
-      const query = ($searchInput.current as any).value
-      const urlParams = new URLSearchParams({
-        query,
-      })
-      const path = `leads?${urlParams}`
-
-      const maybeBody = await api.get(path)
-      if (maybeBody === null || maybeBody.hasError) {
-        setIsLoading(false)
-
-        return
-      }
-
-      dispatch(updatePageIndex(0))
-
-      setLeads(maybeBody.data)
-      setIsLoading(false)
-    }, 250),
+  const handleQuery = useCallback(
+    (newQuery: string) => {
+      dispatch(setPageIndex(0))
+      dispatch(setQuery(newQuery))
+    },
     [dispatch],
   )
 
   useEffect(() => {
     load()
-  }, [])
+  }, [load, query])
 
   const columns = useMemo(() => {
     const newColumns = [
@@ -187,7 +168,7 @@ export default function AdminLeadListPage() {
       </AdminHeader>
 
       <Card>
-        <TextInput ref={$searchInput} onInput={search} placeholder="Rechercher un·e porteur·se" />
+        <Querier defaultQuery={query} onQuery={handleQuery} />
 
         <Table
           key={String(pageIndex)}

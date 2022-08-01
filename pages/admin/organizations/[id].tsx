@@ -3,7 +3,6 @@ import AdminHeader from '@app/atoms/AdminHeader'
 import Field from '@app/atoms/Field'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import Form from '@app/molecules/Form'
 import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card } from '@singularity/core'
@@ -21,7 +20,6 @@ export default function AdminOrganizationEditorPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [initialValues, setInitialValues] = useState({})
   const router = useRouter()
-  const isMounted = useIsMounted()
 
   const id = getIdFromRequest(router)
   const isNew = id === 'new'
@@ -35,11 +33,9 @@ export default function AdminOrganizationEditorPage() {
     const organizationData = maybeBody.data
     const organizationEditableData = R.pick(['name', 'note'])(organizationData)
 
-    if (isMounted()) {
-      setInitialValues(organizationEditableData)
-      setIsLoading(false)
-    }
-  }, [])
+    setInitialValues(organizationEditableData)
+    setIsLoading(false)
+  }, [api, id])
 
   useEffect(() => {
     if (isNew) {
@@ -49,6 +45,8 @@ export default function AdminOrganizationEditorPage() {
     }
 
     load()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updateOrganizationAndGoBack = async (values, { setErrors, setSubmitting }) => {

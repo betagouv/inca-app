@@ -24,13 +24,13 @@ const FormSchema = Yup.object().shape({})
 
 const BASE_COLUMNS: TableColumnProps[] = [
   {
-    isSortable: true,
+    isSortable: false,
     key: 'createdAt',
     label: 'Date',
     transform: ({ createdAt }) => capitalizeFirstLetter(dayjs().to(createdAt)),
   },
   {
-    isSortable: true,
+    isSortable: false,
     key: 'user.email',
     label: 'Par',
   },
@@ -45,6 +45,16 @@ export default function AdminSynchronizationPage() {
   const [selectedEntity, setSelectedEntity] = useState('')
   const [synchronizations, setSynchronizations] = useState<Synchronization[]>([])
   const api = useApi()
+
+  const load = useCallback(async () => {
+    const maybeBody = await api.get<Synchronization[]>('synchronizations')
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    setSynchronizations(maybeBody.data)
+    setIsLoadingSyncronizations(false)
+  }, [api])
 
   const closeDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -62,12 +72,12 @@ export default function AdminSynchronizationPage() {
     }
 
     if (maybeBody === null) {
-      toast.info(`Aucune nouvelle soumission.`)
+      toast.info(`Aucune nouvelle soumission à synchroniser.`)
 
       return
     }
 
-    await loadSynchronizations()
+    await load()
 
     toast.success(`Synchronisation réussie.`)
   }
@@ -95,8 +105,8 @@ export default function AdminSynchronizationPage() {
       return
     }
 
-    await loadSynchronizations()
-  }, [selectedId])
+    await load()
+  }, [api, load, selectedId])
 
   const loadSettings = useCallback(async () => {
     setIsLoadingSettings(true)
@@ -110,45 +120,42 @@ export default function AdminSynchronizationPage() {
 
     setInitialSettingsAsValues(settingsAsRecord)
     setIsLoadingSettings(false)
-  }, [])
+  }, [api])
 
-  const loadSynchronizations = useCallback(async () => {
-    const maybeBody = await api.get<Synchronization[]>('synchronizations')
-    if (maybeBody === null || maybeBody.hasError) {
-      return
-    }
+  const updateSettings = useCallback(
+    async (values: any, { setErrors, setSubmitting }) => {
+      const newSettingsAsRecord: any = R.pick([
+        SettingKey.TELL_ME_CONTRIBUTOR_SURVEY_ID,
+        SettingKey.TELL_ME_LEAD_SURVEY_ID,
+        SettingKey.TELL_ME_PAT,
+        SettingKey.TELL_ME_URL,
+      ])(values)
+      const newSettings = R.toPairs(newSettingsAsRecord).map(([key, value]) => ({
+        key,
+        value,
+      }))
 
-    setSynchronizations(maybeBody.data)
-    setIsLoadingSyncronizations(false)
-  }, [])
+      const maybeBody = await api.patch('settings', newSettings)
+      if (maybeBody === null || maybeBody.hasError) {
+        setErrors({
+          [SettingKey.TELL_ME_URL]: 'Une erreur serveur est survenue.',
+        })
+      }
 
-  const updateSettings = useCallback(async (values: any, { setErrors, setSubmitting }) => {
-    const newSettingsAsRecord: any = R.pick([
-      SettingKey.TELL_ME_CONTRIBUTOR_SURVEY_ID,
-      SettingKey.TELL_ME_LEAD_SURVEY_ID,
-      SettingKey.TELL_ME_PAT,
-      SettingKey.TELL_ME_URL,
-    ])(values)
-    const newSettings = R.toPairs(newSettingsAsRecord).map(([key, value]) => ({
-      key,
-      value,
-    }))
+      loadSettings()
 
-    const maybeBody = await api.patch('settings', newSettings)
-    if (maybeBody === null || maybeBody.hasError) {
-      setErrors({
-        [SettingKey.TELL_ME_URL]: 'Une erreur serveur est survenue.',
-      })
-    }
+      setSubmitting(false)
 
-    loadSettings()
-
-    setSubmitting(false)
-  }, [])
+      toast.success(`Paramètres mis à joure.`)
+    },
+    [api, loadSettings],
+  )
 
   useEffect(() => {
     loadSettings()
-    loadSynchronizations()
+    load()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const columns = useMemo(

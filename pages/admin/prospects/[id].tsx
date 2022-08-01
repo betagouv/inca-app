@@ -3,7 +3,6 @@ import AdminHeader from '@app/atoms/AdminHeader'
 import Field from '@app/atoms/Field'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import Form from '@app/molecules/Form'
 import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Card } from '@singularity/core'
@@ -28,13 +27,12 @@ export default function AdminProspectEditorPage() {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const api = useApi()
-  const isMounted = useIsMounted()
 
   const id = getIdFromRequest(router)
   const isReady = !isLoading && contactCategoriesAsOptions.length
   const isNew = id === 'new'
 
-  const loadProspect = async () => {
+  const load = async () => {
     const maybeBody = await api.get(`prospects/${id}`)
     if (maybeBody === null || maybeBody.hasError) {
       return
@@ -55,10 +53,8 @@ export default function AdminProspectEditorPage() {
       value: prospectData.contactCategoryId,
     }
 
-    if (isMounted()) {
-      setInitialValues(prospectEditableData)
-      setIsLoading(false)
-    }
+    setInitialValues(prospectEditableData)
+    setIsLoading(false)
   }
 
   const loadContactCategoriesAsOptions = async () => {
@@ -75,9 +71,7 @@ export default function AdminProspectEditorPage() {
       })),
     )(maybeBody.data)
 
-    if (isMounted()) {
-      setContactCategoriesAsOptions(newContactCategoriesAsOptions)
-    }
+    setContactCategoriesAsOptions(newContactCategoriesAsOptions)
   }
 
   const updateProspectAndGoBack = async (values, { setErrors, setSubmitting }) => {
@@ -110,7 +104,9 @@ export default function AdminProspectEditorPage() {
       return
     }
 
-    loadProspect()
+    load()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

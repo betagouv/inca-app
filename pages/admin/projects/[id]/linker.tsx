@@ -7,7 +7,6 @@ import Title from '@app/atoms/Title'
 import { getContributorLinksFromProject } from '@app/helpers/getContributorLinksFromProject'
 import getRandomKey from '@app/helpers/getRandomKey'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import { PROJECT_CONTRIBUTOR_STATE } from '@common/constants'
 import { getIdFromRequest } from '@common/helpers/getIdFromRequest'
 import { Button, Table, Textarea } from '@singularity/core'
@@ -58,7 +57,6 @@ export default function AdminProjectLinkerPage({ projectAsSuperJson }: AdminProj
 
   const [contributorLinks, setContributorLinks] = useState(getContributorLinksFromProject(project))
   const router = useRouter()
-  const isMounted = useIsMounted()
   const api = useApi()
 
   const id = getIdFromRequest(router)
@@ -71,9 +69,7 @@ export default function AdminProjectLinkerPage({ projectAsSuperJson }: AdminProj
 
     const newContributorLinks = getContributorLinksFromProject(maybeBody.data)
 
-    if (isMounted()) {
-      setContributorLinks([...newContributorLinks])
-    }
+    setContributorLinks([...newContributorLinks])
   }
 
   const goToEditor = () => {
