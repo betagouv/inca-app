@@ -1,6 +1,7 @@
 import { Role } from '@prisma/client'
 import { useAuth } from 'nexauth/client'
 import Link from 'next/link'
+import { LogOut } from 'react-feather'
 import styled from 'styled-components'
 
 import type { User } from '@prisma/client'
@@ -11,6 +12,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   min-width: 16rem;
+  padding: 0 ${p => p.theme.padding.layout.medium} ${p => p.theme.padding.layout.medium};
 `
 
 const Brand = styled.div`
@@ -28,13 +30,13 @@ const Brand = styled.div`
     bottom: 0;
     content: ' ';
     height: 1px;
-    left: 1rem;
+    left: 0;
     position: absolute;
-    width: calc(100% - 2rem);
+    width: 100%;
   }
 `
 
-const List = styled.div`
+const MainMenu = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: 0.5rem;
@@ -43,7 +45,7 @@ const List = styled.div`
     color: white;
     display: block;
     opacity: 0.75;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0;
     text-decoration: none;
 
     :hover {
@@ -52,15 +54,42 @@ const List = styled.div`
   }
 `
 
+const MainMenuTitle = styled.p`
+  border-top: 1px solid ${p => p.theme.color.body.white};
+  color: ${p => p.theme.color.body.white};
+  font-size: 80%;
+  font-weight: 500;
+  margin: ${p => p.theme.padding.layout.large} 0 0 !important;
+  opacity: 0.35;
+  padding: ${p => p.theme.padding.layout.small} 0;
+  text-transform: uppercase;
+`
+
+const UserMenu = styled.div`
+  display: flex;
+  justify-content: space-between;
+  > a,
+  > svg {
+    color: white;
+    display: block;
+    opacity: 0.75;
+    cursor: pointer;
+    text-decoration: none;
+    :hover {
+      opacity: 1;
+    }
+  }
+`
+
 export default function Menu() {
-  const { user } = useAuth<User>()
+  const { logOut, user } = useAuth<User>()
 
   return (
     <Container>
       <div>
         <Brand>Lab Agora</Brand>
 
-        <List>
+        <MainMenu>
           <Link href="/admin">Suivi des projets</Link>
 
           <Link href="/admin/projects">Projets</Link>
@@ -70,10 +99,20 @@ export default function Menu() {
           <Link href="/admin/prospects">Prospect·es</Link>
           <Link href="/admin/contact-categories">Catégories de contact</Link>
 
-          {user && user.role === Role.ADMINISTRATOR && <Link href="/admin/users">Utilisateur·rices</Link>}
-          {user && user.role === Role.ADMINISTRATOR && <Link href="/admin/synchronizations">Synchronisations</Link>}
-        </List>
+          {user && user.role === Role.ADMINISTRATOR && (
+            <>
+              <MainMenuTitle>Administration</MainMenuTitle>
+
+              <Link href="/admin/synchronizations">Synchronisations</Link>
+              <Link href="/admin/users">Utilisateur·rices</Link>
+            </>
+          )}
+        </MainMenu>
       </div>
+
+      <UserMenu>
+        <LogOut aria-label="Se déconnecter" onClick={logOut} role="button" />
+      </UserMenu>
     </Container>
   )
 }
