@@ -6,6 +6,7 @@ import { Context } from './Context'
 
 import type { ApiContext } from './types'
 import type { User } from '@prisma/client'
+import type { SearchParamsOption } from 'ky'
 import type { AppProps } from 'next/app'
 import type { JsonArray, JsonObject } from 'type-fest'
 
@@ -23,9 +24,16 @@ export function withApi(Component: AppProps['Component']) {
         prefixUrl: API_BASE_URL,
       })
 
-      async function get<T = any>(path: string): Promise<Api.ResponseBody<T> | null> {
+      async function get<T = any>(
+        path: string,
+        searchParams?: SearchParamsOption,
+      ): Promise<Api.ResponseBody<T> | null> {
         try {
-          const body = await kyIntance.get(path).json<Api.ResponseBodySuccess<T>>()
+          const body = await kyIntance
+            .get(path, {
+              searchParams,
+            })
+            .json<Api.ResponseBodySuccess<T>>()
 
           return body
         } catch (err) {

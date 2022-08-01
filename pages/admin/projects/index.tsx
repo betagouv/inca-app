@@ -2,18 +2,19 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
+import { useAppDispatch } from '@app/hooks/useAppDisptach'
+import { useAppSelector } from '@app/hooks/useAppSelector'
+import { Querier } from '@app/molecules/Querier'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { updatePageIndex } from '@app/slices/adminProjectListSlice'
+import { setQuery, setPageIndex } from '@app/slices/adminProjectListSlice'
 import { Temporal } from '@js-temporal/polyfill'
 import { Project, Role } from '@prisma/client'
-import { Button, Card, Table, TextInput } from '@singularity/core'
-import debounce from 'lodash.debounce'
+import { Button, Card, Table } from '@singularity/core'
 import { useAuth } from 'nexauth/client'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
-import { useDispatch, useSelector } from 'react-redux'
 
 import type { RootState } from '@app/store'
 import type { User } from '@prisma/client'
@@ -34,8 +35,6 @@ const BASE_COLUMNS: TableColumnProps[] = [
 ]
 
 export default function AdminProjectListPage() {
-  /** @type {React.MutableRefObject<HTMLInputElement | null>} */
-  const $searchInput = useRef(null)
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [projects, setProjects] = useState<Project[]>([])
@@ -43,9 +42,20 @@ export default function AdminProjectListPage() {
   const [selectedEntity, setSelectedEntity] = useState('')
   const api = useApi()
   const { user } = useAuth<User>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
-  const pageIndex = useSelector(({ adminProjectList }: RootState) => adminProjectList.pageIndex)
+  const pageIndex = useAppSelector(({ adminProjectList }: RootState) => adminProjectList.pageIndex)
+  const query = useAppSelector(({ adminProjectList }: RootState) => adminProjectList.query)
+
+  const load = useCallback(async () => {
+    const maybeBody = await api.get('projects', { query })
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    setProjects(maybeBody.data)
+    setIsLoading(false)
+  }, [api, query])
 
   const closeProjectDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -75,71 +85,49 @@ export default function AdminProjectListPage() {
     }
 
     await load()
-  }, [selectedId])
+  }, [api, load, selectedId])
 
-  const goToEditor = useCallback(id => {
-    router.push(`/admin/projects/${id}`)
-  }, [])
+  const goToEditor = useCallback(
+    id => {
+      router.push(`/admin/projects/${id}`)
+    },
+    [router],
+  )
 
-  const goToLinker = useCallback(id => {
-    router.push(`/admin/projects/${id}/linker`)
-  }, [])
+  const goToLinker = useCallback(
+    id => {
+      router.push(`/admin/projects/${id}/linker`)
+    },
+    [router],
+  )
 
   const handlePageChange = useCallback(
     (newPageIndex: number) => {
-      dispatch(updatePageIndex(newPageIndex))
+      dispatch(setPageIndex(newPageIndex))
     },
     [dispatch],
   )
 
-  const load = useCallback(async () => {
-    const maybeBody = await api.get('projects')
-    if (maybeBody === null || maybeBody.hasError) {
-      return
-    }
-
-    setProjects(maybeBody.data)
-    setIsLoading(false)
-  }, [])
-
-  const search = useCallback(
-    debounce(async () => {
-      if ($searchInput.current === null) {
-        return
-      }
-
-      setIsLoading(true)
-
-      const query = ($searchInput.current as any).value
-      const urlParams = new URLSearchParams({
-        query,
-      })
-      const path = `projects?${urlParams}`
-
-      const maybeBody = await api.get(path)
-      if (maybeBody === null || maybeBody.hasError) {
-        setIsLoading(false)
-
-        return
-      }
-
-      dispatch(updatePageIndex(0))
-
-      setProjects(maybeBody.data)
-      setIsLoading(false)
-    }, 250),
+  const handleQuery = useCallback(
+    (newQuery: string) => {
+      dispatch(setPageIndex(0))
+      dispatch(setQuery(newQuery))
+    },
     [dispatch],
   )
 
-  const updateLockState = useCallback(async (id, isUnlocked) => {
-    await api.patch(`projects/${id}`, { isUnlocked })
+  const updateLockState = useCallback(
+    async (id, isUnlocked) => {
+      await api.patch(`projects/${id}`, { isUnlocked })
 
-    await load()
-  }, [])
+      await load()
+    },
+    [api, load],
+  )
 
   useEffect(() => {
     load()
-  }, [])
+  }, [load])
 
   const columns = useMemo(() => {
     const newColumns = [
@@ -185,7 +173,7 @@ export default function AdminProjectListPage() {
     }
 
     return newColumns
-  }, [confirmDeletion, goToEditor, user])
+  }, [confirmDeletion, goToEditor, goToLinker, updateLockState, user])
 
   return (
     <AdminBox>
@@ -198,7 +186,7 @@ export default function AdminProjectListPage() {
       </AdminHeader>
 
       <Card>
-        <TextInput ref={$searchInput} onInput={search} placeholder="Rechercher un projet" />
+        <Querier defaultQuery={query} onQuery={handleQuery} />
 
         <Table
           key={String(pageIndex)}

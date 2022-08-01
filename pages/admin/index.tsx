@@ -2,13 +2,12 @@ import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
-import useIsMounted from '@app/hooks/useIsMounted'
 import ProjectCard from '@app/molecules/ProjectCard'
 import { PROJECT_CONTRIBUTOR_STATE } from '@common/constants'
 import { Button, Tasker } from '@singularity/core'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 const countSucessfulLinks: any = R.pipe(
   R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL)) as any,
@@ -22,21 +21,29 @@ const countValidatedLinks: any = R.pipe(
 export default function AdminProjectBoardPage() {
   const [projectCards, setProjectCards] = useState([[], [], [], []])
   const router = useRouter()
-  const isMounted = useIsMounted()
   const api = useApi()
 
-  const goToProjectEditor = id => {
-    router.push(`/admin/projects/${id}`)
-  }
+  const goToProjectEditor = useCallback(
+    id => {
+      router.push(`/admin/projects/${id}`)
+    },
+    [router],
+  )
 
-  const goToProjectLinker = id => {
-    router.push(`/admin/projects/${id}/linker`)
-  }
+  const goToProjectLinker = useCallback(
+    id => {
+      router.push(`/admin/projects/${id}/linker`)
+    },
+    [router],
+  )
 
   // eslint-disable-next-line react/jsx-props-no-spreading
-  const getProjectCard = project => () => <ProjectCard onClick={() => goToProjectLinker(project.id)} {...project} />
+  const getProjectCard = useCallback(
+    project => () => <ProjectCard onClick={() => goToProjectLinker(project.id)} {...project} />,
+    [goToProjectLinker],
+  )
 
-  const loadProjects = async () => {
+  const load = useCallback(async () => {
     const maybeBody = await api.get('projects')
     if (maybeBody === null || maybeBody.hasError) {
       return
@@ -87,13 +94,13 @@ export default function AdminProjectBoardPage() {
       [[], [], [], []],
     )
 
-    if (isMounted()) {
-      setProjectCards(newProjectCards)
-    }
-  }
+    setProjectCards(newProjectCards)
+  }, [api, getProjectCard])
 
   useEffect(() => {
-    loadProjects()
+    load()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

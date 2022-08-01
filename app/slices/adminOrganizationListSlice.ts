@@ -1,22 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+import type { PayloadAction } from '@reduxjs/toolkit'
+
+type AdminOrganizationListState = {
+  pageIndex: number
+  query: string
+}
+const INITIAL_STATE: AdminOrganizationListState = {
+  pageIndex: 0,
+  query: '',
+}
+
 export const adminOrganizationListSlice = createSlice({
-  initialState: {
-    pageIndex: 0,
-  },
+  initialState: INITIAL_STATE,
   name: 'adminOrganizationList',
   reducers: {
-    updatePageIndex: (
-      state,
-      action: {
-        payload: number
-      },
-    ) => {
+    setPageIndex: (state, action: PayloadAction<number>) => {
       state.pageIndex = action.payload
+    },
+    setQuery: (state, action: PayloadAction<string>) => {
+      state.query = action.payload
     },
   },
 })
 
-export const { updatePageIndex } = adminOrganizationListSlice.actions
+export const { setPageIndex, setQuery } = adminOrganizationListSlice.actions
 
 export const adminOrganizationListReducer = adminOrganizationListSlice.reducer

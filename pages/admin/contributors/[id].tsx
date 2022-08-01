@@ -97,6 +97,8 @@ export default function AdminContributorEditorPage() {
     }
 
     loadContributor()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

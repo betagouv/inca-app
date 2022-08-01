@@ -48,9 +48,12 @@ export default function UserListPage() {
   const api = useApi()
   const router = useRouter()
 
-  const goToEditor = useCallback(id => {
-    router.push(`/admin/users/${id}`)
-  }, [])
+  const goToEditor = useCallback(
+    id => {
+      router.push(`/admin/users/${id}`)
+    },
+    [router],
+  )
 
   const load = useCallback(async () => {
     const maybeBody = await api.get('users')
@@ -60,11 +63,11 @@ export default function UserListPage() {
 
     setUsers(maybeBody.data)
     setIsLoading(false)
-  }, [])
+  }, [api])
 
   useEffect(() => {
     load()
-  }, [])
+  }, [load])
 
   const columns = [
     ...BASE_COLUMNS,

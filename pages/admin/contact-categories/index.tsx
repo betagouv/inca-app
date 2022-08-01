@@ -55,6 +55,18 @@ export default function AdminContactCategoryListPage({
   const router = useRouter()
   const api = useApi()
 
+  const load = useCallback(async () => {
+    setIsLoading(true)
+
+    const maybeBody = await api.get('contact-categories')
+    if (maybeBody === null || maybeBody.hasError) {
+      return
+    }
+
+    setContactCategories(maybeBody.data)
+    setIsLoading(false)
+  }, [api])
+
   const closeDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
   }, [])
@@ -79,7 +91,7 @@ export default function AdminContactCategoryListPage({
       setSelectedEntity(contactCategory.label)
       setHasDeletionModal(true)
     },
-    [contactCategories],
+    [contactCategories, SYNCHRONIZATION_FALLBACK_CONTACT_CATEGORY],
   )
 
   // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
@@ -92,23 +104,14 @@ export default function AdminContactCategoryListPage({
     }
 
     await load()
-  }, [selectedId])
+  }, [api, load, selectedId])
 
-  const goToEditor = useCallback(id => {
-    router.push(`/admin/contact-categories/${id}`)
-  }, [])
-
-  const load = async () => {
-    setIsLoading(true)
-
-    const maybeBody = await api.get('contact-categories')
-    if (maybeBody === null || maybeBody.hasError) {
-      return
-    }
-
-    setContactCategories(maybeBody.data)
-    setIsLoading(false)
-  }
+  const goToEditor = useCallback(
+    id => {
+      router.push(`/admin/contact-categories/${id}`)
+    },
+    [router],
+  )
 
   const columns = useMemo(
     () => [
