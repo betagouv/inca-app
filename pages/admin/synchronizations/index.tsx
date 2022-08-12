@@ -68,11 +68,15 @@ export default function AdminSynchronizationPage() {
       toast.error(`Une erreur est survenue.`)
       toast.error(maybeBody.message)
 
+      setIsLoadingSyncronizations(false)
+
       return
     }
 
     if (maybeBody === null) {
       toast.info(`Aucune nouvelle soumission à synchroniser.`)
+
+      setIsLoadingSyncronizations(false)
 
       return
     }
