@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Field from '@app/atoms/Field'
 import Title from '@app/atoms/Title'
@@ -125,7 +124,7 @@ export default function AdminLeadEditorPage() {
   }, [])
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>{isNew ? 'Nouvel·le porteur·se' : 'Édition d’un·e porteur·se'}</Title>
       </AdminHeader>
@@ -184,6 +183,6 @@ export default function AdminLeadEditorPage() {
           </Field>
         </Form>
       </Card>
-    </AdminBox>
+    </>
   )
 }

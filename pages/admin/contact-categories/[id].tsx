@@ -1,5 +1,4 @@
 import { prisma } from '@api/libs/prisma'
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Field from '@app/atoms/Field'
 import Title from '@app/atoms/Title'
@@ -57,7 +56,7 @@ export default function AdminContactCategoryEditor({
   }
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>{isNew ? 'Nouvelle catégorie de contact' : 'Édition d’une catégorie de contact'}</Title>
       </AdminHeader>
@@ -94,7 +93,7 @@ export default function AdminContactCategoryEditor({
           </Field>
         </Form>
       </Card>
-    </AdminBox>
+    </>
   )
 }
 

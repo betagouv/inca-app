@@ -2,20 +2,21 @@ import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyleCustom = createGlobalStyle`
   html {
-     display: flex;
+    display: flex;
     height: 100%;
   }
 
   body {
     line-height: 1.5;
+    overflow: hidden;
   }
 
   body,
-  #__next,
-  #__laa {
+  #__next {
     display: flex;
-    flex-direction: column;
     flex-grow: 1;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .loader__overlay {

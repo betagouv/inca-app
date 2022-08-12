@@ -1,5 +1,4 @@
 import { prisma } from '@api/libs/prisma'
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Card from '@app/atoms/Card'
 import Subtitle from '@app/atoms/Subtitle'
@@ -140,7 +139,7 @@ export default function AdminProjectLinkerPage({ projectAsSuperJson }: AdminProj
   ]
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>{project.name}</Title>
 
@@ -158,7 +157,7 @@ export default function AdminProjectLinkerPage({ projectAsSuperJson }: AdminProj
 
         <NoteTextarea defaultValue={project.note || ''} name="note" onChange={updateProjectNote} />
       </Card>
-    </AdminBox>
+    </>
   )
 }
 

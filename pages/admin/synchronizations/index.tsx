@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Card from '@app/atoms/Card'
 import Field from '@app/atoms/Field'
@@ -179,7 +178,7 @@ export default function AdminSynchronizationPage() {
   )
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>Synchronisations</Title>
 
@@ -244,6 +243,6 @@ export default function AdminSynchronizationPage() {
       {hasDeletionModal && (
         <DeletionModal entity={selectedEntity} onCancel={closeDeletionModal} onConfirm={deleteSynchronization} />
       )}
-    </AdminBox>
+    </>
   )
 }

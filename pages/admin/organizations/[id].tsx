@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Field from '@app/atoms/Field'
 import Title from '@app/atoms/Title'
@@ -68,7 +67,7 @@ export default function AdminOrganizationEditorPage() {
   }
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>{isNew ? 'Nouvelle organisation' : 'Édition d’une organisation'}</Title>
       </AdminHeader>
@@ -93,6 +92,6 @@ export default function AdminOrganizationEditorPage() {
           </Field>
         </Form>
       </Card>
-    </AdminBox>
+    </>
   )
 }

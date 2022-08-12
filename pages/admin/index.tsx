@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
@@ -104,7 +103,7 @@ export default function AdminProjectBoardPage() {
   }, [])
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>Suivi des projets</Title>
 
@@ -120,7 +119,10 @@ export default function AdminProjectBoardPage() {
           { label: 'Mis en relation', tasks: projectCards[2] },
           { label: 'Débloqués', tasks: projectCards[3] },
         ]}
+        style={{
+          display: 'flex',
+        }}
       />
-    </AdminBox>
+    </>
   )
 }

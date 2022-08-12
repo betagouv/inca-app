@@ -3,7 +3,6 @@ import { loadLeadsAsOptions } from '@api/helpers/loadLeadsAsOptions'
 import { loadOrganizationsAsOptions } from '@api/helpers/loadOrganizationsAsOptions'
 import { loadUsersAsOptions } from '@api/helpers/loadUsersAsOptions'
 import { prisma } from '@api/libs/prisma'
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Field from '@app/atoms/Field'
 import Title from '@app/atoms/Title'
@@ -71,7 +70,7 @@ export default function AdminProjectEditorPage({
   }
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>{isNew ? 'Nouveau projet' : 'Édition de projet'}</Title>
       </AdminHeader>
@@ -119,7 +118,7 @@ export default function AdminProjectEditorPage({
           </Field>
         </Form>
       </Card>
-    </AdminBox>
+    </>
   )
 }
 
