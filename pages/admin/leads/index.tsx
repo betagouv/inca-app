@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
@@ -158,7 +157,7 @@ export default function AdminLeadListPage() {
   }, [confirmDeletion, goToEditor, user])
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>Porteur·ses</Title>
 
@@ -182,6 +181,6 @@ export default function AdminLeadListPage() {
       </Card>
 
       {hasDeletionModal && <DeletionModal entity={selectedEntity} onCancel={closeDeletionModal} onConfirm={_delete} />}
-    </AdminBox>
+    </>
   )
 }

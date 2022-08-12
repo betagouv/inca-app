@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
@@ -82,7 +81,7 @@ export default function UserListPage() {
   ]
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>Utilisateur·rices</Title>
       </AdminHeader>
@@ -90,6 +89,6 @@ export default function UserListPage() {
       <Card>
         <Table columns={columns as any} data={users} defaultSortedKey="lastName" isLoading={isLoading} />
       </Card>
-    </AdminBox>
+    </>
   )
 }

@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
@@ -152,7 +151,7 @@ export default function AdminProspectListPage() {
   )
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>Prospect·es</Title>
 
@@ -178,6 +177,6 @@ export default function AdminProspectListPage() {
       {hasDeletionModal && (
         <DeletionModal entity={selectedEntity} onCancel={closeProspectDeletionModal} onConfirm={_delete} />
       )}
-    </AdminBox>
+    </>
   )
 }

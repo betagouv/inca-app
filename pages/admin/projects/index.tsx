@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
@@ -176,7 +175,7 @@ export default function AdminProjectListPage() {
   }, [confirmDeletion, goToEditor, goToLinker, updateLockState, user])
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>Projets</Title>
 
@@ -202,6 +201,6 @@ export default function AdminProjectListPage() {
       {hasDeletionModal && (
         <DeletionModal entity={selectedEntity} onCancel={closeProjectDeletionModal} onConfirm={_delete} />
       )}
-    </AdminBox>
+    </>
   )
 }

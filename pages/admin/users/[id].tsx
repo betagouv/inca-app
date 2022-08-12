@@ -1,5 +1,4 @@
 import { prisma } from '@api/libs/prisma'
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
@@ -58,7 +57,7 @@ export default function AdminUserEditorPage({ userData }) {
   }
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>Édition d’un·e utilisateur·rice</Title>
       </AdminHeader>
@@ -90,7 +89,7 @@ export default function AdminUserEditorPage({ userData }) {
           </Field>
         </Form>
       </Card>
-    </AdminBox>
+    </>
   )
 }
 

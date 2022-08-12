@@ -10,9 +10,12 @@ const Container = styled.div`
   background-color: #293042;
   display: flex;
   flex-direction: column;
+  height: 100%;
   justify-content: space-between;
-  min-width: 16rem;
+  overflow-y: auto;
   padding: 0 ${p => p.theme.padding.layout.medium} ${p => p.theme.padding.layout.medium};
+  position: absolute;
+  width: 16rem;
 `
 
 const Brand = styled.div`

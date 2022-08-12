@@ -1,4 +1,3 @@
-import AdminBox from '@app/atoms/AdminBox'
 import AdminHeader from '@app/atoms/AdminHeader'
 import Title from '@app/atoms/Title'
 import { useApi } from '@app/hooks/useApi'
@@ -160,7 +159,7 @@ export default function AdminContributorListPage() {
   }, [confirmDeletion, goToEditor, user])
 
   return (
-    <AdminBox>
+    <>
       <AdminHeader>
         <Title>Contributeur·rices</Title>
 
@@ -184,6 +183,6 @@ export default function AdminContributorListPage() {
       </Card>
 
       {hasDeletionModal && <DeletionModal entity={selectedEntity} onCancel={closeDeletionModal} onConfirm={_delete} />}
-    </AdminBox>
+    </>
   )
 }
