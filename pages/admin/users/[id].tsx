@@ -18,8 +18,8 @@ const FormSchema = Yup.object().shape({
   email: Yup.string()
     .required(`L’adresse email est obligatoire.`)
     .email(`Cette addresse email ne semble pas correctement formatté.`),
-  firstName: Yup.string().required(`Le prénom est obligatoire.`),
-  lastName: Yup.string().required(`Le nom de famille est obligatoire.`),
+  firstName: Yup.string().nullable(),
+  lastName: Yup.string().nullable(),
   roleAsOption: Yup.object().required(`Le rôle est obligatoire.`),
 })
 
@@ -44,7 +44,7 @@ export default function AdminUserEditorPage({ userData }) {
     const newUserData: any = R.pick(['email', 'firstName', 'isActive', 'lastName', 'password'])(values)
     newUserData.role = values.roleAsOption.value
 
-    const maybeBody = await api.patch(`users/${userData.id}`, userData)
+    const maybeBody = await api.patch(`users/${userData.id}`, newUserData)
     if (maybeBody === null || maybeBody.hasError) {
       setErrors({
         email: 'Une erreur serveur est survenue.',

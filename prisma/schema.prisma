@@ -199,8 +199,8 @@ model User {
   role      Role     @default(MEMBER)
   email     String   @unique
   password  String
-  firstName String
-  lastName  String
+  firstName String?
+  lastName  String?
   isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
