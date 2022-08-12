@@ -6,14 +6,14 @@ import { useAppDispatch } from '@app/hooks/useAppDisptach'
 import { useAppSelector } from '@app/hooks/useAppSelector'
 import { Querier } from '@app/molecules/Querier'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { setQuery, setPageIndex } from '@app/slices/adminProspectListSlice'
+import { setQuery, setPageIndex, setData } from '@app/slices/prospectsSlice'
+import { Status } from '@app/types'
 import { Button, Card, Table } from '@singularity/core'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 
-import type { RootState } from '@app/store'
 import type { Prospect } from '@prisma/client'
 import type { TableColumnProps } from '@singularity/core'
 
@@ -52,25 +52,22 @@ const BASE_COLUMNS: TableColumnProps[] = [
 
 export default function AdminProspectListPage() {
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [prospects, setProspects] = useState<Prospect[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
+
   const api = useApi()
   const dispatch = useAppDispatch()
+  const { data, pageIndex, query, status } = useAppSelector(({ prospects }) => prospects)
   const router = useRouter()
-  const pageIndex = useAppSelector(({ adminProspectList }: RootState) => adminProspectList.pageIndex)
-  const query = useAppSelector(({ adminProspectList }: RootState) => adminProspectList.query)
 
   const load = useCallback(async () => {
-    const maybeBody = await api.get('prospects', { query })
+    const maybeBody = await api.get<Prospect[]>('prospects', { query })
     if (maybeBody === null || maybeBody.hasError) {
       return
     }
 
-    setProspects(maybeBody.data)
-    setIsLoading(false)
-  }, [api, query])
+    dispatch(setData(maybeBody.data))
+  }, [api, dispatch, query])
 
   const closeProspectDeletionModal = useCallback(() => {
     setHasDeletionModal(false)
@@ -78,7 +75,7 @@ export default function AdminProspectListPage() {
 
   const confirmDeletion = useCallback(
     async id => {
-      const prospect = R.find<Prospect>(R.propEq('id', id))(prospects)
+      const prospect = R.find<Prospect>(R.propEq('id', id))(data)
       if (!prospect) {
         return
       }
@@ -87,7 +84,7 @@ export default function AdminProspectListPage() {
       setSelectedEntity(`${prospect.firstName} ${prospect.lastName}`)
       setHasDeletionModal(true)
     },
-    [prospects],
+    [data],
   )
 
   // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
@@ -167,9 +164,9 @@ export default function AdminProspectListPage() {
         <Table
           key={String(pageIndex)}
           columns={columns as any}
-          data={prospects}
+          data={data}
           defaultSortedKey="lastName"
-          isLoading={isLoading}
+          isLoading={status === Status.IDLE}
           onPageChange={handlePageChange}
           pageIndex={pageIndex}
         />

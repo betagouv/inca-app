@@ -6,7 +6,7 @@ import { useAppDispatch } from '@app/hooks/useAppDisptach'
 import { useAppSelector } from '@app/hooks/useAppSelector'
 import { Querier } from '@app/molecules/Querier'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { setPageIndex, setQuery } from '@app/slices/adminLeadListSlice'
+import { setPageIndex, setQuery } from '@app/slices/leadsSlice'
 import { Role } from '@prisma/client'
 import { Button, Card, Table } from '@singularity/core'
 import { useAuth } from 'nexauth/client'
@@ -54,15 +54,15 @@ const BASE_COLUMNS: TableColumnProps[] = [
 export default function AdminLeadListPage() {
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [leads, setLeads] = useState<Lead[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
   const api = useApi()
   const { user } = useAuth<User>()
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const pageIndex = useAppSelector(({ adminLeadList }) => adminLeadList.pageIndex)
-  const query = useAppSelector(({ adminLeadList }) => adminLeadList.query)
+  const data = useAppSelector(({ leads }) => leads.data)
+  const pageIndex = useAppSelector(({ leads }) => leads.pageIndex)
+  const query = useAppSelector(({ leads }) => leads.query)
 
   const load = useCallback(async () => {
     const maybeBody = await api.get('leads', { query })
@@ -70,7 +70,7 @@ export default function AdminLeadListPage() {
       return
     }
 
-    setLeads(maybeBody.data)
+    // setLeads(maybeBody.data)
     setIsLoading(false)
   }, [api, query])
 
@@ -80,7 +80,7 @@ export default function AdminLeadListPage() {
 
   const confirmDeletion = useCallback(
     id => {
-      const lead = R.find<Lead>(R.propEq('id', id))(leads)
+      const lead = R.find<Lead>(R.propEq('id', id))(data)
       if (!lead) {
         return
       }
@@ -89,7 +89,7 @@ export default function AdminLeadListPage() {
       setSelectedEntity(`${lead.firstName} ${lead.lastName}`)
       setHasDeletionModal(true)
     },
-    [leads],
+    [data],
   )
 
   // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
@@ -173,7 +173,7 @@ export default function AdminLeadListPage() {
         <Table
           key={String(pageIndex)}
           columns={columns as any}
-          data={leads}
+          data={data}
           defaultSortedKey="lastName"
           isLoading={isLoading}
           onPageChange={handlePageChange}

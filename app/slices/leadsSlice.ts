@@ -1,20 +1,32 @@
+import { Status } from '@app/types'
 import { createSlice } from '@reduxjs/toolkit'
 
+import type { Lead } from '@prisma/client'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 type AdminLeadListState = {
+  data: Lead[]
+  isLoading: boolean
   pageIndex: number
   query: string
+  status: Status
 }
 const INITIAL_STATE: AdminLeadListState = {
+  data: [],
+  isLoading: true,
   pageIndex: 0,
   query: '',
+  status: Status.IDLE,
 }
 
-export const adminLeadListSlice = createSlice({
+export const leadsSlice = createSlice({
   initialState: INITIAL_STATE,
-  name: 'adminLeadList',
+  name: 'leads',
   reducers: {
+    setData: (state, action: PayloadAction<Lead[]>) => {
+      state.data = action.payload
+      state.isLoading = false
+    },
     setPageIndex: (state, action: PayloadAction<number>) => {
       state.pageIndex = action.payload
     },
@@ -24,6 +36,6 @@ export const adminLeadListSlice = createSlice({
   },
 })
 
-export const { setPageIndex, setQuery } = adminLeadListSlice.actions
+export const leadsReducer = leadsSlice.reducer
 
-export const adminLeadListReducer = adminLeadListSlice.reducer
+export const { setPageIndex, setQuery } = leadsSlice.actions

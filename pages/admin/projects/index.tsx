@@ -6,7 +6,7 @@ import { useAppDispatch } from '@app/hooks/useAppDisptach'
 import { useAppSelector } from '@app/hooks/useAppSelector'
 import { Querier } from '@app/molecules/Querier'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { setQuery, setPageIndex } from '@app/slices/adminProjectListSlice'
+import { setQuery, setPageIndex } from '@app/slices/projectsSlice'
 import { Temporal } from '@js-temporal/polyfill'
 import { Project, Role } from '@prisma/client'
 import { Button, Card, Table } from '@singularity/core'
@@ -16,7 +16,6 @@ import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
 
-import type { RootState } from '@app/store'
 import type { User } from '@prisma/client'
 import type { TableColumnProps } from '@singularity/core'
 
@@ -37,15 +36,16 @@ const BASE_COLUMNS: TableColumnProps[] = [
 export default function AdminProjectListPage() {
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [projects, setProjects] = useState<Project[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
+
   const api = useApi()
-  const { user } = useAuth<User>()
   const dispatch = useAppDispatch()
+  const data = useAppSelector(({ projects }) => projects.data)
+  const pageIndex = useAppSelector(({ projects }) => projects.pageIndex)
+  const query = useAppSelector(({ projects }) => projects.query)
+  const { user } = useAuth<User>()
   const router = useRouter()
-  const pageIndex = useAppSelector(({ adminProjectList }: RootState) => adminProjectList.pageIndex)
-  const query = useAppSelector(({ adminProjectList }: RootState) => adminProjectList.query)
 
   const load = useCallback(async () => {
     const maybeBody = await api.get('projects', { query })
@@ -53,7 +53,7 @@ export default function AdminProjectListPage() {
       return
     }
 
-    setProjects(maybeBody.data)
+    // setProjects(maybeBody.data)
     setIsLoading(false)
   }, [api, query])
 
@@ -63,7 +63,7 @@ export default function AdminProjectListPage() {
 
   const confirmDeletion = useCallback(
     async id => {
-      const project = R.find<Project>(R.propEq('id', id))(projects)
+      const project = R.find<Project>(R.propEq('id', id))(data)
       if (!project) {
         return
       }
@@ -72,7 +72,7 @@ export default function AdminProjectListPage() {
       setSelectedEntity(project.name)
       setHasDeletionModal(true)
     },
-    [projects],
+    [data],
   )
 
   // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
@@ -191,7 +191,7 @@ export default function AdminProjectListPage() {
         <Table
           key={String(pageIndex)}
           columns={columns as any}
-          data={projects}
+          data={data}
           defaultSortedKey="name"
           isLoading={isLoading}
           onPageChange={handlePageChange}

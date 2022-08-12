@@ -6,7 +6,7 @@ import { useAppDispatch } from '@app/hooks/useAppDisptach'
 import { useAppSelector } from '@app/hooks/useAppSelector'
 import { Querier } from '@app/molecules/Querier'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { setQuery, setPageIndex } from '@app/slices/adminOrganizationListSlice'
+import { setQuery, setPageIndex } from '@app/slices/organizationsSlice'
 import { Role } from '@prisma/client'
 import { Button, Card, Table } from '@singularity/core'
 import { useAuth } from 'nexauth/client'
@@ -15,7 +15,6 @@ import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Edit, Trash } from 'react-feather'
 
-import type { RootState } from '@app/store'
 import type { Organization, User } from '@prisma/client'
 import type { TableColumnProps } from '@singularity/core'
 
@@ -30,15 +29,16 @@ const BASE_COLUMNS: TableColumnProps[] = [
 export default function AdminOrganizationListPage() {
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [organizations, setOrganizations] = useState<Organization[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
+
   const api = useApi()
+  const data = useAppSelector(({ organizations }) => organizations.data)
+  const pageIndex = useAppSelector(({ organizations }) => organizations.pageIndex)
+  const query = useAppSelector(({ organizations }) => organizations.query)
   const { user } = useAuth<User>()
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const pageIndex = useAppSelector(({ adminOrganizationList }: RootState) => adminOrganizationList.pageIndex)
-  const query = useAppSelector(({ adminOrganizationList }: RootState) => adminOrganizationList.query)
 
   const load = useCallback(async () => {
     const maybeBody = await api.get('organizations', { query })
@@ -46,7 +46,7 @@ export default function AdminOrganizationListPage() {
       return
     }
 
-    setOrganizations(maybeBody.data)
+    // setOrganizations(maybeBody.data)
     setIsLoading(false)
   }, [api, query])
 
@@ -56,7 +56,7 @@ export default function AdminOrganizationListPage() {
 
   const confirmDeletion = useCallback(
     id => {
-      const organization = R.find<Organization>(R.propEq('id', id))(organizations)
+      const organization = R.find<Organization>(R.propEq('id', id))(data)
       if (!organization) {
         return
       }
@@ -65,7 +65,7 @@ export default function AdminOrganizationListPage() {
       setSelectedEntity(organization.name)
       setHasDeletionModal(true)
     },
-    [organizations],
+    [data],
   )
 
   // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
@@ -149,7 +149,7 @@ export default function AdminOrganizationListPage() {
         <Table
           key={String(pageIndex)}
           columns={columns as any}
-          data={organizations}
+          data={data}
           defaultSortedKey="name"
           isLoading={isLoading}
           onPageChange={handlePageChange}

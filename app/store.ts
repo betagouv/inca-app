@@ -1,17 +1,24 @@
-import { adminContributorListReducer } from '@app/slices/adminContributorListSlice'
-import { adminLeadListReducer } from '@app/slices/adminLeadListSlice'
-import { adminOrganizationListReducer } from '@app/slices/adminOrganizationListSlice'
-import { adminProjectListReducer } from '@app/slices/adminProjectListSlice'
-import { adminProspectListReducer } from '@app/slices/adminProspectListSlice'
+import { authenticationReducer } from '@app/slices/authenticationSlice'
+import { contributorsReducer } from '@app/slices/contributorsSlice'
+import { leadsReducer } from '@app/slices/leadsSlice'
+import { organizationsReducer } from '@app/slices/organizationsSlice'
+import { projectsReducer } from '@app/slices/projectsSlice'
+import { prospectsReducer } from '@app/slices/prospectsSlice'
 import { configureStore } from '@reduxjs/toolkit'
 
+import { api } from './services/api'
+
 export const store = configureStore({
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
   reducer: {
-    adminContributorList: adminContributorListReducer,
-    adminLeadList: adminLeadListReducer,
-    adminOrganizationList: adminOrganizationListReducer,
-    adminProjectList: adminProjectListReducer,
-    adminProspectList: adminProspectListReducer,
+    authentication: authenticationReducer,
+    contributors: contributorsReducer,
+    leads: leadsReducer,
+    organizations: organizationsReducer,
+    projects: projectsReducer,
+    prospects: prospectsReducer,
+
+    [api.reducerPath]: api.reducer,
   },
 })
 

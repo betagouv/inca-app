@@ -6,7 +6,7 @@ import { useAppDispatch } from '@app/hooks/useAppDisptach'
 import { useAppSelector } from '@app/hooks/useAppSelector'
 import { Querier } from '@app/molecules/Querier'
 import DeletionModal from '@app/organisms/DeletionModal'
-import { setQuery, setPageIndex } from '@app/slices/adminContributorListSlice'
+import { setQuery, setPageIndex } from '@app/slices/contributorsSlice'
 import { Temporal } from '@js-temporal/polyfill'
 import { Role } from '@prisma/client'
 import { Button, Card, Table } from '@singularity/core'
@@ -56,15 +56,16 @@ const BASE_COLUMNS: TableColumnProps[] = [
 export default function AdminContributorListPage() {
   const [hasDeletionModal, setHasDeletionModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [contributors, setContributors] = useState<Contributor[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [selectedEntity, setSelectedEntity] = useState('')
+
   const api = useApi()
-  const { user } = useAuth<User>()
   const dispatch = useAppDispatch()
+  const data = useAppSelector(({ contributors }) => contributors.data)
+  const pageIndex = useAppSelector(({ contributors }) => contributors.pageIndex)
+  const query = useAppSelector(({ contributors }) => contributors.query)
+  const { user } = useAuth<User>()
   const router = useRouter()
-  const pageIndex = useAppSelector(({ adminContributorList }) => adminContributorList.pageIndex)
-  const query = useAppSelector(({ adminContributorList }) => adminContributorList.query)
 
   const load = useCallback(async () => {
     const maybeBody = await api.get('contributors', { query })
@@ -72,7 +73,7 @@ export default function AdminContributorListPage() {
       return
     }
 
-    setContributors(maybeBody.data)
+    // setContributors(maybeBody.data)
     setIsLoading(false)
   }, [api, query])
 
@@ -82,7 +83,7 @@ export default function AdminContributorListPage() {
 
   const confirmDeletion = useCallback(
     id => {
-      const contributor = R.find<Contributor>(R.propEq('id', id))(contributors)
+      const contributor = R.find<Contributor>(R.propEq('id', id))(data)
       if (!contributor) {
         return
       }
@@ -91,7 +92,7 @@ export default function AdminContributorListPage() {
       setSelectedEntity(`${contributor.firstName} ${contributor.lastName}`)
       setHasDeletionModal(true)
     },
-    [contributors],
+    [data],
   )
 
   // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
@@ -175,7 +176,7 @@ export default function AdminContributorListPage() {
         <Table
           key={String(pageIndex)}
           columns={columns as any}
-          data={contributors}
+          data={data}
           defaultSortedKey="lastName"
           isLoading={isLoading}
           onPageChange={handlePageChange}

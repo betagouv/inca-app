@@ -1,6 +1,8 @@
+import { useAppDispatch } from '@app/hooks/useAppDisptach'
+import { setAccessToken } from '@app/slices/authenticationSlice'
 import ky, { HTTPError } from 'ky'
 import { useAuth } from 'nexauth/client'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Context } from './Context'
 
@@ -15,6 +17,7 @@ const API_BASE_URL = '/api'
 export function withApi(Component: AppProps['Component']) {
   return function WithApi(pageProps: AppProps['pageProps']) {
     const auth = useAuth<User>()
+    const dispatch = useAppDispatch()
 
     const providerValue: ApiContext = useMemo(() => {
       const kyIntance = ky.create({
@@ -149,6 +152,10 @@ export function withApi(Component: AppProps['Component']) {
         put,
       }
     }, [auth.state.accessToken])
+
+    useEffect(() => {
+      dispatch(setAccessToken(auth.state.accessToken))
+    }, [auth.state.accessToken, dispatch])
 
     return (
       <Context.Provider value={providerValue}>
