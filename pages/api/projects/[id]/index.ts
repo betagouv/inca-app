@@ -96,7 +96,7 @@ async function ProjectController(req: NextApiRequest, res: NextApiResponse) {
         }
 
         const updatedProjectData = R.pick(
-          ['description', 'isUnlocked', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
+          ['description', 'isArchived', 'isUnlocked', 'leadId', 'name', 'need', 'note', 'organizationId', 'userId'],
           req.body,
         )
         const updatedProject = await prisma.project.update({
