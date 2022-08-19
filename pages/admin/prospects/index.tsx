@@ -153,7 +153,7 @@ export default function AdminProspectListPage() {
   return (
     <>
       <AdminHeader>
-        <Title>Prospect·es</Title>
+        <Title>{`Prospect·es (${prospects.length})`}</Title>
 
         <Button onClick={() => goToEditor('new')} size="small">
           Ajouter un·e prospect·e

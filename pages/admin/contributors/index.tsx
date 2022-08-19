@@ -161,7 +161,7 @@ export default function AdminContributorListPage() {
   return (
     <>
       <AdminHeader>
-        <Title>Contributeur·rices</Title>
+        <Title>{`Contributeur·rices (${contributors.length})`}</Title>
 
         <Button onClick={() => goToEditor('new')} size="small">
           Ajouter un·e contributeur·rice

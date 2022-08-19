@@ -159,7 +159,7 @@ export default function AdminLeadListPage() {
   return (
     <>
       <AdminHeader>
-        <Title>Porteur·ses</Title>
+        <Title>{`Porteur·ses (${leads.length})`}</Title>
 
         <Button onClick={() => goToEditor('new')} size="small">
           Ajouter un·e porteur·se

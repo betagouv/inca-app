@@ -177,7 +177,7 @@ export default function AdminProjectListPage() {
   return (
     <>
       <AdminHeader>
-        <Title>Projets</Title>
+        <Title>{`Projets (${projects.length})`}</Title>
 
         <Button onClick={() => goToEditor('new')} size="small">
           Ajouter un projet
