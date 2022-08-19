@@ -93,7 +93,7 @@
     "eslint-plugin-sort-keys-fix": "1.1.2",
     "eslint-plugin-typescript-sort-keys": "2.1.0",
     "esm-path": "1.0.1",
-    "glob": "7.2.0",
+    "glob": "8.0.3",
     "husky": "8.0.0",
     "jest": "27.5.1",
     "lint-staged": "13.0.3",
