@@ -141,6 +141,15 @@ export default function AdminProjectListPage() {
     const newColumns = [
       ...BASE_COLUMNS,
       {
+        accent: 'secondary',
+        action: goToLinker,
+        Icon: Users,
+        key: 'goToLinker',
+        label: 'Gérer les mise en relation de ce projet',
+        type: 'action',
+        withTooltip: true,
+      },
+      {
         action: updateLockState,
         IconOff: Lock,
         IconOn: Unlock,
@@ -161,14 +170,6 @@ export default function AdminProjectListPage() {
         labelOn: 'Projet archivé',
         type: 'boolean',
         withTooltip: true,
-      },
-      {
-        accent: 'secondary',
-        action: goToLinker,
-        Icon: Users,
-        key: 'goToLinker',
-        label: 'Gérer les mise en relation de ce projet',
-        type: 'action',
       },
       {
         accent: 'secondary',

@@ -13,7 +13,7 @@ import { useAuth } from 'nexauth/client'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Edit, Trash } from 'react-feather'
+import { Edit, Trash, Users } from 'react-feather'
 
 import type { Contributor, User } from '@prisma/client'
 import type { TableColumnProps } from '@singularity/core'
@@ -112,6 +112,13 @@ export default function AdminContributorListPage() {
     [router],
   )
 
+  const goToLinker = useCallback(
+    id => {
+      router.push(`/admin/contributors/${id}/linker`)
+    },
+    [router],
+  )
+
   const handleQuery = useCallback(
     (newQuery: string) => {
       dispatch(setPageIndex(0))
@@ -136,6 +143,15 @@ export default function AdminContributorListPage() {
       ...BASE_COLUMNS,
       {
         accent: 'secondary',
+        action: goToLinker,
+        Icon: Users,
+        key: 'goToLinker',
+        label: 'Gérer les mise en relation de ce·tte contributeur·rice',
+        type: 'action',
+        withTooltip: true,
+      },
+      {
+        accent: 'secondary',
         action: goToEditor,
         Icon: Edit,
         key: 'goToEditor',
@@ -156,7 +172,7 @@ export default function AdminContributorListPage() {
     }
 
     return newColumns
-  }, [confirmDeletion, goToEditor, user])
+  }, [confirmDeletion, goToEditor, goToLinker, user])
 
   return (
     <>
