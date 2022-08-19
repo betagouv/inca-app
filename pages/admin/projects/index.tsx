@@ -13,7 +13,7 @@ import { useAuth } from 'nexauth/client'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Edit, Users, Trash, Lock, Unlock } from 'react-feather'
+import { Edit, Users, Trash, Lock, Unlock, Eye, EyeOff } from 'react-feather'
 
 import type { RootState } from '@app/store'
 import type { User } from '@prisma/client'
@@ -115,6 +115,15 @@ export default function AdminProjectListPage() {
     [dispatch],
   )
 
+  const updateArchiveState = useCallback(
+    async (id, isArchived) => {
+      await api.patch(`projects/${id}`, { isArchived })
+
+      await load()
+    },
+    [api, load],
+  )
+
   const updateLockState = useCallback(
     async (id, isUnlocked) => {
       await api.patch(`projects/${id}`, { isUnlocked })
@@ -139,6 +148,17 @@ export default function AdminProjectListPage() {
         label: 'Projet débloqué',
         labelOff: 'Projet bloqué',
         labelOn: 'Projet débloqué',
+        type: 'boolean',
+        withTooltip: true,
+      },
+      {
+        action: updateArchiveState,
+        IconOff: Eye,
+        IconOn: EyeOff,
+        key: 'isArchived',
+        label: 'Projet archivé',
+        labelOff: 'Projet actif',
+        labelOn: 'Projet archivé',
         type: 'boolean',
         withTooltip: true,
       },
@@ -172,7 +192,7 @@ export default function AdminProjectListPage() {
     }
 
     return newColumns
-  }, [confirmDeletion, goToEditor, goToLinker, updateLockState, user])
+  }, [confirmDeletion, goToEditor, goToLinker, updateArchiveState, updateLockState, user])
 
   return (
     <>

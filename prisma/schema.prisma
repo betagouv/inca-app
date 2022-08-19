@@ -132,6 +132,7 @@ model Project {
   note              String?
   hasStarted        Boolean  @default(false)
   hasEnded          Boolean  @default(false)
+  isArchived        Boolean  @default(false)
   isUnlocked        Boolean  @default(false)
   synchronizationId String?  @unique
   createdAt         DateTime @default(now())

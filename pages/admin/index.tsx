@@ -91,7 +91,11 @@ export default function AdminProjectBoardPage() {
 
     const newProjectCards = maybeBody.data.reduce(
       (projectCardsStack, project) => {
-        const { contributors, isUnlocked } = project
+        const { contributors, isArchived, isUnlocked } = project
+        if (isArchived) {
+          return projectCardsStack
+        }
+
         const Project = getProjectCard(project)
 
         if (isUnlocked) {
