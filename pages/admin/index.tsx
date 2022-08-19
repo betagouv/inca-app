@@ -7,6 +7,47 @@ import { Button, Tasker } from '@singularity/core'
 import { useRouter } from 'next/router'
 import * as R from 'ramda'
 import { useCallback, useEffect, useState } from 'react'
+import styled from 'styled-components'
+
+const StyledTasker = styled(Tasker)`
+  flex-grow: 1;
+
+  .Label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  > div > div {
+    > div:nth-child(2) {
+      margin: 1rem 0 0.5rem;
+      overflow-y: scroll;
+      padding-left: 1px;
+      padding-right: 1rem;
+
+      ::-webkit-scrollbar {
+        -webkit-appearance: none;
+      }
+      ::-webkit-scrollbar:vertical {
+        width: 0.5rem;
+      }
+      ::-webkit-scrollbar-thumb {
+        border: 0;
+        background-color: ${p => p.theme.color.secondary.default};
+      }
+      ::-webkit-scrollbar-track {
+        background-color: ${p => p.theme.color.secondary.background};
+      }
+
+      > div:first-child {
+        margin-top: 0;
+      }
+      > div:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+`
 
 const countSucessfulLinks: any = R.pipe(
   R.filter(R.propEq('state', PROJECT_CONTRIBUTOR_STATE.SUCCESSFUL)) as any,
@@ -112,10 +153,10 @@ export default function AdminProjectBoardPage() {
         </Button>
       </AdminHeader>
 
-      <Tasker
+      <StyledTasker
         data={[
           { label: 'Nouveaux', tasks: projectCards[0] },
-          { label: 'Contributions proposées', tasks: projectCards[1] },
+          { label: 'Contrib. proposées', tasks: projectCards[1] },
           { label: 'Mis en relation', tasks: projectCards[2] },
           { label: 'Débloqués', tasks: projectCards[3] },
         ]}

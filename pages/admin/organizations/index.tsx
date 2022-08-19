@@ -135,7 +135,7 @@ export default function AdminOrganizationListPage() {
   return (
     <>
       <AdminHeader>
-        <Title>Organisations</Title>
+        <Title>{`Organisations (${organizations.length})`}</Title>
 
         <Button onClick={() => goToEditor('new')} size="small">
           Ajouter une organisation
