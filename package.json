@@ -11,7 +11,8 @@
     "yarn": "1"
   },
   "scripts": {
-    "build": "next build",
+    "build": "yarn db:generate && next build",
+    "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "node -r dotenv/config ./prisma/seed.js",
     "dev": "node -r dotenv/config ./scripts/dev/start.js",
@@ -30,7 +31,7 @@
   "dependencies": {
     "@fontsource/poppins": "4.5.9",
     "@js-temporal/polyfill": "0.4.1",
-    "@prisma/client": "4.1.0",
+    "@prisma/client": "4.8.0",
     "@reduxjs/toolkit": "1.8.3",
     "@singularity/core": "4.4.0",
     "axios": "0.27.2",
@@ -45,21 +46,17 @@
     "nexauth": "2.1.1",
     "next": "12.2.5",
     "node-cache": "5.1.2",
-    "prisma": "4.1.0",
+    "prisma": "4.8.0",
     "query-string": "7.1.1",
     "ramda": "0.27.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-feather": "2.0.10",
-    "react-icons": "4.4.0",
     "react-redux": "8.0.2",
-    "react-spinners": "0.13.4",
     "react-toastify": "8.1.0",
     "styled-components": "5.3.5",
     "superjson": "1.9.1",
-    "unique-string": "3.0.0",
-    "yup": "0.32.11",
-    "zxcvbn": "4.4.2"
+    "yup": "0.32.11"
   },
   "devDependencies": {
     "@commitlint/cli": "17.0.3",
