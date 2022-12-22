@@ -30,7 +30,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.app.entrypoints=websecure'
-      - 'traefik.http.routers.app.rule=Host(`survey-labagora.e-cancer.fr`)'
+      - 'traefik.http.routers.app.rule=Host(`labagora.e-cancer.fr`)'
       - 'traefik.http.routers.app.tls=true'
     networks:
       - private
