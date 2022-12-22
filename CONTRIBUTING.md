@@ -46,7 +46,7 @@ It will also watch for file changes and automatically re-hydrate the webapp on t
 > following tasks, if necessary:
 >
 > - Copy `.env.example` file to a `.env` one.
-> - Generate a RSA Key Pair (required in order to generate and verify [JWTs](https://jwt.io))
+> - Generate an EdDSA Key Pair (required in order to generate and verify [JWTs](https://jwt.io))
 
 ### Development Runs
 
