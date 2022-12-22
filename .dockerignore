@@ -1,3 +1,4 @@
+/.backups
 /.git
 /.github
 /.husky
@@ -15,3 +16,7 @@
 /docker-compose.dev.yml
 /docker-compose.yml
 /Dockerfile
+/jest.config.js
+/Makefile
+/tsconfig.dev.json
+/tsconfig.tsbuildinfo

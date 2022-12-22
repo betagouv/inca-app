@@ -1,5 +1,8 @@
 FROM node:16-alpine
 
+# https://github.com/prisma/prisma/issues/16834#issuecomment-1355195025
+RUN apk add --update --no-cache openssl1.1-compat
+
 ARG NEXT_PUBLIC_RSA_PUBLIC_KEY
 ARG NODE_ENV=production
 
@@ -12,7 +15,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN yarn --production --pure-lockfile
+RUN yarn --frozen-lockfile --production=false
 RUN yarn build
 
 ENTRYPOINT [ "yarn", "start" ]

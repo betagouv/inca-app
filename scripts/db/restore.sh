@@ -23,8 +23,11 @@ if [ "$NODE_ENV" = "production" ]; then
 else
   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --wait "${DOCKER_COMPOSE_SERVICE_NAME}"
 fi
+
+echo "Waiting for database to be ready…"
 # https://stackoverflow.com/a/63011266/2736233
 timeout 90s bash -c "until docker exec ${DOCKER_CONTAINER_NAME} pg_isready ; do sleep 1 ; done"
 
+echo "Restoring backup '${LAST_BACKUP_FILE_PATH}'…"
 cat "${LAST_BACKUP_FILE_PATH}" \
   | docker exec -i "${DOCKER_CONTAINER_NAME}" psql -d "${POSTGRES_DB}" -U "${POSTGRES_USER}"

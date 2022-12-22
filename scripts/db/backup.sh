@@ -14,7 +14,9 @@ DOCKER_CONTAINER_NAME="app_db"
 BACKUP_FILE_PATH="./.backups/$(date '+%Y-%m-%d').sql"
 
 if [ ! -d ./.backups ]; then
+  echo "Creating directory './.backups'…"
   mkdir ./.backups
 fi
 
+echo "Dumping databases in '${BACKUP_FILE_PATH}'…"
 docker exec -t "${DOCKER_CONTAINER_NAME}" pg_dumpall -c -U "${POSTGRES_USER}" > "${BACKUP_FILE_PATH}"
