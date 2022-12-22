@@ -11,5 +11,5 @@
     }
   },
   "exclude": [".next/*", "config/*", "node_modules/*", "scripts/*"],
-  "include": ["**/*.js",  "**/*.ts", "**/*.tsx", "next-env.d.ts", "next.config.cjs"]
+  "include": ["**/*.js", "**/*.ts", "**/*.tsx", "next-env.d.ts", "next.config.cjs"]
 }
