@@ -137,3 +137,5 @@ sketch
 # Custom
 
 /.backups
+
+*.sql

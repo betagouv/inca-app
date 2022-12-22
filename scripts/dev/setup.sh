@@ -9,3 +9,5 @@ fi
 
 # https://betagouv.github.io/nexauth/#/initialize?id=development
 yarn nexauth init
+
+yarn husky install

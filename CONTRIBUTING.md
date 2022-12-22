@@ -29,7 +29,7 @@ Then run:
 git clone https://github.com/betagouv/inca-app.git
 cd inca-app
 yarn
-yarn dev:setup
+yarn setup
 yarn dev:docker
 yarn db:migrate
 yarn db:seed
